@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="768.0" prefWidth="1024.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2">
+  <!-- TODO Add Nodes -->
+  <children>
+    <Separator layoutX="10.0" layoutY="14.0" orientation="VERTICAL" prefHeight="740.0" />
+    <Separator layoutX="270.0" layoutY="14.0" orientation="VERTICAL" prefHeight="740.0" />
+    <AnchorPane layoutX="14.0" layoutY="14.0" prefHeight="740.0" prefWidth="255.9998779296875">
+      <children>
+        <Separator layoutX="0.0" layoutY="100.0" prefWidth="256.0" />
+        <AnchorPane fx:id="player1Pane" layoutX="0.0" layoutY="0.0" prefHeight="100.0" prefWidth="258.0">
+          <children>
+            <Label fx:id="player1Lbl" layoutX="28.0" layoutY="28.0" text="Player 1" />
+          </children>
+        </AnchorPane>
+        <Separator layoutX="0.0" layoutY="200.0" prefWidth="256.0" />
+        <AnchorPane fx:id="player2Pane" layoutX="0.0" layoutY="100.0" prefHeight="100.0" prefWidth="258.0">
+          <children>
+            <Label id="player1Lbl" fx:id="player2Lbl" layoutX="28.0" layoutY="28.0" text="Player 2" />
+          </children>
+        </AnchorPane>
+        <Separator layoutX="0.0" layoutY="300.0" prefWidth="256.0" />
+        <AnchorPane fx:id="player3Pane" layoutX="0.0" layoutY="200.0" prefHeight="100.0" prefWidth="258.0">
+          <children>
+            <Label id="player1Lbl" fx:id="player3Lbl" layoutX="28.0" layoutY="28.0" text="Player 3" />
+          </children>
+        </AnchorPane>
+        <Separator layoutX="2.0" layoutY="0.0" prefWidth="256.0" />
+        <AnchorPane fx:id="player4Pane" layoutX="0.0" layoutY="300.0" prefHeight="100.0" prefWidth="258.0">
+          <children>
+            <Label id="player1Lbl" fx:id="player4Lbl" layoutX="28.0" layoutY="28.0" text="Player 4" />
+          </children>
+        </AnchorPane>
+        <Separator layoutX="0.0" layoutY="400.0" prefWidth="256.0" />
+      </children>
+    </AnchorPane>
+    <AnchorPane fx:id="gamePane" layoutX="270.0" layoutY="14.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="740.0" prefWidth="740.0" />
+    <Separator layoutX="272.0" layoutY="14.0" prefWidth="740.0" />
+    <Separator layoutX="272.0" layoutY="754.0" prefWidth="740.0" />
+    <Separator layoutX="1010.0" layoutY="14.0" orientation="VERTICAL" prefHeight="740.0" />
+  </children>
+</AnchorPane>

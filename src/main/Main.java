@@ -1,10 +1,18 @@
 package main;
 
-public class Main {
+import javafx.application.Application;
+import javafx.stage.Stage;
+
+public class Main extends Application{
 
 	public static void main(String[] args) {
-		System.out.println("TODO: have fun! :)");
-		//TODO: don't have fun! work!
+		launch(args);
+	}
+
+	@Override
+	public void start(Stage arg0) throws Exception {
+		// TODO show join
+		
 	}
 
 }

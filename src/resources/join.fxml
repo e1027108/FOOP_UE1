@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import javafx.collections.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.*?>
+
+<AnchorPane prefHeight="768.0" prefWidth="1024.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2">
+  <!-- TODO Add Nodes -->
+  <children>
+    <Separator layoutX="510.0" layoutY="434.0" orientation="VERTICAL" prefHeight="50.0" />
+    <Separator layoutX="510.0" layoutY="359.0" orientation="VERTICAL" prefHeight="50.0" />
+    <Label layoutX="497.0" layoutY="409.0" text="OR">
+      <font>
+        <Font name="System Bold" size="20.0" />
+      </font>
+    </Label>
+    <ComboBox fx:id="playerNbrComboBox" layoutX="387.0" layoutY="372.0">
+      <items>
+        <FXCollections fx:factory="observableArrayList">
+          <String fx:value="Item 1" />
+          <String fx:value="Item 2" />
+          <String fx:value="Item 3" />
+        </FXCollections>
+      </items>
+    </ComboBox>
+    <Label layoutX="254.0" layoutY="374.0" prefHeight="-1.0" text="Number of players:" />
+    <Button fx:id="createBtn" layoutX="322.0" layoutY="445.0" mnemonicParsing="false" onAction="#onCreateClick" text="Create game" />
+    <Label layoutX="477.0" layoutY="187.0" text="Snake">
+      <font>
+        <Font name="System Bold" size="24.0" />
+      </font>
+    </Label>
+    <Label layoutX="408.0" layoutY="239.0" text="Name:" />
+    <TextField fx:id="nameTxt" layoutX="487.0" layoutY="237.0" prefWidth="128.0" />
+    <Label layoutX="408.0" layoutY="289.0" text="Color:" />
+    <ColorPicker fx:id="colorPicker" layoutX="504.0" layoutY="287.0" />
+    <Label layoutX="552.0" layoutY="374.0" prefHeight="-1.0" text="Host IP:" />
+    <TextField fx:id="ipTxt" layoutX="615.0" layoutY="372.0" prefWidth="119.0" />
+    <Button id="createBtn" fx:id="joinBtn" layoutX="606.0" layoutY="445.0" mnemonicParsing="false" onAction="#onJoinClick" text="Join game" />
+  </children>
+</AnchorPane>
