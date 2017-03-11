@@ -15,7 +15,7 @@ public class GameController {
     private URL location;
 
     @FXML
-    private AnchorPane gamePane, player1Pane, player2Pane, player3Pane, player4Pane;
+    private AnchorPane playPane, player1Pane, player2Pane, player3Pane, player4Pane;
     
     @FXML
     private Label player1Lbl, player2Lbl, player3Lbl, player4Lbl;

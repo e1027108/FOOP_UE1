@@ -7,7 +7,7 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.*?>
 
-<AnchorPane prefHeight="768.0" prefWidth="1024.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2">
+<AnchorPane id="join" fx:id="joinPane" prefHeight="768.0" prefWidth="1024.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2" fx:controller="gui.JoinController">
   <!-- TODO Add Nodes -->
   <children>
     <Separator layoutX="510.0" layoutY="434.0" orientation="VERTICAL" prefHeight="50.0" />
@@ -34,9 +34,9 @@
       </font>
     </Label>
     <Label layoutX="408.0" layoutY="239.0" text="Name:" />
-    <TextField fx:id="nameTxt" layoutX="487.0" layoutY="237.0" prefWidth="128.0" />
+    <TextField fx:id="nameTxt" layoutX="477.0" layoutY="236.0" prefWidth="138.0" />
     <Label layoutX="408.0" layoutY="289.0" text="Color:" />
-    <ColorPicker fx:id="colorPicker" layoutX="504.0" layoutY="287.0" />
+    <ColorPicker fx:id="colorPicker" layoutX="477.0" layoutY="287.0" prefWidth="138.0" />
     <Label layoutX="552.0" layoutY="374.0" prefHeight="-1.0" text="Host IP:" />
     <TextField fx:id="ipTxt" layoutX="615.0" layoutY="372.0" prefWidth="119.0" />
     <Button id="createBtn" fx:id="joinBtn" layoutX="606.0" layoutY="445.0" mnemonicParsing="false" onAction="#onJoinClick" text="Join game" />

@@ -5,7 +5,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="768.0" prefWidth="1024.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2">
+<AnchorPane fx:id="gamePane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="768.0" prefWidth="1024.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2" fx:controller="gui.GameController">
   <!-- TODO Add Nodes -->
   <children>
     <Separator layoutX="10.0" layoutY="14.0" orientation="VERTICAL" prefHeight="740.0" />
@@ -39,7 +39,7 @@
         <Separator layoutX="0.0" layoutY="400.0" prefWidth="256.0" />
       </children>
     </AnchorPane>
-    <AnchorPane fx:id="gamePane" layoutX="270.0" layoutY="14.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="740.0" prefWidth="740.0" />
+    <AnchorPane id="gamePane" fx:id="playPane" layoutX="270.0" layoutY="14.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="740.0" prefWidth="740.0" />
     <Separator layoutX="272.0" layoutY="14.0" prefWidth="740.0" />
     <Separator layoutX="272.0" layoutY="754.0" prefWidth="740.0" />
     <Separator layoutX="1010.0" layoutY="14.0" orientation="VERTICAL" prefHeight="740.0" />
