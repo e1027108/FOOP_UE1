@@ -1,12 +1,21 @@
 package gui;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.fxml.JavaFXBuilderFactory;
+import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ColorPicker;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.AnchorPane;
+import javafx.stage.Stage;
 
 public class JoinController {
 
@@ -15,6 +24,9 @@ public class JoinController {
 
     @FXML
     private URL location;
+    
+    @FXML
+    private AnchorPane joinPane;
 
     @FXML
     private ColorPicker colorPicker;
@@ -24,23 +36,46 @@ public class JoinController {
 
     @FXML
     private TextField ipTxt, nameTxt;
+    
+    @FXML
+    private Label errorLbl;
 
     @FXML
     private ComboBox<Integer> playerNbrComboBox;
 
     @FXML
     void initialize() {
-    	//TODO initialize something?
+    	errorLbl.setText("");
+    	errorLbl.setStyle("-fx-text-fill: red;");
+    	
+    	//TODO initialize stuff
     }
     
     @FXML
-    void onCreateClick() {
-    	//TODO create game (that others are able to join), show game screen
+    private void onCreateClick() {
+    	//TODO create a game before loading the gamePane
+    	loadGame();
     }
 
     @FXML
-    void onJoinClick() {
-    	//TODO connect to IP given, show game screen
+    private void onJoinClick() {
+    	//TODO connect to IP given
+    	loadGame();
+    }
+    
+    private void loadGame(){
+    	Parent gamePane;
+		try {
+			gamePane = FXMLLoader.load(getClass().getResource("/game.fxml"));
+		} catch (IOException e) {
+			errorLbl.setText("Could not load game!");
+			e.printStackTrace();
+			return;
+		}
+    	Scene scene = new Scene(gamePane);
+    	Stage stage = (Stage) ((Node) joinPane).getScene().getWindow();
+    	stage.setScene(scene);
+    	stage.show();
     }
 
 }

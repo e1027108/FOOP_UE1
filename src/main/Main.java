@@ -9,6 +9,7 @@ import javafx.stage.Stage;
 public class Main extends Application{
 
 	private static AnchorPane joinPane, gamePane;
+	private static Scene scene;
 	
 	public static void main(String[] args) {
 		launch(args);
@@ -16,6 +17,10 @@ public class Main extends Application{
 
 	@Override
 	public void start(Stage stage) throws Exception {
+		loadJoin(stage);
+	}
+
+	private void loadJoin(Stage stage) {
 		String fxmlName = "/join.fxml";
 		
 		try{
@@ -25,7 +30,7 @@ public class Main extends Application{
 			System.exit(-1);
 		}
 
-		Scene scene = new Scene(joinPane);
+		scene = new Scene(joinPane);
 		stage.setScene(scene);
 		stage.setTitle("Create or join a game of Snake!");
 		stage.setResizable(false);

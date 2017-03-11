@@ -40,5 +40,6 @@
     <Label layoutX="552.0" layoutY="374.0" prefHeight="-1.0" text="Host IP:" />
     <TextField fx:id="ipTxt" layoutX="615.0" layoutY="372.0" prefWidth="119.0" />
     <Button id="createBtn" fx:id="joinBtn" layoutX="606.0" layoutY="445.0" mnemonicParsing="false" onAction="#onJoinClick" text="Join game" />
+    <Label fx:id="errorLbl" layoutX="499.0" layoutY="552.0" text="error" />
   </children>
 </AnchorPane>
