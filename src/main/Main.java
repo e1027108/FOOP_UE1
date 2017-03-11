@@ -3,8 +3,8 @@ package main;
 public class Main {
 
 	public static void main(String[] args) {
-		// TODO Auto-generated method stub
-
+		System.out.println("TODO: have fun!");
+		//TODO: don't have fun! work!
 	}
 
 }
