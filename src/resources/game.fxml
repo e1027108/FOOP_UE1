@@ -16,6 +16,7 @@
         <AnchorPane fx:id="player1Pane" layoutX="0.0" layoutY="0.0" prefHeight="100.0" prefWidth="258.0">
           <children>
             <Label fx:id="player1Lbl" layoutX="28.0" layoutY="28.0" text="Player 1" />
+            <Button fx:id="readyBtn" layoutX="28.0" layoutY="50.0" mnemonicParsing="false" onAction="#onReadyClick" text="ready!" />
           </children>
         </AnchorPane>
         <Separator layoutX="0.0" layoutY="200.0" prefWidth="256.0" />
@@ -37,6 +38,8 @@
           </children>
         </AnchorPane>
         <Separator layoutX="0.0" layoutY="400.0" prefWidth="256.0" />
+        <Button fx:id="disconnectBtn" layoutX="28.0" layoutY="680.0" mnemonicParsing="false" onAction="#onDisconnectClick" text="Disconnect" />
+        <TextArea fx:id="msgArea" editable="false" layoutX="28.0" layoutY="428.0" prefHeight="220.0" prefWidth="200.0" wrapText="true" />
       </children>
     </AnchorPane>
     <AnchorPane id="gamePane" fx:id="playPane" layoutX="270.0" layoutY="14.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="740.0" prefWidth="740.0" />

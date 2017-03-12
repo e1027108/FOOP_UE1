@@ -8,7 +8,7 @@ import javafx.stage.Stage;
 
 public class Main extends Application{
 
-	private static AnchorPane joinPane, gamePane;
+	private static AnchorPane joinPane;
 	private static Scene scene;
 	
 	public static void main(String[] args) {

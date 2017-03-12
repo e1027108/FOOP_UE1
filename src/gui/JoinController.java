@@ -69,7 +69,6 @@ public class JoinController {
 			gamePane = FXMLLoader.load(getClass().getResource("/game.fxml"));
 		} catch (IOException e) {
 			errorLbl.setText("Could not load game!");
-			e.printStackTrace();
 			return;
 		}
     	Scene scene = new Scene(gamePane);
