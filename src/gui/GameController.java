@@ -56,7 +56,7 @@ public class GameController {
     }
 
     @FXML
-    private void onReadyBtn(){
+    private void onReadyClick(){
     	//TODO change text in button, send ready info (--> green checkmark or something)
     }
     
