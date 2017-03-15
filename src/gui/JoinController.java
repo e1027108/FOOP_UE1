@@ -2,6 +2,7 @@ package gui;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.Locale;
 import java.util.ResourceBundle;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -47,6 +48,7 @@ public class JoinController {
     void initialize() {
     	errorLbl.setText("");
     	errorLbl.setStyle("-fx-text-fill: red;");
+    	Locale.setDefault(Locale.ENGLISH);
     	
     	//TODO initialize stuff
     }
