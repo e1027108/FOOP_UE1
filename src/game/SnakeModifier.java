@@ -54,4 +54,19 @@ public class SnakeModifier implements Snake {
 	public SnakeImpl getSnake() {
 		return this.snek;
 	}
+
+	@Override
+	public boolean isAlive() {
+		return this.snek.isAlive();
+	}
+
+	@Override
+	public void setAlive(boolean alive) {
+		this.snek.setAlive(alive);
+	}
+
+	@Override
+	public Point getLastTailPosition() {
+		return this.snek.getLastTailPosition();
+	}
 }
