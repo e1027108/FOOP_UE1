@@ -40,6 +40,7 @@ public class GameGrid {
 	public void draw(ArrayList<Snake> snakes) {
 		int colour = 1;
 		for (Snake s : snakes) {
+      
 			Point[] body = s.getBody();
 			for (int j = 0; j < body.length; j++) {
 				Point point = body[j];
@@ -69,7 +70,6 @@ public class GameGrid {
 			}
 			System.out.println();
 		}
-		System.out.println();
 	}
 
 }

@@ -16,6 +16,25 @@ public class Game {
 		if (num > 0 && num < 5) {
 			numPlayers = num;
 			grid = new GameGrid(num * 10);
+		} else
+			System.out.println("Only 1 - 4 Players allowed.");
+		System.exit(0);
+	}
+
+	public void run() {
+		// create players
+		snakes = new ArrayList<Snake>();
+		for (int i = 1; i <= numPlayers; i++) {
+			Snake player = new SnakeModifier(new SnakeImpl("Player_" + i, directions[i - 1]));
+			snakes.add(player);
+		}
+		// initialize snake positions
+		grid.initPositions(snakes);
+
+		// TODO: game loop
+		grid.draw(snakes);
+		grid.printGrid();
+    
 		} else {
 			System.out.println("Only 1 - 4 Players allowed.");
 			System.exit(0);
