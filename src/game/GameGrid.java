@@ -40,11 +40,23 @@ public class GameGrid {
 	public void draw(ArrayList<Snake> snakes) {
 		int colour = 1;
 		for (Snake s : snakes) {
-
+      
 			Point[] body = s.getBody();
 			for (int j = 0; j < body.length; j++) {
 				Point point = body[j];
-				grid[point.getX()][point.getY()] = colour;
+				if (point.getX() >= 0 && point.getX() < size && point.getY() >= 0 && point.getY() < size) {
+					grid[point.getX()][point.getY()] = colour;
+				} else {
+					s.setAlive(false);
+					break;
+				}
+			}
+			// remove tail from grid
+			Point tail = s.getLastTailPosition();
+			if (tail != null) {
+				if (grid[tail.getX()][tail.getY()] == colour) {
+					grid[tail.getX()][tail.getY()] = 0;
+				}
 			}
 			colour++;
 		}
