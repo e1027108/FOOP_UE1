@@ -17,7 +17,7 @@
         <Font name="System Bold" size="20.0" />
       </font>
     </Label>
-    <ComboBox fx:id="playerNbrComboBox" layoutX="387.0" layoutY="372.0">
+    <ComboBox fx:id="playerNbrComboBox" layoutX="380.0" layoutY="372.0" prefWidth="97.0">
       <items>
         <FXCollections fx:factory="observableArrayList">
           <String fx:value="Item 1" />
@@ -26,7 +26,7 @@
         </FXCollections>
       </items>
     </ComboBox>
-    <Label layoutX="254.0" layoutY="374.0" prefHeight="-1.0" text="Number of players:" />
+    <Label layoutX="245.0" layoutY="374.0" prefHeight="-1.0" text="Number of players:" />
     <Button fx:id="createBtn" layoutX="322.0" layoutY="445.0" mnemonicParsing="false" onAction="#onCreateClick" text="Create game" />
     <Label layoutX="477.0" layoutY="187.0" text="Snake">
       <font>
