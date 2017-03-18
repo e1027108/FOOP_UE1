@@ -8,7 +8,7 @@
 <AnchorPane fx:id="gamePane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="768.0" prefWidth="1024.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2" fx:controller="gui.GameController">
   <!-- TODO Add Nodes -->
   <children>
-    <Separator layoutX="10.0" layoutY="14.0" orientation="VERTICAL" prefHeight="740.0" />
+    <Separator layoutX="12.0" layoutY="14.0" orientation="VERTICAL" prefHeight="740.0" />
     <Separator layoutX="270.0" layoutY="14.0" orientation="VERTICAL" prefHeight="740.0" />
     <AnchorPane layoutX="14.0" layoutY="14.0" prefHeight="740.0" prefWidth="255.9998779296875">
       <children>

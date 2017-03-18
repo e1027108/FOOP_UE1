@@ -7,6 +7,7 @@ import java.net.UnknownHostException;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
+import dto.DataTransferrer;
 import dto.GameDto;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -84,6 +85,8 @@ public class JoinController {
 
 		try {
 			info = getGameInfo(host);
+			DataTransferrer dt = new DataTransferrer();
+			dt.setInfo(info);
 		} catch (UnknownHostException e) {
 			errorLbl.setText("Not a valid IP address!");
 			return;
@@ -97,13 +100,13 @@ public class JoinController {
 			gamePane = FXMLLoader.load(getClass().getResource("/game.fxml"));
 		} catch (IOException e) {
 			errorLbl.setText("Could not load game!");
-			//e.printStackTrace();
+			e.printStackTrace();
 			return;
 		}
 
 		Scene scene = new Scene(gamePane);
 		Stage stage = (Stage) ((Node) joinPane).getScene().getWindow();
-		stage.setScene(scene);
+		stage.setScene(scene);		
 		stage.show();
 	}
 
