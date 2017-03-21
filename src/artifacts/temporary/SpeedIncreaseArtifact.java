@@ -1,6 +1,6 @@
-package foop.artifacts.temporary;
+package artifacts.temporary;
 
-import foop.artifacts.Artifact;
+import artifacts.Artifact;
 
 public class SpeedIncreaseArtifact extends Artifact implements TemporaryArtifact {
 

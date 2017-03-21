@@ -1,4 +1,4 @@
-package foop.artifacts.temporary;
+package artifacts.temporary;
 
 public interface TemporaryArtifact {
 

@@ -1,6 +1,6 @@
-package foop.artifacts.permanent;
+package artifacts.permanent;
 
-import foop.artifacts.Artifact;
+import artifacts.Artifact;
 
 public class HealthIncreaseArtifact extends Artifact {
 

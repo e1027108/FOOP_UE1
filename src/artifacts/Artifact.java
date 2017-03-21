@@ -1,4 +1,4 @@
-package foop.artifacts;
+package artifacts;
 
 import game.GameGrid;
 
