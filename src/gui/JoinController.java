@@ -123,7 +123,7 @@ public class JoinController {
 		else{
 			String item = playerNbrComboBox.getSelectionModel().getSelectedItem();
 			if(item.equals(AI_ONLY)){
-				players = 0;
+				players = 0; //TODO handle better later on, since it's obviously 4, but we need to give info for "AI only mode" to server somehow
 				color = null;
 			}
 			else{
