@@ -8,7 +8,7 @@ public class SnakeImpl implements Snake {
 
 	// TODO: colour
 
-	private char direction;
+	protected char direction;
 	private int health;
 	private double speed;
 	private int size;

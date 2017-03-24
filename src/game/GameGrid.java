@@ -5,7 +5,7 @@ import java.util.ArrayList;
 public class GameGrid {
 
 	private int size;
-	private int[][] grid;
+	private int[][] grid; //TODO change to Point[][]?
 
 	public GameGrid(int s) {
 		size = s;
@@ -70,6 +70,11 @@ public class GameGrid {
 			}
 			System.out.println();
 		}
+	}
+	
+	//TODO change to Point[][]?
+	public int[][] getGrid(){
+		return grid;
 	}
 
 }
