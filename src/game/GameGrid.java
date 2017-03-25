@@ -1,15 +1,20 @@
 package game;
 
 import java.util.ArrayList;
+import java.util.List;
+
+import artifacts.Artifact;
 
 public class GameGrid {
 
 	private int size;
 	private int[][] grid; // TODO change to Point[][]?
+	private List<Artifact> artifacts;
 
 	public GameGrid(int s) {
 		size = s;
 		grid = new int[size][size];
+		this.artifacts = new ArrayList<Artifact>();
 	}
 
 	public void initPositions(ArrayList<Snake> snakes) {
@@ -81,4 +86,11 @@ public class GameGrid {
 		return grid;
 	}
 
+	public void addArtifact(Artifact artifact) {
+		this.artifacts.add(artifact);
+	}
+
+	public List<Artifact> getArtifacts() {
+		return this.artifacts;
+	}
 }

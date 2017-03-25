@@ -1,22 +1,26 @@
 package artifacts.temporary;
 
 import artifacts.Artifact;
-import artifacts.permanent.ArtifactSpawnFactors;
+import artifacts.logic.ArtifactConstants;
+import game.Point;
 
 public class SpeedIncreaseArtifact extends Artifact implements TemporaryArtifact {
 
-	private static final String SPEED_INCREASE = "SPEED_INCREASE";
-	private int timer, increase;
+	private int duration, increase;
 
-	public SpeedIncreaseArtifact(int timer, int increase) {
-		super(ArtifactSpawnFactors.getClassFactor(SPEED_INCREASE));
-		this.timer = timer;
-		this.increase = increase;
+	/**
+	 * @param Point
+	 *            placement
+	 */
+	public SpeedIncreaseArtifact(Point placement) {
+		super(placement, ArtifactConstants.SPEED_INCREASE_DESPAWN_TIMER);
+		this.duration = ArtifactConstants.SPEED_INCREASE_DURATION;
+		this.increase = ArtifactConstants.SPEED_INCREASE;
 	}
 
 	@Override
-	public int getTimer() {
-		return timer;
+	public int getDuration() {
+		return duration;
 	}
 
 	public int getIncrease() {

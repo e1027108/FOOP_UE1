@@ -1,15 +1,20 @@
 package artifacts.permanent;
 
 import artifacts.Artifact;
+import artifacts.logic.ArtifactConstants;
+import game.Point;
 
 public class HealthIncreaseArtifact extends Artifact {
 
-	private static final String HEALTH_INCREASE = "HEALTH_INCREASE";
 	private int increase;
 
-	public HealthIncreaseArtifact(int increase) {
-		super(ArtifactSpawnFactors.getClassFactor(HEALTH_INCREASE));
-		this.increase = increase;
+	/**
+	 * @param Point
+	 *            placement
+	 */
+	public HealthIncreaseArtifact(Point placement) {
+		super(placement, ArtifactConstants.HEALTH_INCREASE_DESPAWN_TIMER);
+		this.increase = ArtifactConstants.HEALTH_INCREASE;
 	}
 
 	public int getIncrease() {

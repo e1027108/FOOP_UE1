@@ -1,6 +1,7 @@
 package artifacts;
 
 import game.GameGrid;
+import game.Point;
 
 /**
  * @author christoph <br>
@@ -8,14 +9,20 @@ import game.GameGrid;
  */
 public abstract class Artifact {
 
-	private int spawnFactor;
+	private Point placement;
+	private int despawnTimer;
 
-	protected Artifact(int spawnFactor) {
-		this.spawnFactor = spawnFactor;
+	protected Artifact(Point placement, int despawnTimer) {
+		this.placement = placement;
+		this.despawnTimer = despawnTimer;
 	}
 
-	public int getSpawnFactor() {
-		return spawnFactor;
+	public Point getPlacement() {
+		return placement;
+	}
+
+	public int getDespawnTimer() {
+		return despawnTimer;
 	}
 
 }

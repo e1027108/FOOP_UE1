@@ -1,15 +1,20 @@
 package artifacts.permanent;
 
 import artifacts.Artifact;
+import artifacts.logic.ArtifactConstants;
+import game.Point;
 
 public class SizeDecreaseArtifact extends Artifact {
 
-	private static final String SIZE_DECREASE = "SIZE_DECREASE";
 	private int decrease;
 
-	public SizeDecreaseArtifact(int decrease) {
-		super(ArtifactSpawnFactors.getClassFactor(SIZE_DECREASE));
-		this.decrease = decrease;
+	/**
+	 * @param Point
+	 *            placement
+	 */
+	public SizeDecreaseArtifact(Point placement) {
+		super(placement, ArtifactConstants.SIZE_DECREASE_DESPAWN_TIMER);
+		this.decrease = ArtifactConstants.SIZE_DECREASE;
 	}
 
 	public int getDecrease() {

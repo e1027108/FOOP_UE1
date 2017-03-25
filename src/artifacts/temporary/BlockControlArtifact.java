@@ -1,20 +1,24 @@
 package artifacts.temporary;
 
 import artifacts.Artifact;
-import artifacts.permanent.ArtifactSpawnFactors;
+import artifacts.logic.ArtifactConstants;
+import game.Point;
 
 public class BlockControlArtifact extends Artifact implements TemporaryArtifact {
 
-	private static final String BLOCK_CONTROL = "BLOCK_CONTROL";
-	private int timer;
+	private int duration;
 
-	public BlockControlArtifact(int timer) {
-		super(ArtifactSpawnFactors.getClassFactor(BLOCK_CONTROL));
-		this.timer = timer;
+	/**
+	 * @param Point
+	 *            placement
+	 */
+	public BlockControlArtifact(Point placement) {
+		super(placement, ArtifactConstants.BLOCK_CONTROL_DESPAWN_TIMER);
+		this.duration = ArtifactConstants.BLOCK_CONTROL_DURATION;
 	}
 
 	@Override
-	public int getTimer() {
-		return timer;
+	public int getDuration() {
+		return duration;
 	}
 }
