@@ -18,7 +18,7 @@ public class SnakeImpl implements Snake {
 
 	private Point lastTailPosition;
 
-	private ArrayDeque<Point> position;
+	protected ArrayDeque<Point> position;
 
 	public SnakeImpl(String n, char dir) {
 		name = n;
