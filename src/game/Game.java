@@ -45,7 +45,6 @@ public class Game {
 			player = new SnakeImpl(firstPlayer, directions[0]);
 		}
 		else{
-			System.out.println("AI here");
 			player = new SnakeAI("AI 0", directions[0], grid);
 		}
 		snakes.add(player);

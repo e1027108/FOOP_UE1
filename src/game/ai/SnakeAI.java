@@ -57,19 +57,24 @@ public class SnakeAI extends SnakeImpl{
 	private char getRandomDirection(double otherProbability) { //otherProbability is the chance of a direction change
 		Random r = new Random();
 		
-		if(r.nextDouble() <= otherProbability){
+		if(r.nextDouble() <= otherProbability){ //TODO prevent snake from turning back into itself
 			String directions = "NESW"; //TODO must be changed if handling in superclass changes!
 			directions = directions.replace("" + direction, ""); //here current direction can't be next direction
 			
 			double rnd = r.nextDouble();
 			
-			if(rnd <= 1/3){
+			System.out.println(rnd);
+			
+			if(rnd <= (double) 1/3){
+				System.out.println("0");
 				return directions.charAt(0);
 			}
-			else if(rnd <= 2/3){
+			else if(rnd <= (double) 2/3){
+				System.out.println("1");
 				return directions.charAt(1);
 			}
 			else{
+				System.out.println("2");
 				return directions.charAt(2);
 			}
 		}
