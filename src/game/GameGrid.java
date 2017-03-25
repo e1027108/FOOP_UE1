@@ -88,6 +88,11 @@ public class GameGrid {
 
 	public void addArtifact(Artifact artifact) {
 		this.artifacts.add(artifact);
+		System.out.println("--- Printing Artifacts ---");
+		for (Artifact a : this.artifacts) {
+			System.out.println(a.getClass().getName());
+		}
+		System.out.println("--------------------------");
 	}
 
 	public List<Artifact> getArtifacts() {

@@ -2,6 +2,8 @@ package game;
 
 import java.util.ArrayList;
 
+import artifacts.logic.ArtifactHandler;
+import artifacts.logic.ArtifactHandlerImpl;
 import game.ai.SnakeAI;
 
 public class Game {
@@ -9,6 +11,7 @@ public class Game {
 	private GameGrid grid;
 	private int numPlayers;
 	private String firstPlayer;
+	private ArtifactHandler artifactHandler;
 
 	private char[] directions = { 'N', 'S', 'E', 'W' };
 
@@ -17,34 +20,33 @@ public class Game {
 	// TODO: change error message --> just temporary
 	public Game(int num, String name) {
 		System.out.println(num);
-		
+
 		firstPlayer = name;
 		if (num > 0 && num < 5) {
 			numPlayers = num;
 			grid = new GameGrid(28);
-		}
-		else if(num == 0){
+		} else if (num == 0) {
 			numPlayers = 1;
 			grid = new GameGrid(28);
-			firstPlayer = null; //TODO this needs a better solution
-		}
-		else {
+			firstPlayer = null; // TODO this needs a better solution
+		} else {
 			System.out.println("Only 1 - 4 Players allowed.");
 			System.exit(0);
 		}
+
+		this.artifactHandler = new ArtifactHandlerImpl(this);
 	}
 
 	public void run() {
 		Snake player;
-		
+
 		// create players
 		snakes = new ArrayList<Snake>();
 
 		// init humanPlayer?
-		if(firstPlayer != null){
+		if (firstPlayer != null) {
 			player = new SnakeImpl(firstPlayer, directions[0]);
-		}
-		else{
+		} else {
 			player = new SnakeAI("AI 0", directions[0], grid);
 		}
 		snakes.add(player);
@@ -65,13 +67,16 @@ public class Game {
 	public void loop() {
 
 		for (Snake s : snakes) {
-			if (s instanceof SnakeAI){
+			if (s instanceof SnakeAI) {
 				((SnakeAI) s).determineNextDirection();
 			}
 			s.move();
 		}
 		grid.draw(snakes);
 		removeDeadSnakes();
+
+		// TODO richtiger platz für diesen call?
+		this.artifactHandler.placeNextArtifact();
 
 	}
 
@@ -83,8 +88,8 @@ public class Game {
 	}
 
 	public Snake getSnake(String name) {
-		for(Snake s : snakes) {
-			if(name.equals(s.getName()))
+		for (Snake s : snakes) {
+			if (name.equals(s.getName()))
 				return s;
 		}
 		return null;

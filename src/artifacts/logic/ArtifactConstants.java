@@ -67,6 +67,8 @@ public class ArtifactConstants {
 	public static final int NEXT_SPAWN_INTERVAL_END = 45;
 
 	static {
+		artifactSettingsMap = new EnumMap(Artifacts.class);
+
 		Map<Setting, Object> healthIncrease = new EnumMap(Setting.class);
 		Map<Setting, Object> healthDecrease = new EnumMap(Setting.class);
 		Map<Setting, Object> sizeIncrease = new EnumMap(Setting.class);
