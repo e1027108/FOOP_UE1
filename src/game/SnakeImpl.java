@@ -34,7 +34,7 @@ public class SnakeImpl implements Snake {
 	}
 
 	@Override
-	public void initPosition(int x, int y) {
+	public void initPosition(int x, int y) { //TODO if char codes change, AI must be changed too
 		for (int i = 0; i < size; i++) {
 			if (direction == 'N') {
 				position.add(new Point(x + i, y));

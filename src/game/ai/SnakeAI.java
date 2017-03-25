@@ -1,6 +1,7 @@
 package game.ai;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 import artifacts.Artifact;
 import game.GameGrid;
@@ -13,46 +14,83 @@ public class SnakeAI extends SnakeImpl{
 	private int distance;
 	private GameGrid home;
 	
+	private static final double P_OTHER = 0.1;
+
 	public SnakeAI(String name, char dir, int distance, GameGrid home) {
 		super(name,dir);
-		
+
 		this.distance = distance;
 		this.home = home;
 	}
-	
+
 	public void determineNextDirection(){
 		char next;
-		
+
 		ArrayList<Object> closeObjects = scanVicinity(distance,true);
-		
+
 		Object important = getValuedObject(closeObjects);
-		
+
 		next = getPreferredDirection(important);
-		
+
 		direction = next;
 	}
 
-	private char getPreferredDirection(Object important) {
-		char newdirection = 'N'; //TODO replace with error direction, if availiable
-		double value = valueObject(important); //can't really get this and the object, or should i work with Pair<Object, Double> ?
-		
+	private char getPreferredDirection(Object goalObject) {
+		char newdirection = direction; //TODO replace with error direction, if availiable
+		double value;
+
+		if(goalObject != null){
+			value = valueObject(goalObject); //can't really get this and the object, or should i work with Pair<Object, Double> ?
+		}
+		else{
+			return getRandomDirection(P_OTHER);
+		}
+
 		if(value > 0){
 			//TODO choose a direction that reduces distance
 		}
 		else{
 			//TODO choose a direction that increases distance/collision "probability"
 		}
-		
+
 		return newdirection;
+	}
+
+	private char getRandomDirection(double otherProbability) { //otherProbability is the chance of a direction change
+		Random r = new Random();
+		
+		if(r.nextDouble() <= otherProbability){
+			String directions = "NESW"; //TODO must be changed if handling in superclass changes!
+			directions = directions.replace("" + direction, ""); //here current direction can't be next direction
+			
+			double rnd = r.nextDouble();
+			
+			if(rnd <= 1/3){
+				return directions.charAt(0);
+			}
+			else if(rnd <= 2/3){
+				return directions.charAt(1);
+			}
+			else{
+				return directions.charAt(2);
+			}
+		}
+		else{
+			return direction;
+		}
 	}
 
 	private Object getValuedObject(ArrayList<Object> closeObjects) {
 		// TODO if we have a list of objects in range, we can value them
 		// TODO currently, as described below, ther is no real option of getting all objects
-		
+
 		double currentValue = 0;
 		Object currentObject = null;
-		
+
+		if(closeObjects == null || closeObjects.isEmpty()){
+			return currentObject;
+		}
+
 		for(Object o: closeObjects){
 			double objectValue = valueObject(o);
 			if(Math.abs(objectValue) > Math.abs(currentValue)){ //finds the most severe value
@@ -60,7 +98,7 @@ public class SnakeAI extends SnakeImpl{
 				currentObject = o;
 			}
 		}
-		
+
 		return currentObject;
 	}
 
@@ -70,14 +108,14 @@ public class SnakeAI extends SnakeImpl{
 	private double valueObject(Object o) {
 		//TODO value possible outcomes
 		double value = 0;
-		
+
 		if(o instanceof Snake){
 			//TODO, how far away, how much health do I have, am I invincible, etc...
 		}
 		else if(o instanceof Artifact){
 			//TODO, is it a positive artifact or not, how far away, etc...
 		}
-		
+
 		return value;
 	}
 
@@ -90,7 +128,7 @@ public class SnakeAI extends SnakeImpl{
 	private ArrayList<Object> scanVicinity(int distance, boolean head) {
 		//TODO go through list of artifacts or points (that hold artifacts)
 		//TODO need also list of snakes
-		
+
 		return null;
 	}
 
