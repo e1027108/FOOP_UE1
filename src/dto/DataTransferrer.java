@@ -6,8 +6,8 @@ public class DataTransferrer {
 	
 	public DataTransferrer(){}
 	
-	public void setInfo(GameDto info){
-		this.info = info;
+	public void setInfo(GameDto input){
+		info = input;
 	}
 	
 	public static GameDto getInfo(){

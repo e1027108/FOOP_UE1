@@ -11,6 +11,7 @@ import dto.GameDto;
 import game.Game;
 import game.Point;
 import game.Snake;
+import game.ai.SnakeAI;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.event.Event;
@@ -45,7 +46,7 @@ public class GameController {
 
 	@FXML
 	private AnchorPane gamePane, playPane, player1Pane, player2Pane, player3Pane, player4Pane;
-	
+
 	@FXML
 	private TilePane gridPane;
 
@@ -59,12 +60,13 @@ public class GameController {
 	private TextArea msgArea;
 
 	private GameDto info;
-	public final static double RANGE_VALUE = .12; //percentage on the color scale that we want to be off, at least (needs to be at most 1/6 (=0.166..), otw can't find 3 other colors)
-	
+	private final static double RANGE_VALUE = .12; //percentage on the color scale that we want to be off, at least (needs to be at most 1/6 (=0.166..), otw can't find 3 other colors)
+	private final static Duration MOVE_DURATION = Duration.millis(100);
+
 	private Game game;
-	
+
 	private Timeline timeline;
-	
+
 	private final Color emptyCellColor = Color.valueOf("cccccc");
 
 	@FXML
@@ -74,14 +76,16 @@ public class GameController {
 		info = DataTransferrer.getInfo();
 
 		if(info == null){
-			//TODO error of some sort
+			//TODO error handling
 		}
 		else{
 			setPlayerStyle(1,info.getName(),info.getColor());
 		}
-		
-		assignAIColors();		
-		
+
+		assignAIColors();
+
+		//TODO if AI only do not contact/host any server
+
 		//TODO initialize with info from network/joincontroller
 
 		//TODO place ready button in your own pane, create ready indicators for all players
@@ -95,7 +99,7 @@ public class GameController {
 		String style = "-fx-background-color: #" + Integer.toHexString(color.hashCode()) + ";"; //TODO, can, in rare cases produce colors with 7 hex values Oo (e.g. #96b25ff), seems to happen if 'ff' occurs
 
 		System.out.println(name);
-		
+
 		if(player == 1){
 			player1Lbl.setText(name);
 			player1Pane.setStyle(style);
@@ -116,68 +120,70 @@ public class GameController {
 			//TODO some error
 		}
 	}
-	
+
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	private void onStart() {
-		
-		game = new Game(1, info.getName());
+
+		game = new Game(info.getPlayers(), info.getName());
 		game.run();
-		
+
 		initGrid();
-		
-		Duration d = Duration.millis(100);
+
+		Duration d = MOVE_DURATION;
 		timeline = new Timeline();
 		timeline.setCycleCount(Timeline.INDEFINITE);
 		timeline.setAutoReverse(false);
-		
-		
-		KeyFrame keyframe = new KeyFrame(d, 
-			new EventHandler() {
 
-				@Override
-				public void handle(Event event) {					
-					game.loop();
-					if(game.getSnakes().size() == 0) {
-						timeline.stop();
-						return;
-					}
-					update();
-				}			
-				
-		});
-		timeline.getKeyFrames().add(keyframe);
-		
-		timeline.play();		
-		
-		gamePane.setOnKeyPressed(new EventHandler<KeyEvent>() {
+
+		KeyFrame keyframe = new KeyFrame(d, 
+				new EventHandler() {
 
 			@Override
-			public void handle(KeyEvent event) {
+			public void handle(Event event) {	
+				game.loop();
 				if(game.getSnakes().size() == 0) {
 					timeline.stop();
 					return;
 				}
-				if (event.getCode() == KeyCode.W) {
-					game.getSnake(info.getName()).setDirection('N');
-				}
-				if (event.getCode() == KeyCode.S) {
-					game.getSnake(info.getName()).setDirection('S');
-				}
-				if (event.getCode() == KeyCode.D) {
-					game.getSnake(info.getName()).setDirection('E');
-				}
-				if (event.getCode() == KeyCode.A) {
-					game.getSnake(info.getName()).setDirection('W');
-				}
-			}
-			
+				update();
+			}			
+
 		});
-		
+		timeline.getKeyFrames().add(keyframe);
+
+		timeline.play();		
+
+		if(!info.isAi()){ //TODO replace by check for instanceof SnakeAI
+			gamePane.setOnKeyPressed(new EventHandler<KeyEvent>() {
+
+				@Override
+				public void handle(KeyEvent event) {
+					if(game.getSnakes().size() == 0) {
+						timeline.stop();
+						return;
+					}
+					if (event.getCode() == KeyCode.W) {
+						game.getSnake(info.getName()).setDirection('N');
+					}
+					if (event.getCode() == KeyCode.S) {
+						game.getSnake(info.getName()).setDirection('S');
+					}
+					if (event.getCode() == KeyCode.D) {
+						game.getSnake(info.getName()).setDirection('E');
+					}
+					if (event.getCode() == KeyCode.A) {
+						game.getSnake(info.getName()).setDirection('W');
+					}
+				}
+
+			});
+		}
+
 	}
-	
-	
+
+
 	private void update() {
-		
+
 		Rectangle r;
 		Snake s = game.getSnake(info.getName());
 
@@ -190,7 +196,7 @@ public class GameController {
 		Point last = s.getLastTailPosition();
 		r = (Rectangle) gridPane.getChildren().get((last.getX() * 28) + last.getY());
 		r.setFill(emptyCellColor);
-		
+
 		// TODO: set icons for artifacts 
 		/*ImagePattern icon;
 		try {
@@ -199,15 +205,15 @@ public class GameController {
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}*/
-		
+
 
 	}
-	
-	
+
+
 	private void initGrid() {
-		
+
 		gridPane.getChildren().clear();
-		
+
 		gridPane.setPrefColumns(28);
 		gridPane.setPrefRows(28);
 		gridPane.setVgap(1);
@@ -222,7 +228,7 @@ public class GameController {
 			}
 		}
 	}
-	
+
 
 	@FXML
 	private void onDisconnectClick(){
@@ -259,11 +265,16 @@ public class GameController {
 
 	//TODO move that to server
 	private void assignAIColors(){
-		System.out.println(info.getPlayers());
-		Color[] reserved = new Color[info.getPlayers()]; //currently sets null for clients, but sets correct number for host
+		int relevantPlayerNumber = info.getPlayers();
+		
+		if(relevantPlayerNumber == 0){
+			relevantPlayerNumber = 4;
+		}
+		
+		Color[] reserved = new Color[relevantPlayerNumber]; //currently sets null for clients, but sets correct number for host
 
 		reserved[0] = info.getColor(); //TODO integrate into loop as soon as we gather multiple players' data in server
-		
+
 		for(int i = 0; i < reserved.length; i++){
 			if(reserved[i] == null){
 				reserved[i] = findGoodColor(reserved);
@@ -272,7 +283,7 @@ public class GameController {
 			if(i != 0){ //TODO later generalize
 				setPlayerStyle(i+1,"AI " + i, reserved[i]);
 			}
-			
+
 			//TODO change script color to white if illegible bc/o dark color
 		}
 	}
@@ -297,7 +308,7 @@ public class GameController {
 		Random r = new Random();
 		double value = 0; 
 		boolean valid = false;
-		
+
 		while(!valid){
 			value = r.nextDouble();
 			for(Pair<Double,Double> p: intervals){

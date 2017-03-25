@@ -2,6 +2,8 @@ package game;
 
 import java.util.ArrayList;
 
+import game.ai.SnakeAI;
+
 public class Game {
 
 	private GameGrid grid;
@@ -14,28 +16,43 @@ public class Game {
 
 	// TODO: change error message --> just temporary
 	public Game(int num, String name) {
+		System.out.println(num);
+		
 		firstPlayer = name;
 		if (num > 0 && num < 5) {
 			numPlayers = num;
 			grid = new GameGrid(28);
-		} else {
+		}
+		else if(num == 0){
+			numPlayers = 1;
+			grid = new GameGrid(28);
+			firstPlayer = null; //TODO this needs a better solution
+		}
+		else {
 			System.out.println("Only 1 - 4 Players allowed.");
 			System.exit(0);
 		}
 	}
 
 	public void run() {
-
+		Snake player;
+		
 		// create players
 		snakes = new ArrayList<Snake>();
 
-		// init humanPlayer
-		Snake player = new SnakeImpl(firstPlayer, directions[0]);
+		// init humanPlayer?
+		if(firstPlayer != null){
+			player = new SnakeImpl(firstPlayer, directions[0]);
+		}
+		else{
+			System.out.println("AI here");
+			player = new SnakeAI("AI 0", directions[0], grid);
+		}
 		snakes.add(player);
 
 		// init AIs for now
 		for (int i = 2; i <= numPlayers; i++) {
-			player = new SnakeImpl("AI_" + i, directions[i - 1]);
+			player = new SnakeAI("AI_" + i, directions[i - 1], grid);
 			snakes.add(player);
 		}
 
@@ -49,6 +66,9 @@ public class Game {
 	public void loop() {
 
 		for (Snake s : snakes) {
+			if (s instanceof SnakeAI){
+				((SnakeAI) s).determineNextDirection();
+			}
 			s.move();
 		}
 		grid.draw(snakes);
@@ -64,8 +84,8 @@ public class Game {
 	}
 
 	public Snake getSnake(String name) {
-		for (Snake s : snakes) {
-			if (name.equals(s.getName()))
+		for(Snake s : snakes) {
+			if(name.equals(s.getName()))
 				return s;
 		}
 		return null;

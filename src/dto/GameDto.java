@@ -12,6 +12,7 @@ public class GameDto {
 	private InetAddress ip;
 	private Integer players;
 	private boolean host;
+	private boolean ai;
 
 	public GameDto(String name, Color color, InetAddress ip) {
 		this.setName(name);
@@ -27,6 +28,13 @@ public class GameDto {
 		this.setIp(InetAddress.getLocalHost()); //TODO replace with server specific address?
 		this.setHost(true);
 		this.setPlayers(players);
+		
+		if(players == 0){
+			this.setAi(true);
+		}
+		else{
+			this.setAi(false);
+		}
 	}
 
 	public String getName() {
@@ -67,6 +75,14 @@ public class GameDto {
 
 	public void setHost(boolean host) {
 		this.host = host;
+	}
+
+	public boolean isAi() {
+		return ai;
+	}
+
+	public void setAi(boolean ai) {
+		this.ai = ai;
 	}
 
 }

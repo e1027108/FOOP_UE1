@@ -11,22 +11,20 @@ import game.SnakeImpl;
 
 public class SnakeAI extends SnakeImpl{
 
-	private int distance;
 	private GameGrid home;
 	
 	private static final double P_OTHER = 0.1;
 
-	public SnakeAI(String name, char dir, int distance, GameGrid home) {
+	public SnakeAI(String name, char dir, GameGrid home) {
 		super(name,dir);
 
-		this.distance = distance;
 		this.home = home;
 	}
 
 	public void determineNextDirection(){
 		char next;
 
-		ArrayList<Object> closeObjects = scanVicinity(distance,true);
+		ArrayList<Object> closeObjects = scanVicinity(5,true);
 
 		Object important = getValuedObject(closeObjects);
 
@@ -38,7 +36,7 @@ public class SnakeAI extends SnakeImpl{
 	private char getPreferredDirection(Object goalObject) {
 		char newdirection = direction; //TODO replace with error direction, if availiable
 		double value;
-
+		
 		if(goalObject != null){
 			value = valueObject(goalObject); //can't really get this and the object, or should i work with Pair<Object, Double> ?
 		}
@@ -128,7 +126,7 @@ public class SnakeAI extends SnakeImpl{
 	private ArrayList<Object> scanVicinity(int distance, boolean head) {
 		//TODO go through list of artifacts or points (that hold artifacts)
 		//TODO need also list of snakes
-
+		
 		return null;
 	}
 
