@@ -11,20 +11,21 @@ import game.SnakeImpl;
 
 public class SnakeAI extends SnakeImpl{
 
-	private GameGrid home;
+	private GameGrid grid;
 	
 	private static final double P_OTHER = 0.1;
+	private static final int DISTANCE = 5; //TODO, if we use bigger grids (28 seems little), greater than 5 would be advised
 
 	public SnakeAI(String name, char dir, GameGrid home) {
 		super(name,dir);
 
-		this.home = home;
+		this.grid = home;
 	}
 
 	public void determineNextDirection(){
 		char next;
 
-		ArrayList<Object> closeObjects = scanVicinity(5,true);
+		ArrayList<Object> closeObjects = scanVicinity(DISTANCE,true);
 
 		Object important = getValuedObject(closeObjects);
 
@@ -129,14 +130,73 @@ public class SnakeAI extends SnakeImpl{
 	/**
 	 * scans vicinity of ai to "see" what there is
 	 * @param distance how far we can "see"
-	 * @param head check vicinity of head (true) or the body (false)
+	 * @param head check vicinity of head (true) or the body (false)//TODO feasible?
 	 * @return list of artifacts and other snakes found
 	 */
 	private ArrayList<Object> scanVicinity(int distance, boolean head) {
-		//TODO go through list of artifacts or points (that hold artifacts)
-		//TODO need also list of snakes
+		ArrayList<Object> relevantObjects = new ArrayList<Object>();
+		int xhead = position.getFirst().getX();
+		int yhead = position.getFirst().getY();
 		
-		return null;
+		for(Artifact a: grid.getArtifacts()){
+			//hold values other than 0 if the snake is close to the edge --> we need to check the other side of the grid too
+			if(inVicinity(xhead, yhead, a, distance)){
+				relevantObjects.add(a);
+			}
+		}
+		
+		//TODO get list of snakes? get game in constructor --> get artifacts from game.grid?
+		
+		return relevantObjects;
+	}
+
+	private boolean inVicinity(int xhead, int yhead, Artifact a, int distance) {
+		int xoverflow = 0;
+		int yoverflow = 0;
+		int axpos = a.getPlacement().getX();
+		int aypos = a.getPlacement().getY();
+		
+		if(xhead + distance > grid.getSize()){
+			xoverflow = xhead + distance - grid.getSize();
+		}
+		else if(xhead - distance < 0){
+			xoverflow = xhead - distance;
+		}
+		
+		if(yhead + distance > grid.getSize()){
+			yoverflow = yhead + distance - grid.getSize();
+		}
+		else if(yhead - distance < 0){
+			yoverflow = yhead - distance;
+		}
+		
+		if(xoverflow != 0 || yoverflow != 0){
+			boolean xfine = true;
+			boolean yfine = true;
+			
+			if(xoverflow < 0 && xoverflow + grid.getSize() >= axpos){
+				xfine = false;
+			}
+			else if(xoverflow > 0 && xoverflow < axpos){
+				xfine = false;
+			}
+			
+			if(yoverflow < 0 && yoverflow + grid.getSize() >= aypos){
+				yfine = false;
+			}
+			else if(yoverflow > 0 && yoverflow < aypos){
+				yfine = false;
+			}
+			
+			if(yfine && xfine){
+				return true;
+			}
+		}
+		else if(Math.abs(xhead-axpos) <= distance && Math.abs(yhead-aypos) <= distance){
+			return true;
+		}
+		
+		return false;
 	}
 
 }
