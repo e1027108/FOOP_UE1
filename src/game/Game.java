@@ -28,11 +28,11 @@ public class Game {
 
 		// create players
 		snakes = new ArrayList<Snake>();
-		
+
 		// init humanPlayer
 		Snake player = new SnakeImpl(firstPlayer, directions[0]);
 		snakes.add(player);
-		
+
 		// init AIs for now
 		for (int i = 2; i <= numPlayers; i++) {
 			player = new SnakeImpl("AI_" + i, directions[i - 1]);
@@ -45,7 +45,7 @@ public class Game {
 		// game loop
 		loop();
 	}
-	
+
 	public void loop() {
 
 		for (Snake s : snakes) {
@@ -53,7 +53,7 @@ public class Game {
 		}
 		grid.draw(snakes);
 		removeDeadSnakes();
-		
+
 	}
 
 	public void removeDeadSnakes() {
@@ -62,18 +62,21 @@ public class Game {
 				snakes.remove(i);
 		}
 	}
-	
+
 	public Snake getSnake(String name) {
-		for(Snake s : snakes) {
-			if(name.equals(s.getName()))
+		for (Snake s : snakes) {
+			if (name.equals(s.getName()))
 				return s;
 		}
 		return null;
 	}
-	
+
 	public ArrayList<Snake> getSnakes() {
 		return snakes;
 	}
-	
+
+	public GameGrid getGrid() {
+		return grid;
+	}
 
 }
