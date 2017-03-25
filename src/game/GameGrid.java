@@ -5,7 +5,7 @@ import java.util.ArrayList;
 public class GameGrid {
 
 	private int size;
-	private int[][] grid; //TODO change to Point[][]?
+	private int[][] grid; // TODO change to Point[][]?
 
 	public GameGrid(int s) {
 		size = s;
@@ -35,12 +35,16 @@ public class GameGrid {
 		}
 	}
 
+	public int getSize() {
+		return size;
+	}
+
 	// after every move draw the grid again
 	// TODO: collision detection
 	public void draw(ArrayList<Snake> snakes) {
 		int colour = 1;
 		for (Snake s : snakes) {
-      
+
 			Point[] body = s.getBody();
 			for (int j = 0; j < body.length; j++) {
 				Point point = body[j];
@@ -71,9 +75,9 @@ public class GameGrid {
 			System.out.println();
 		}
 	}
-	
-	//TODO change to Point[][]?
-	public int[][] getGrid(){
+
+	// TODO change to Point[][]?
+	public int[][] getGrid() {
 		return grid;
 	}
 
