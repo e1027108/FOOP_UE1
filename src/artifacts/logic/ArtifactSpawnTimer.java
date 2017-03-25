@@ -6,4 +6,5 @@ package artifacts.logic;
  */
 public interface ArtifactSpawnTimer {
 
+	int getSpawnTime();
 }

@@ -9,7 +9,6 @@ import game.Point;
 
 public class ArtifactCoordinateGeneratorImpl implements ArtifactCoordinateGenerator {
 
-	private Random random;
 	private GameGrid gameGrid;
 
 	/**
@@ -17,12 +16,13 @@ public class ArtifactCoordinateGeneratorImpl implements ArtifactCoordinateGenera
 	 *            gameGrid
 	 */
 	public ArtifactCoordinateGeneratorImpl(GameGrid gameGrid) {
-		this.random = new Random();
 		this.gameGrid = gameGrid;
 	}
 
 	@Override
 	public Point createPlacement(List<Point> blackList) {
+		Random random = new Random();
+
 		List<Integer> possibleX = new ArrayList<Integer>();
 		List<Integer> possibleY = new ArrayList<Integer>();
 		for (int i = 0; i < gameGrid.getSize(); i++) {
