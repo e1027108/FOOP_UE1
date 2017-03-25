@@ -6,27 +6,36 @@ public class Game {
 
 	private GameGrid grid;
 	private int numPlayers;
+	private String firstPlayer;
 
 	private char[] directions = { 'N', 'S', 'E', 'W' };
 
 	private ArrayList<Snake> snakes;
 
 	// TODO: change error message --> just temporary
-	public Game(int num) {
+	public Game(int num, String name) {
+		firstPlayer = name;
 		if (num > 0 && num < 5) {
 			numPlayers = num;
-			grid = new GameGrid(num * 10);
-		} else
+			grid = new GameGrid(28);
+		} else {
 			System.out.println("Only 1 - 4 Players allowed.");
-		System.exit(0);
+			System.exit(0);
+		}
 	}
 
 	public void run() {
 
 		// create players
 		snakes = new ArrayList<Snake>();
-		for (int i = 1; i <= numPlayers; i++) {
-			Snake player = new SnakeImpl("Player_" + i, directions[i - 1]);
+		
+		// init humanPlayer
+		Snake player = new SnakeImpl(firstPlayer, directions[0]);
+		snakes.add(player);
+		
+		// init AIs for now
+		for (int i = 2; i <= numPlayers; i++) {
+			player = new SnakeImpl("AI_" + i, directions[i - 1]);
 			snakes.add(player);
 		}
 
@@ -34,21 +43,17 @@ public class Game {
 		grid.initPositions(snakes);
 
 		// game loop
-		// change condition for 1 Player game
-		while (snakes.size() > 1) {
-			grid.draw(snakes);
-			grid.printGrid();
-			try {
-				Thread.sleep(1000);
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			for (Snake s : snakes) {
-				s.move();
-			}
-			removeDeadSnakes();
+		loop();
+	}
+	
+	public void loop() {
+
+		for (Snake s : snakes) {
+			s.move();
 		}
+		grid.draw(snakes);
+		removeDeadSnakes();
+		
 	}
 
 	public void removeDeadSnakes() {
@@ -57,5 +62,18 @@ public class Game {
 				snakes.remove(i);
 		}
 	}
+	
+	public Snake getSnake(String name) {
+		for(Snake s : snakes) {
+			if(name.equals(s.getName()))
+				return s;
+		}
+		return null;
+	}
+	
+	public ArrayList<Snake> getSnakes() {
+		return snakes;
+	}
+	
 
 }

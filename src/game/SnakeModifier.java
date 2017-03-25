@@ -69,4 +69,15 @@ public class SnakeModifier implements Snake {
 	public Point getLastTailPosition() {
 		return this.snek.getLastTailPosition();
 	}
+
+	@Override
+	public void setDirection(char d) {
+		this.snek.setDirection(d);
+		
+	}
+
+	@Override
+	public String getName() {
+		return this.snek.getName();
+	}
 }

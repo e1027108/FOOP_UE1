@@ -8,8 +8,16 @@ import java.util.ResourceBundle;
 
 import dto.DataTransferrer;
 import dto.GameDto;
+import game.Game;
+import game.Point;
+import game.Snake;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
+import javafx.event.Event;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.Parent;
@@ -17,9 +25,14 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.TilePane;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 import javafx.util.Pair;
 
 public class GameController {
@@ -32,6 +45,9 @@ public class GameController {
 
 	@FXML
 	private AnchorPane gamePane, playPane, player1Pane, player2Pane, player3Pane, player4Pane;
+	
+	@FXML
+	private TilePane gridPane;
 
 	@FXML
 	private Label player1Lbl, player2Lbl, player3Lbl, player4Lbl;
@@ -44,6 +60,12 @@ public class GameController {
 
 	private GameDto info;
 	public final static double RANGE_VALUE = .12; //percentage on the color scale that we want to be off, at least (needs to be at most 1/6 (=0.166..), otw can't find 3 other colors)
+	
+	private Game game;
+	
+	private Timeline timeline;
+	
+	private final Color emptyCellColor = Color.valueOf("cccccc");
 
 	@FXML
 	public void initialize() {
@@ -94,6 +116,113 @@ public class GameController {
 			//TODO some error
 		}
 	}
+	
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	private void onStart() {
+		
+		game = new Game(1, info.getName());
+		game.run();
+		
+		initGrid();
+		
+		Duration d = Duration.millis(100);
+		timeline = new Timeline();
+		timeline.setCycleCount(Timeline.INDEFINITE);
+		timeline.setAutoReverse(false);
+		
+		
+		KeyFrame keyframe = new KeyFrame(d, 
+			new EventHandler() {
+
+				@Override
+				public void handle(Event event) {					
+					game.loop();
+					if(game.getSnakes().size() == 0) {
+						timeline.stop();
+						return;
+					}
+					update();
+				}			
+				
+		});
+		timeline.getKeyFrames().add(keyframe);
+		
+		timeline.play();		
+		
+		gamePane.setOnKeyPressed(new EventHandler<KeyEvent>() {
+
+			@Override
+			public void handle(KeyEvent event) {
+				if(game.getSnakes().size() == 0) {
+					timeline.stop();
+					return;
+				}
+				if (event.getCode() == KeyCode.W) {
+					game.getSnake(info.getName()).setDirection('N');
+				}
+				if (event.getCode() == KeyCode.S) {
+					game.getSnake(info.getName()).setDirection('S');
+				}
+				if (event.getCode() == KeyCode.D) {
+					game.getSnake(info.getName()).setDirection('E');
+				}
+				if (event.getCode() == KeyCode.A) {
+					game.getSnake(info.getName()).setDirection('W');
+				}
+			}
+			
+		});
+		
+	}
+	
+	
+	private void update() {
+		
+		Rectangle r;
+		Snake s = game.getSnake(info.getName());
+
+		Point[] body = s.getBody();
+		for (Point p : body) {
+			r = (Rectangle) gridPane.getChildren().get((p.getX() * 28) + p.getY());
+			r.setFill(info.getColor());
+		}
+
+		Point last = s.getLastTailPosition();
+		r = (Rectangle) gridPane.getChildren().get((last.getX() * 28) + last.getY());
+		r.setFill(emptyCellColor);
+		
+		// TODO: set icons for artifacts 
+		/*ImagePattern icon;
+		try {
+			icon = new ImagePattern(new Image(new FileInputStream("img/artifact.png")));
+			r.setFill(icon);
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		}*/
+		
+
+	}
+	
+	
+	private void initGrid() {
+		
+		gridPane.getChildren().clear();
+		
+		gridPane.setPrefColumns(28);
+		gridPane.setPrefRows(28);
+		gridPane.setVgap(1);
+		gridPane.setHgap(1);
+		gridPane.setAlignment(Pos.CENTER);
+
+		for (int i = 0; i < 28; i++) {
+			for (int j = 0; j < 28; j++) {
+				Rectangle r = new Rectangle(0,0,25,25);
+				r.setFill(emptyCellColor);
+				gridPane.getChildren().add(r);
+			}
+		}
+	}
+	
 
 	@FXML
 	private void onDisconnectClick(){
@@ -106,6 +235,7 @@ public class GameController {
 	@FXML
 	private void onReadyClick(){
 		//TODO change text in button, send ready info (--> green checkmark or something)
+		onStart();
 	}
 
 	private void addMsg(String msg) {

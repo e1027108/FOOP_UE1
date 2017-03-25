@@ -10,6 +10,8 @@ public interface Snake {
 	void move();
 
 	char getDirection();
+	
+	void setDirection(char d);
 
 	Point[] getBody();
 
@@ -22,4 +24,6 @@ public interface Snake {
 	void setAlive(boolean alive);
 
 	Point getLastTailPosition();
+
+	String getName();
 }

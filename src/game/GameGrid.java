@@ -14,8 +14,8 @@ public class GameGrid {
 
 	public void initPositions(ArrayList<Snake> snakes) {
 		for (Snake s : snakes) {
-			int x = Math.floorDiv(size, 5);
-			int y = Math.floorDiv(size, 5);
+			int x = Math.floorDiv(size, 2);
+			int y = Math.floorDiv(size, 4);
 			switch (s.getDirection()) {
 			case 'N':
 				s.initPosition(x, y);

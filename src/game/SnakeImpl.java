@@ -62,10 +62,10 @@ public class SnakeImpl implements Snake {
 			position.addFirst(new Point(head.getX() + 1, head.getY()));
 		}
 		if (direction == 'E') {
-			position.addFirst(new Point(head.getX(), head.getY() - 1));
+			position.addFirst(new Point(head.getX(), head.getY() + 1));
 		}
 		if (direction == 'W') {
-			position.addFirst(new Point(head.getX(), head.getY() + 1));
+			position.addFirst(new Point(head.getX(), head.getY() - 1));
 		}
 		lastTailPosition = position.pollLast();
 	}
@@ -100,5 +100,14 @@ public class SnakeImpl implements Snake {
 	@Override
 	public int getSize() {
 		return this.size;
+	}
+	
+	public String getName() {
+		return this.name;
+	}
+
+	@Override
+	public void setDirection(char d) {
+		direction = d;		
 	}
 }

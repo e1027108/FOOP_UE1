@@ -43,7 +43,10 @@
         <Separator layoutX="0.0" layoutY="740.0" prefWidth="258.0" />
       </children>
     </AnchorPane>
-    <AnchorPane id="gamePane" fx:id="playPane" layoutX="270.0" layoutY="14.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="740.0" prefWidth="740.0" />
+    <AnchorPane id="gamePane" fx:id="playPane" layoutX="270.0" layoutY="14.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="740.0" prefWidth="740.0">
+         <children>
+            <TilePane id="gridPane" fx:id="gridPane" prefHeight="743.0" prefWidth="740.0" />
+         </children></AnchorPane>
     <Separator layoutX="272.0" layoutY="14.0" prefWidth="740.0" />
     <Separator layoutX="272.0" layoutY="754.0" prefWidth="740.0" />
     <Separator layoutX="1010.0" layoutY="14.0" orientation="VERTICAL" prefHeight="740.0" />
