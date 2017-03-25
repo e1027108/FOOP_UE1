@@ -185,7 +185,8 @@ public class GameController {
 	private void update() {
 
 		Rectangle r;
-		Snake s = game.getSnake(info.getName());
+		
+		Snake s	= game.getSnake(info.getName());
 
 		Point[] body = s.getBody();
 		for (Point p : body) {

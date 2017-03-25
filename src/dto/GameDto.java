@@ -31,6 +31,7 @@ public class GameDto {
 		
 		if(players == 0){
 			this.setAi(true);
+			this.name = "AI 0";
 		}
 		else{
 			this.setAi(false);
