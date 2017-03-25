@@ -11,7 +11,6 @@ import dto.GameDto;
 import game.Game;
 import game.Point;
 import game.Snake;
-import game.ai.SnakeAI;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.event.Event;
@@ -19,7 +18,6 @@ import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
-import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -60,7 +58,12 @@ public class GameController {
 	private TextArea msgArea;
 
 	private GameDto info;
-	private final static double RANGE_VALUE = .12; //percentage on the color scale that we want to be off, at least (needs to be at most 1/6 (=0.166..), otw can't find 3 other colors)
+	private final static double RANGE_VALUE = .12; // percentage on the color
+													// scale that we want to be
+													// off, at least (needs to
+													// be at most 1/6
+													// (=0.166..), otw can't
+													// find 3 other colors)
 	private final static Duration MOVE_DURATION = Duration.millis(100);
 
 	private Game game;
@@ -75,49 +78,67 @@ public class GameController {
 
 		info = DataTransferrer.getInfo();
 
-		if(info == null){
-			//TODO error handling
-		}
-		else{
-			setPlayerStyle(1,info.getName(),info.getColor());
+		if (info == null) {
+			// TODO error handling
+		} else {
+			setPlayerStyle(1, info.getName(), info.getColor());
 		}
 
 		assignAIColors();
 
-		//TODO if AI only do not contact/host any server
+		// TODO if AI only do not contact/host any server
 
-		//TODO initialize with info from network/joincontroller
+		// TODO initialize with info from network/joincontroller
 
-		//TODO place ready button in your own pane, create ready indicators for all players
+		// TODO place ready button in your own pane, create ready indicators for
+		// all players
 
-		//TODO if host create a start game button (right of disconnect button? disabled until all are ready, function for re-disabling necessary)
+		// TODO if host create a start game button (right of disconnect button?
+		// disabled until all are ready, function for re-disabling necessary)
 	}
 
-	//TODO add start button for host, additional information (health ...)
+	// TODO add start button for host, additional information (health ...)
 
-	private void setPlayerStyle(int player, String name, Color color) { //TODO expand upon
-		String style = "-fx-background-color: #" + Integer.toHexString(color.hashCode()) + ";"; //TODO, can, in rare cases produce colors with 7 hex values Oo (e.g. #96b25ff), seems to happen if 'ff' occurs
+	private void setPlayerStyle(int player, String name, Color color) { // TODO
+																		// expand
+																		// upon
+		String style = "-fx-background-color: #" + Integer.toHexString(color.hashCode()) + ";"; // TODO,
+																								// can,
+																								// in
+																								// rare
+																								// cases
+																								// produce
+																								// colors
+																								// with
+																								// 7
+																								// hex
+																								// values
+																								// Oo
+																								// (e.g.
+																								// #96b25ff),
+																								// seems
+																								// to
+																								// happen
+																								// if
+																								// 'ff'
+																								// occurs
 
 		System.out.println(name);
 
-		if(player == 1){
+		if (player == 1) {
 			player1Lbl.setText(name);
 			player1Pane.setStyle(style);
-		}
-		else if(player == 2){
+		} else if (player == 2) {
 			player2Lbl.setText(name);
 			player2Pane.setStyle(style);
-		}
-		else if(player == 3){
+		} else if (player == 3) {
 			player3Lbl.setText(name);
 			player3Pane.setStyle(style);
-		}
-		else if(player == 4){
+		} else if (player == 4) {
 			player4Lbl.setText(name);
 			player4Pane.setStyle(style);
-		}
-		else{
-			//TODO some error
+		} else {
+			// TODO some error
 		}
 	}
 
@@ -134,31 +155,29 @@ public class GameController {
 		timeline.setCycleCount(Timeline.INDEFINITE);
 		timeline.setAutoReverse(false);
 
-
-		KeyFrame keyframe = new KeyFrame(d, 
-				new EventHandler() {
+		KeyFrame keyframe = new KeyFrame(d, new EventHandler() {
 
 			@Override
-			public void handle(Event event) {	
+			public void handle(Event event) {
 				game.loop();
-				if(game.getSnakes().size() == 0) {
+				if (game.getSnakes().size() == 0) {
 					timeline.stop();
 					return;
 				}
 				update();
-			}			
+			}
 
 		});
 		timeline.getKeyFrames().add(keyframe);
 
-		timeline.play();		
+		timeline.play();
 
-		if(!info.isAi()){ //TODO replace by check for instanceof SnakeAI
+		if (!info.isAi()) { // TODO replace by check for instanceof SnakeAI
 			gamePane.setOnKeyPressed(new EventHandler<KeyEvent>() {
 
 				@Override
 				public void handle(KeyEvent event) {
-					if(game.getSnakes().size() == 0) {
+					if (game.getSnakes().size() == 0) {
 						timeline.stop();
 						return;
 					}
@@ -181,12 +200,11 @@ public class GameController {
 
 	}
 
-
 	private void update() {
 
 		Rectangle r;
-		
-		Snake s	= game.getSnake(info.getName());
+
+		Snake s = game.getSnake(info.getName());
 
 		Point[] body = s.getBody();
 		for (Point p : body) {
@@ -198,18 +216,14 @@ public class GameController {
 		r = (Rectangle) gridPane.getChildren().get((last.getX() * 28) + last.getY());
 		r.setFill(emptyCellColor);
 
-		// TODO: set icons for artifacts 
-		/*ImagePattern icon;
-		try {
-			icon = new ImagePattern(new Image(new FileInputStream("img/artifact.png")));
-			r.setFill(icon);
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		}*/
-
+		// TODO: set icons for artifacts
+		/*
+		 * ImagePattern icon; try { icon = new ImagePattern(new Image(new
+		 * FileInputStream("img/artifact.png"))); r.setFill(icon); } catch
+		 * (FileNotFoundException e) { e.printStackTrace(); }
+		 */
 
 	}
-
 
 	private void initGrid() {
 
@@ -223,30 +237,30 @@ public class GameController {
 
 		for (int i = 0; i < 28; i++) {
 			for (int j = 0; j < 28; j++) {
-				Rectangle r = new Rectangle(0,0,25,25);
+				Rectangle r = new Rectangle(0, 0, 25, 25);
 				r.setFill(emptyCellColor);
 				gridPane.getChildren().add(r);
 			}
 		}
 	}
 
-
 	@FXML
-	private void onDisconnectClick(){
-		//TODO send info to other clients (host/other difference)
-		//TODO clean up server/client
-
+	private void onDisconnectClick() {
+		// TODO send info to other clients (host/other difference)
+		// TODO clean up server/client
+		game.closeChildren();
 		showJoin();
 	}
 
 	@FXML
-	private void onReadyClick(){
-		//TODO change text in button, send ready info (--> green checkmark or something)
+	private void onReadyClick() {
+		// TODO change text in button, send ready info (--> green checkmark or
+		// something)
 		onStart();
 	}
 
 	private void addMsg(String msg) {
-		msgArea.setScrollTop(Double.MAX_VALUE); //scrolls down
+		msgArea.setScrollTop(Double.MAX_VALUE); // scrolls down
 		msgArea.appendText("\n" + msg);
 	}
 
@@ -264,59 +278,77 @@ public class GameController {
 		stage.show();
 	}
 
-	//TODO move that to server
-	private void assignAIColors(){
+	// TODO move that to server
+	private void assignAIColors() {
 		int relevantPlayerNumber = info.getPlayers();
-		
-		if(relevantPlayerNumber == 0){
+
+		if (relevantPlayerNumber == 0) {
 			relevantPlayerNumber = 4;
 		}
-		
-		Color[] reserved = new Color[relevantPlayerNumber]; //currently sets null for clients, but sets correct number for host
 
-		reserved[0] = info.getColor(); //TODO integrate into loop as soon as we gather multiple players' data in server
+		Color[] reserved = new Color[relevantPlayerNumber]; // currently sets
+															// null for clients,
+															// but sets correct
+															// number for host
 
-		for(int i = 0; i < reserved.length; i++){
-			if(reserved[i] == null){
+		reserved[0] = info.getColor(); // TODO integrate into loop as soon as we
+										// gather multiple players' data in
+										// server
+
+		for (int i = 0; i < reserved.length; i++) {
+			if (reserved[i] == null) {
 				reserved[i] = findGoodColor(reserved);
 			}
 
-			if(i != 0){ //TODO later generalize
-				setPlayerStyle(i+1,"AI " + i, reserved[i]);
+			if (i != 0) { // TODO later generalize
+				setPlayerStyle(i + 1, "AI " + i, reserved[i]);
 			}
 
-			//TODO change script color to white if illegible bc/o dark color
+			// TODO change script color to white if illegible bc/o dark color
 		}
 	}
 
 	private Color findGoodColor(Color[] reserved) {
-		ArrayList<Pair<Double,Double>> redIntervals = new ArrayList<Pair<Double,Double>>(); //open intervals for red
-		ArrayList<Pair<Double,Double>> greenIntervals = new ArrayList<Pair<Double,Double>>();
-		ArrayList<Pair<Double,Double>> blueIntervals = new ArrayList<Pair<Double,Double>>();		
+		ArrayList<Pair<Double, Double>> redIntervals = new ArrayList<Pair<Double, Double>>(); // open
+																								// intervals
+																								// for
+																								// red
+		ArrayList<Pair<Double, Double>> greenIntervals = new ArrayList<Pair<Double, Double>>();
+		ArrayList<Pair<Double, Double>> blueIntervals = new ArrayList<Pair<Double, Double>>();
 
-		for(Color c: reserved){
-			if(c != null){
+		for (Color c : reserved) {
+			if (c != null) {
 				redIntervals.add(buildInterval(c.getRed()));
 				greenIntervals.add(buildInterval(c.getGreen()));
 				blueIntervals.add(buildInterval(c.getBlue()));
 			}
 		}
 
-		return new Color(findValidColorValue(redIntervals), findValidColorValue(blueIntervals), findValidColorValue(greenIntervals), 1);
+		return new Color(findValidColorValue(redIntervals), findValidColorValue(blueIntervals),
+				findValidColorValue(greenIntervals), 1);
 	}
 
-	private double findValidColorValue(ArrayList<Pair<Double, Double>> intervals) { //TODO are we fine with this maybe never terminating? (though unrealistic)
+	private double findValidColorValue(ArrayList<Pair<Double, Double>> intervals) { // TODO
+																					// are
+																					// we
+																					// fine
+																					// with
+																					// this
+																					// maybe
+																					// never
+																					// terminating?
+																					// (though
+																					// unrealistic)
 		Random r = new Random();
-		double value = 0; 
+		double value = 0;
 		boolean valid = false;
 
-		while(!valid){
+		while (!valid) {
 			value = r.nextDouble();
-			for(Pair<Double,Double> p: intervals){
-				if(value < p.getKey() || value > p.getValue()){
+			for (Pair<Double, Double> p : intervals) {
+				if (value < p.getKey() || value > p.getValue()) {
 					valid = true;
-				}
-				else{
+				} else {
 					valid = false;
 					break;
 				}
@@ -326,18 +358,18 @@ public class GameController {
 		return value;
 	}
 
-	private Pair<Double,Double> buildInterval(Double value){
+	private Pair<Double, Double> buildInterval(Double value) {
 		double posrange = RANGE_VALUE;
 		double negrange = RANGE_VALUE;
 
-		if(value-negrange <= 0){
+		if (value - negrange <= 0) {
 			negrange = value;
 		}
-		if(value+posrange >= 1){
+		if (value + posrange >= 1) {
 			posrange = 1 - value;
 		}
 
-		return new Pair<Double,Double>(value-negrange,value+posrange);
+		return new Pair<Double, Double>(value - negrange, value + posrange);
 	}
 
 }

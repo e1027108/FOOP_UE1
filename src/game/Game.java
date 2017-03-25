@@ -1,6 +1,7 @@
 package game;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import artifacts.logic.ArtifactHandler;
 import artifacts.logic.ArtifactHandlerImpl;
@@ -12,6 +13,7 @@ public class Game {
 	private int numPlayers;
 	private String firstPlayer;
 	private ArtifactHandler artifactHandler;
+	private List<Thread> children;
 
 	private char[] directions = { 'N', 'S', 'E', 'W' };
 
@@ -34,6 +36,7 @@ public class Game {
 			System.exit(0);
 		}
 
+		this.children = new ArrayList<Thread>();
 		this.artifactHandler = new ArtifactHandlerImpl(this);
 	}
 
@@ -60,6 +63,15 @@ public class Game {
 		// initialize snake positions
 		grid.initPositions(snakes);
 
+		/*
+		 * start a seperate thread with artifact handler, waiting for artifact
+		 * spawn should not affect this thread
+		 */
+		Thread artifactChild = new Thread(this.artifactHandler);
+		children.add(artifactChild);
+		artifactChild.setDaemon(true);
+		artifactChild.start();
+
 		// game loop
 		loop();
 	}
@@ -74,9 +86,6 @@ public class Game {
 		}
 		grid.draw(snakes);
 		removeDeadSnakes();
-
-		// TODO richtiger platz für diesen call?
-		this.artifactHandler.placeNextArtifact();
 
 	}
 
@@ -103,4 +112,9 @@ public class Game {
 		return grid;
 	}
 
+	public void closeChildren() {
+		for (Thread ch : children) {
+			ch.interrupt();
+		}
+	}
 }

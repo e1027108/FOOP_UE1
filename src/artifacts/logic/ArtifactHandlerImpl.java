@@ -28,17 +28,15 @@ public class ArtifactHandlerImpl implements ArtifactHandler {
 	 * {@link Thread}.sleep it out. <br>
 	 * - hand the type over to {@link ArtifactPlacementStrategy}, which calles
 	 * {@link ArtifactCoordinateGenerator} and places the artifact on the grid
+	 * 
+	 * @throws InterruptedException
 	 */
 	@Override
-	public void placeNextArtifact() {
+	public void placeNextArtifact() throws InterruptedException {
 
 		Artifacts type = getNextArtifactType();
 		int spawnTimer = artifactSpawnTimer.getSpawnTime();
-		try {
-			Thread.sleep(spawnTimer);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
+		Thread.sleep(spawnTimer * 1000);
 		artifactPlacementStrategy.placeArtifact(type);
 	}
 
@@ -53,6 +51,20 @@ public class ArtifactHandlerImpl implements ArtifactHandler {
 			}
 		}
 		return artifacts.get(random.nextInt(artifacts.size()));
+	}
+
+	@Override
+	public void run() {
+		while (true) {
+			System.out.println("Running artifact handle Thread");
+			try {
+				placeNextArtifact();
+			} catch (InterruptedException e) {
+				System.out.println(this.getClass().getName() + ": Caught Interrupt - shutting down");
+				return;
+			}
+			System.out.println("Done with artifact handle Thread");
+		}
 	}
 
 }

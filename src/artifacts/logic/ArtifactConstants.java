@@ -63,8 +63,8 @@ public class ArtifactConstants {
 	public static final int SPEED_DECREASE_SPAWN_FACTOR = 10;
 
 	/* spawn timer for the next artifact */
-	public static final int NEXT_SPAWN_INTERVAL_START = 15;
-	public static final int NEXT_SPAWN_INTERVAL_END = 45;
+	public static final int NEXT_SPAWN_INTERVAL_START = 1;
+	public static final int NEXT_SPAWN_INTERVAL_END = 15;
 
 	static {
 		artifactSettingsMap = new EnumMap(Artifacts.class);
