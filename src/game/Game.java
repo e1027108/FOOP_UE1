@@ -50,13 +50,13 @@ public class Game {
 		if (firstPlayer != null) {
 			player = new SnakeImpl(firstPlayer, directions[0]);
 		} else {
-			player = new SnakeAI("AI 0", directions[0], grid);
+			player = new SnakeAI("AI 0", directions[0], this);
 		}
 		snakes.add(player);
 
 		// init AIs for now
 		for (int i = 2; i <= numPlayers; i++) {
-			player = new SnakeAI("AI_" + i, directions[i - 1], grid);
+			player = new SnakeAI("AI_" + i, directions[i - 1], this);
 			snakes.add(player);
 		}
 

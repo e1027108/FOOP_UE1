@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Random;
 
 import artifacts.Artifact;
+import game.Game;
 import game.GameGrid;
 import game.Point;
 import game.Snake;
@@ -11,21 +12,23 @@ import game.SnakeImpl;
 
 public class SnakeAI extends SnakeImpl{
 
-	private GameGrid grid;
+	private Game game;
 	
 	private static final double P_OTHER = 0.1;
 	private static final int DISTANCE = 5; //TODO, if we use bigger grids (28 seems little), greater than 5 would be advised
 
-	public SnakeAI(String name, char dir, GameGrid home) {
+	public SnakeAI(String name, char dir, Game game) {
 		super(name,dir);
 
-		this.grid = home;
+		this.game = game;
 	}
 
 	public void determineNextDirection(){
 		char next;
 
 		ArrayList<Object> closeObjects = scanVicinity(DISTANCE,true);
+		
+		System.out.println("test: " + closeObjects);
 
 		Object important = getValuedObject(closeObjects);
 
@@ -44,13 +47,15 @@ public class SnakeAI extends SnakeImpl{
 		else{
 			return getRandomDirection(P_OTHER);
 		}
-
+		
 		if(value > 0){
 			//TODO choose a direction that reduces distance
 		}
 		else{
 			//TODO choose a direction that increases distance/collision "probability"
 		}
+		
+		//TODO, check if you'll bite yourself or maneuver into a self-biting position before returning direction
 
 		return newdirection;
 	}
@@ -138,31 +143,38 @@ public class SnakeAI extends SnakeImpl{
 		int xhead = position.getFirst().getX();
 		int yhead = position.getFirst().getY();
 		
-		for(Artifact a: grid.getArtifacts()){
-			//hold values other than 0 if the snake is close to the edge --> we need to check the other side of the grid too
-			if(inVicinity(xhead, yhead, a, distance)){
+		for(Artifact a: game.getGrid().getArtifacts()){
+			if(inVicinity(xhead, yhead, a.getPlacement(), distance)){
 				relevantObjects.add(a);
 			}
 		}
 		
-		//TODO get list of snakes? get game in constructor --> get artifacts from game.grid?
+		for(Snake s: game.getSnakes()){
+			if(!s.equals(this)){
+				if(inVicinity(xhead, yhead, s.getBody()[0], distance)){ //getBody()[0] is the head of another snake, right?
+					relevantObjects.add(s);
+				}
+			}
+		}
 		
 		return relevantObjects;
 	}
 
-	private boolean inVicinity(int xhead, int yhead, Artifact a, int distance) {
+	private boolean inVicinity(int xhead, int yhead, Point opoint, int distance) {
 		int xoverflow = 0;
 		int yoverflow = 0;
-		int axpos = a.getPlacement().getX();
-		int aypos = a.getPlacement().getY();
+		int oxpos = opoint.getX();
+		int oypos = opoint.getY();
+		GameGrid grid = game.getGrid();
 		
+		//checks if close to edge
 		if(xhead + distance > grid.getSize()){
 			xoverflow = xhead + distance - grid.getSize();
 		}
 		else if(xhead - distance < 0){
 			xoverflow = xhead - distance;
 		}
-		
+	
 		if(yhead + distance > grid.getSize()){
 			yoverflow = yhead + distance - grid.getSize();
 		}
@@ -170,21 +182,22 @@ public class SnakeAI extends SnakeImpl{
 			yoverflow = yhead - distance;
 		}
 		
+		//checks the other side of the grid (up to distance), if close to edge
 		if(xoverflow != 0 || yoverflow != 0){
 			boolean xfine = true;
 			boolean yfine = true;
 			
-			if(xoverflow < 0 && xoverflow + grid.getSize() >= axpos){
+			if(xoverflow < 0 && xoverflow + grid.getSize() >= oxpos){
 				xfine = false;
 			}
-			else if(xoverflow > 0 && xoverflow < axpos){
+			else if(xoverflow > 0 && xoverflow < oxpos){
 				xfine = false;
 			}
 			
-			if(yoverflow < 0 && yoverflow + grid.getSize() >= aypos){
+			if(yoverflow < 0 && yoverflow + grid.getSize() >= oypos){
 				yfine = false;
 			}
-			else if(yoverflow > 0 && yoverflow < aypos){
+			else if(yoverflow > 0 && yoverflow < oypos){
 				yfine = false;
 			}
 			
@@ -192,7 +205,8 @@ public class SnakeAI extends SnakeImpl{
 				return true;
 			}
 		}
-		else if(Math.abs(xhead-axpos) <= distance && Math.abs(yhead-aypos) <= distance){
+		//standard check
+		else if(Math.abs(xhead-oxpos) <= distance && Math.abs(yhead-oypos) <= distance){
 			return true;
 		}
 		
