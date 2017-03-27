@@ -26,7 +26,7 @@ public class SnakeAI extends SnakeImpl{
 	public void determineNextDirection(){
 		char next;
 
-		ArrayList<Object> closeObjects = scanVicinity(DISTANCE,true);
+		ArrayList<Object> closeObjects = scanVicinity(DISTANCE);
 		
 		System.out.println("test: " + closeObjects);
 
@@ -94,9 +94,6 @@ public class SnakeAI extends SnakeImpl{
 	}
 
 	private Object getValuedObject(ArrayList<Object> closeObjects) {
-		// TODO if we have a list of objects in range, we can value them
-		// TODO currently, as described below, ther is no real option of getting all objects
-
 		double currentValue = 0;
 		Object currentObject = null;
 
@@ -119,7 +116,6 @@ public class SnakeAI extends SnakeImpl{
 	 * value from -100 to +100
 	 */
 	private double valueObject(Object o) {
-		//TODO value possible outcomes
 		double value = 0;
 
 		if(o instanceof Snake){
@@ -138,7 +134,7 @@ public class SnakeAI extends SnakeImpl{
 	 * @param head check vicinity of head (true) or the body (false)//TODO feasible?
 	 * @return list of artifacts and other snakes found
 	 */
-	private ArrayList<Object> scanVicinity(int distance, boolean head) {
+	private ArrayList<Object> scanVicinity(int distance) {
 		ArrayList<Object> relevantObjects = new ArrayList<Object>();
 		int xhead = position.getFirst().getX();
 		int yhead = position.getFirst().getY();
