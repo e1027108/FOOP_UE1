@@ -15,7 +15,7 @@ public class SnakeAI extends SnakeImpl{
 	private Game game;
 	
 	private static final double P_OTHER = 0.1;
-	private static final int DISTANCE = 5; //TODO, if we use bigger grids (28 seems little), greater than 5 would be advised
+	private static final int DISTANCE = 5; //TODO, if we use bigger grids (28 seems small), greater than 5 would be advised
 
 	public SnakeAI(String name, char dir, Game game) {
 		super(name,dir);
@@ -117,21 +117,40 @@ public class SnakeAI extends SnakeImpl{
 	 */
 	private double valueObject(Object o) {
 		double value = 0;
+		int distance = measureDistance(o);
 
 		if(o instanceof Snake){
-			//TODO, how far away, how much health do I have, am I invincible, etc...
+			//TODO how much health do I have, am I invincible, etc...
 		}
 		else if(o instanceof Artifact){
-			//TODO, is it a positive artifact or not, how far away, etc...
+			//TODO, is it a positive artifact or not, etc...
 		}
 
 		return value;
 	}
 
+	private int measureDistance(Object o) {
+		int xhead = position.getFirst().getX();
+		int yhead = position.getFirst().getY();
+		int ox, oy;
+		int distance = 0;
+		
+		//TODO take direction we are headed/ other snake is headed into account
+		if(o instanceof Snake){ //TODO compute distance to nearest own body part
+			ox = ((Snake) o).getBody()[0].getX();
+			oy = ((Snake) o).getBody()[0].getY();
+		}
+		else if(o instanceof Artifact){ //TODO compute distance to artifact
+			ox = ((Artifact) o).getPlacement().getX();
+			oy = ((Artifact) o).getPlacement().getY();
+		}
+		
+		return distance;
+	}
+
 	/**
 	 * scans vicinity of ai to "see" what there is
 	 * @param distance how far we can "see"
-	 * @param head check vicinity of head (true) or the body (false)//TODO feasible?
 	 * @return list of artifacts and other snakes found
 	 */
 	private ArrayList<Object> scanVicinity(int distance) {
