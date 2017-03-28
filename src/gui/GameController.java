@@ -248,7 +248,9 @@ public class GameController {
 	private void onDisconnectClick() {
 		// TODO send info to other clients (host/other difference)
 		// TODO clean up server/client
-		game.closeChildren();
+		if (game != null) {
+			game.closeChildren();
+		}
 		showJoin();
 	}
 
