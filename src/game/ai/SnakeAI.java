@@ -136,28 +136,39 @@ public class SnakeAI extends SnakeImpl{
 		int oy = 0;
 		int distance = 0;
 
-		if(o instanceof Snake){ //TODO compute distance to nearest own body part
+		if(o instanceof Snake){
 			ox = ((Snake) o).getBody()[0].getX();
 			oy = ((Snake) o).getBody()[0].getY();
-			
-			distance = Math.abs(xhead-ox)+Math.abs(yhead-oy);
-			
-			//if the enemy snake needs to turn around + 1
-			if(oy > yhead && ((Snake) o).getDirection() == 'W' || oy < yhead && ((Snake) o).getDirection() == 'E'){
-				direction++;
+
+			Point closest = null;
+
+			for(Point p: position){ //TODO repeat this above to figure out if positive or negative value
+				if(closest == null){
+					closest = p;
+				}
+				else if(Math.abs(p.getX()-ox)+Math.abs(p.getY()-oy) < Math.abs(closest.getX()-ox)+Math.abs(closest.getY()-oy)){
+					closest = p;
+				}
 			}
-			if(ox > xhead && ((Snake) o).getDirection() == 'N' || ox < xhead && ((Snake) o).getDirection() == 'S'){
-				direction++;
+
+			distance = Math.abs(closest.getX()-ox)+Math.abs(closest.getY()-oy);
+			
+			if(!closest.equals(position.getFirst())){ //other snake hunts me --> if the enemy snake needs to turn around + 1
+				if(oy > closest.getY() && ((Snake) o).getDirection() == 'W' || oy < closest.getY() && ((Snake) o).getDirection() == 'E'){
+					direction++;
+				}
+				if(ox > closest.getX() && ((Snake) o).getDirection() == 'N' || ox < closest.getX() && ((Snake) o).getDirection() == 'S'){
+					direction++;
+				}
 			}
 		}
 		else if(o instanceof Artifact){
 			ox = ((Artifact) o).getPlacement().getX();
 			oy = ((Artifact) o).getPlacement().getY();
-			
+
 			distance = Math.abs(xhead-ox)+Math.abs(yhead-oy);
 		}
-		//TODO check for enemy snake body too, to be able to try to bite
-		
+
 		/*you can't turn around directly but must go around your own body
 		 *--> add +2 if at same height/width since you must 1. change pos
 		 *in relation to your body and 2. change back into that lane
@@ -172,7 +183,7 @@ public class SnakeAI extends SnakeImpl{
 				direction += 2;
 			}
 		}
-		
+
 		return distance;
 	}
 
