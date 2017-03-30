@@ -14,6 +14,7 @@ import artifacts.temporary.InvulnerabilityArtifact;
 import game.Game;
 import game.GameGrid;
 import game.Point;
+import game.Snake;
 
 /**
  * This class implements a quiet naive strategy of placing artifacts. Just
@@ -72,10 +73,22 @@ public class ArtifactsPlacementStrategyNaiveImpl implements ArtifactPlacementStr
 
 	@Override
 	public List<Point> createBlackList() {
-		// TODO implement the blacklist
 		List<Point> blackList = new ArrayList<Point>();
-		this.game.getSnakes();
-		this.gameGrid.getArtifacts();
+
+		for (Artifact art : this.gameGrid.getArtifacts()) {
+			blackList.add(art.getPlacement());
+		}
+
+		for (Snake snek : this.game.getSnakes()) {
+			blackList.addAll(snek.getBodyList());
+		}
+
+		System.out.println("---Black List---");
+		for (Point p : blackList) {
+			System.out.println(p.toString());
+		}
+		System.out.println("----------------");
+
 		return blackList;
 	}
 

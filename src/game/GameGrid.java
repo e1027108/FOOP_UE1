@@ -88,6 +88,7 @@ public class GameGrid {
 
 	public void addArtifact(Artifact artifact) {
 		this.artifacts.add(artifact);
+		System.out.println("Successfully placed artifact at " + artifact.getPlacement().toString());
 	}
 
 	public List<Artifact> getArtifacts() {

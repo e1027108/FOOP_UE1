@@ -1,5 +1,7 @@
 package game;
 
+import java.util.List;
+
 /**
  * This class implements the {@link Snake} interface and holds all additional
  * modifying values (like temporary/permanent increases etc.)
@@ -157,5 +159,10 @@ public class SnakeModifier implements Snake {
 	@Override
 	public double getSpeed() {
 		return this.snek.getSpeed() + this.speedIncrease - this.speedDecrease;
+	}
+
+	@Override
+	public List<Point> getBodyList() {
+		return this.snek.getBodyList();
 	}
 }

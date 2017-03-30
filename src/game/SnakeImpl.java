@@ -1,6 +1,8 @@
 package game;
 
 import java.util.ArrayDeque;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * This class implements the {@link Snake} interface and holds the start/default
@@ -88,6 +90,17 @@ public class SnakeImpl implements Snake {
 			body[i] = pos.poll();
 		}
 		return body;
+	}
+
+	@Override
+	public List<Point> getBodyList() {
+		List<Point> bodyList = new ArrayList<Point>();
+		Point[] body = getBody();
+		for (int i = 0; i < body.length; i++) {
+			bodyList.add(body[i]);
+		}
+
+		return bodyList;
 	}
 
 	@Override

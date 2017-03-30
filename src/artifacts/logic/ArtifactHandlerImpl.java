@@ -56,14 +56,12 @@ public class ArtifactHandlerImpl implements ArtifactHandler {
 	@Override
 	public void run() {
 		while (true) {
-			System.out.println("Running artifact handle Thread");
 			try {
 				placeNextArtifact();
 			} catch (InterruptedException e) {
 				System.out.println(this.getClass().getName() + ": Caught Interrupt - shutting down");
 				return;
 			}
-			System.out.println("Done with artifact handle Thread");
 		}
 	}
 

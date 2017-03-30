@@ -1,5 +1,7 @@
 package game;
 
+import java.util.List;
+
 /**
  * @author christoph <br>
  *         This interface ties {@link SnakeImpl} and the decorator
@@ -14,6 +16,8 @@ public interface Snake {
 	void setDirection(char d);
 
 	Point[] getBody();
+
+	List<Point> getBodyList();
 
 	int getSize();
 
