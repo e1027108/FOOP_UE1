@@ -38,16 +38,18 @@ public class ArtifactHandlerImpl implements ArtifactHandler {
 	 * @throws InterruptedException
 	 */
 	@Override
-	public void placeNextArtifact() {
-		Artifacts type = getNextArtifactType();
-		artifactPlacementStrategy.placeArtifact(type);
+	public void placeNextArtifact() throws InterruptedException {
+		for (Snake snek : this.game.getSnakes()) {
+			if (snek.isAlive()) {
+				Artifacts type = getNextArtifactType();
+				int spawnTimer = artifactSpawnTimer.getSpawnTime();
+				Thread.sleep(spawnTimer * 1000);
+				artifactPlacementStrategy.placeArtifact(type);
+				break;
+			}
+		}
 	}
 
-	/**
-	 * This method adds each type of artifact to a list exactly [individual
-	 * SPAWN_FACTOR of this class] times to realize different chances on being
-	 * chosen as the next artifact.
-	 */
 	@Override
 	public Artifacts getNextArtifactType() {
 		Random random = new Random();
@@ -61,25 +63,14 @@ public class ArtifactHandlerImpl implements ArtifactHandler {
 		return artifacts.get(random.nextInt(artifacts.size()));
 	}
 
-	// TODO snek.isAlive. what happens if you move a snake against the wall? is
-	// it then alive/dead?
-	// if not, change below!
-	@SuppressWarnings("unchecked")
 	@Override
 	public void run() {
-		System.out.println("--- Started artifact spawn thread ---");
 		while (true) {
-			List<Snake> sneks = (List<Snake>) this.game.getSnakes().clone();
 			try {
-				for (Snake snek : sneks) {
-					if (snek.isAlive()) {
-						Thread.sleep(this.artifactSpawnTimer.getSpawnTime() * 1000);
-						System.out.println("--- trying to place next artifact ---");
-						placeNextArtifact();
-					}
-				}
+				placeNextArtifact();
 			} catch (InterruptedException e) {
-				System.out.println("--- interrupted artifact handler thread ---");
+				System.out.println(this.getClass().getName() + ": Caught Interrupt - shutting down");
+				return;
 			}
 		}
 	}

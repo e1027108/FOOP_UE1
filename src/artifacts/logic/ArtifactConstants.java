@@ -38,15 +38,15 @@ public class ArtifactConstants {
 	public static final int SPEED_DECREASE_DURATION = 2;
 
 	/* time until despawn */
-	public static final int HEALTH_INCREASE_DESPAWN_TIMER = 15;
-	public static final int HEALTH_DECREASE_DESPAWN_TIMER = 15;
-	public static final int SIZE_INCREASE_DESPAWN_TIMER = 15;
-	public static final int SIZE_DECREASE_DESPAWN_TIMER = 15;
-	public static final int BLOCK_CONTROL_DESPAWN_TIMER = 15;
-	public static final int INVULNERABILITY_DESPAWN_TIMER = 15;
-	public static final int REVERSE_CONTROL_DESPAWN_TIMER = 15;
-	public static final int SPEED_INCREASE_DESPAWN_TIMER = 15;
-	public static final int SPEED_DECREASE_DESPAWN_TIMER = 15;
+	public static final int HEALTH_INCREASE_DESPAWN_TIMER = 3;
+	public static final int HEALTH_DECREASE_DESPAWN_TIMER = 3;
+	public static final int SIZE_INCREASE_DESPAWN_TIMER = 3;
+	public static final int SIZE_DECREASE_DESPAWN_TIMER = 3;
+	public static final int BLOCK_CONTROL_DESPAWN_TIMER = 3;
+	public static final int INVULNERABILITY_DESPAWN_TIMER = 3;
+	public static final int REVERSE_CONTROL_DESPAWN_TIMER = 3;
+	public static final int SPEED_INCREASE_DESPAWN_TIMER = 3;
+	public static final int SPEED_DECREASE_DESPAWN_TIMER = 3;
 
 	/*
 	 * spawn probability factors to ensure different occurrences according to
@@ -64,7 +64,7 @@ public class ArtifactConstants {
 
 	/* spawn timer for the next artifact */
 	public static final int NEXT_SPAWN_INTERVAL_START = 5;
-	public static final int NEXT_SPAWN_INTERVAL_END = 10;
+	public static final int NEXT_SPAWN_INTERVAL_END = 15;
 
 	static {
 		/**
@@ -73,17 +73,17 @@ public class ArtifactConstants {
 		 * map we can dynamically find all constants for one type.
 		 */
 
-		artifactSettingsMap = new EnumMap<Artifacts, Map<Setting, Object>>(Artifacts.class);
+		artifactSettingsMap = new EnumMap(Artifacts.class);
 
-		Map<Setting, Object> healthIncrease = new EnumMap<Setting, Object>(Setting.class);
-		Map<Setting, Object> healthDecrease = new EnumMap<Setting, Object>(Setting.class);
-		Map<Setting, Object> sizeIncrease = new EnumMap<Setting, Object>(Setting.class);
-		Map<Setting, Object> sizeDecrease = new EnumMap<Setting, Object>(Setting.class);
-		Map<Setting, Object> speedIncrease = new EnumMap<Setting, Object>(Setting.class);
-		Map<Setting, Object> speedDecrease = new EnumMap<Setting, Object>(Setting.class);
-		Map<Setting, Object> blockControl = new EnumMap<Setting, Object>(Setting.class);
-		Map<Setting, Object> invulnerability = new EnumMap<Setting, Object>(Setting.class);
-		Map<Setting, Object> reverseControl = new EnumMap<Setting, Object>(Setting.class);
+		Map<Setting, Object> healthIncrease = new EnumMap(Setting.class);
+		Map<Setting, Object> healthDecrease = new EnumMap(Setting.class);
+		Map<Setting, Object> sizeIncrease = new EnumMap(Setting.class);
+		Map<Setting, Object> sizeDecrease = new EnumMap(Setting.class);
+		Map<Setting, Object> speedIncrease = new EnumMap(Setting.class);
+		Map<Setting, Object> speedDecrease = new EnumMap(Setting.class);
+		Map<Setting, Object> blockControl = new EnumMap(Setting.class);
+		Map<Setting, Object> invulnerability = new EnumMap(Setting.class);
+		Map<Setting, Object> reverseControl = new EnumMap(Setting.class);
 
 		healthIncrease.put(Setting.INCDEC, HEALTH_INCREASE);
 		healthIncrease.put(Setting.DESPAWN_TIMER, HEALTH_INCREASE_DESPAWN_TIMER);
