@@ -1,8 +1,10 @@
 package game;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
+import artifacts.Artifact;
 import artifacts.logic.ArtifactHandler;
 import artifacts.logic.ArtifactHandlerImpl;
 import game.ai.SnakeAI;
@@ -13,7 +15,8 @@ public class Game {
 	private int numPlayers;
 	private String firstPlayer;
 	private ArtifactHandler artifactHandler;
-	private List<Thread> children;
+	private Thread artifactSpawnThread;
+	private List<Artifact> children;
 
 	private char[] directions = { 'N', 'S', 'E', 'W' };
 
@@ -36,7 +39,7 @@ public class Game {
 			System.exit(0);
 		}
 
-		this.children = new ArrayList<Thread>();
+		this.children = Collections.synchronizedList(new ArrayList<Artifact>());
 		this.artifactHandler = new ArtifactHandlerImpl(this);
 	}
 
@@ -67,10 +70,9 @@ public class Game {
 		 * start a seperate thread with artifact handler, waiting for artifact
 		 * spawn should not affect this thread
 		 */
-		Thread artifactChild = new Thread(this.artifactHandler);
-		children.add(artifactChild);
-		artifactChild.setDaemon(true);
-		artifactChild.start();
+		artifactSpawnThread = new Thread(artifactHandler);
+		artifactSpawnThread.setDaemon(true);
+		artifactSpawnThread.start();
 
 		// game loop
 		loop();
@@ -112,9 +114,25 @@ public class Game {
 		return grid;
 	}
 
-	public void closeChildren() {
-		for (Thread ch : children) {
+	public synchronized void addChild(Artifact child) {
+		this.children.add(child);
+		System.out.println("--- added child thread to list ---");
+	}
+
+	public synchronized void closeChildren() {
+		this.artifactSpawnThread.interrupt();
+		for (Artifact ch : children) {
 			ch.interrupt();
 		}
+	}
+
+	public synchronized List<Artifact> getActiveChildren() {
+		List<Artifact> ret = new ArrayList<Artifact>();
+		for (Artifact art : this.children) {
+			if (art.isActive()) {
+				ret.add(art);
+			}
+		}
+		return ret;
 	}
 }

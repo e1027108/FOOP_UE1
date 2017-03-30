@@ -11,6 +11,9 @@ import artifacts.permanent.SizeDecreaseArtifact;
 import artifacts.permanent.SizeIncreaseArtifact;
 import artifacts.temporary.BlockControlArtifact;
 import artifacts.temporary.InvulnerabilityArtifact;
+import artifacts.temporary.ReverseControlArtifact;
+import artifacts.temporary.SpeedDecreaseArtifact;
+import artifacts.temporary.SpeedIncreaseArtifact;
 import game.Game;
 import game.GameGrid;
 import game.Point;
@@ -57,25 +60,26 @@ public class ArtifactsPlacementStrategyNaiveImpl implements ArtifactPlacementStr
 			artifact = new InvulnerabilityArtifact(point);
 			break;
 		case REVERSE_CONTROL:
-			artifact = new HealthIncreaseArtifact(point);
+			artifact = new ReverseControlArtifact(point);
 			break;
 		case SPEED_INCREASE:
-			artifact = new HealthIncreaseArtifact(point);
+			artifact = new SpeedIncreaseArtifact(point);
 			break;
 		case SPEED_DECREASE:
-			artifact = new HealthIncreaseArtifact(point);
+			artifact = new SpeedDecreaseArtifact(point);
 			break;
 		default:
 			break;
 		}
-		gameGrid.addArtifact(artifact);
+		artifact.start();
+		this.game.addChild(artifact);
 	}
 
 	@Override
 	public List<Point> createBlackList() {
 		List<Point> blackList = new ArrayList<Point>();
 
-		for (Artifact art : this.gameGrid.getArtifacts()) {
+		for (Artifact art : this.game.getActiveChildren()) {
 			blackList.add(art.getPlacement());
 		}
 

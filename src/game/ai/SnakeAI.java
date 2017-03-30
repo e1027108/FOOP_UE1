@@ -197,7 +197,7 @@ public class SnakeAI extends SnakeImpl{
 		int xhead = position.getFirst().getX();
 		int yhead = position.getFirst().getY();
 
-		for(Artifact a: game.getGrid().getArtifacts()){
+		for(Artifact a: game.getActiveChildren()){
 			if(inVicinity(xhead, yhead, a.getPlacement(), distance)){
 				relevantObjects.add(a);
 			}

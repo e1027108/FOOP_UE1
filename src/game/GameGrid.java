@@ -1,6 +1,7 @@
 package game;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import artifacts.Artifact;
@@ -14,7 +15,7 @@ public class GameGrid {
 	public GameGrid(int s) {
 		size = s;
 		grid = new int[size][size];
-		this.artifacts = new ArrayList<Artifact>();
+		this.artifacts = Collections.synchronizedList(new ArrayList<Artifact>());
 	}
 
 	public void initPositions(ArrayList<Snake> snakes) {
@@ -86,12 +87,4 @@ public class GameGrid {
 		return grid;
 	}
 
-	public void addArtifact(Artifact artifact) {
-		this.artifacts.add(artifact);
-		System.out.println("Successfully placed artifact at " + artifact.getPlacement().toString());
-	}
-
-	public List<Artifact> getArtifacts() {
-		return this.artifacts;
-	}
 }
