@@ -13,7 +13,7 @@ import game.SnakeImpl;
 public class SnakeAI extends SnakeImpl{
 
 	private Game game;
-	
+
 	private static final double P_OTHER = 0.1;
 	private static final int DISTANCE = 5; //TODO, if we use bigger grids (28 seems small), greater than 5 would be advised
 
@@ -27,7 +27,7 @@ public class SnakeAI extends SnakeImpl{
 		char next;
 
 		ArrayList<Object> closeObjects = scanVicinity(DISTANCE);
-		
+
 		System.out.println("test: " + closeObjects);
 
 		Object important = getValuedObject(closeObjects);
@@ -40,21 +40,21 @@ public class SnakeAI extends SnakeImpl{
 	private char getPreferredDirection(Object goalObject) {
 		char newdirection = direction; //TODO replace with error direction, if availiable
 		double value;
-		
+
 		if(goalObject != null){
 			value = valueObject(goalObject); //can't really get this and the object, or should i work with Pair<Object, Double> ?
 		}
 		else{
 			return getRandomDirection(P_OTHER);
 		}
-		
+
 		if(value > 0){
 			//TODO choose a direction that reduces distance
 		}
 		else{
 			//TODO choose a direction that increases distance/collision "probability"
 		}
-		
+
 		//TODO, check if you'll bite yourself or maneuver into a self-biting position before returning direction
 
 		return newdirection;
@@ -62,23 +62,23 @@ public class SnakeAI extends SnakeImpl{
 
 	private char getRandomDirection(double otherProbability) { //otherProbability is the chance of a direction change
 		Random r = new Random();
-		
+
 		if(r.nextDouble() <= otherProbability){
 			String vertical = "NS";
 			String horizontal = "EW";
 			String directions;
-			
+
 			if(vertical.contains("" + direction)){
 				directions = horizontal;
 			}
 			else {
 				directions = vertical;
 			}
-			
+
 			double rnd = r.nextDouble();
-			
+
 			System.out.println(rnd);
-			
+
 			if(rnd <= (double) 1/2){
 				System.out.println("0");
 				return directions.charAt(0);
@@ -132,19 +132,58 @@ public class SnakeAI extends SnakeImpl{
 	private int measureDistance(Object o) {
 		int xhead = position.getFirst().getX();
 		int yhead = position.getFirst().getY();
-		int ox, oy;
+		int ox = 0;
+		int oy = 0;
 		int distance = 0;
-		
-		//TODO take direction we are headed/ other snake is headed into account
-		if(o instanceof Snake){ //TODO compute distance to nearest own body part
+
+		if(o instanceof Snake){
 			ox = ((Snake) o).getBody()[0].getX();
 			oy = ((Snake) o).getBody()[0].getY();
+
+			Point closest = null;
+
+			for(Point p: position){ //TODO repeat this above to figure out if positive or negative value
+				if(closest == null){
+					closest = p;
+				}
+				else if(Math.abs(p.getX()-ox)+Math.abs(p.getY()-oy) < Math.abs(closest.getX()-ox)+Math.abs(closest.getY()-oy)){
+					closest = p;
+				}
+			}
+
+			distance = Math.abs(closest.getX()-ox)+Math.abs(closest.getY()-oy);
+			
+			if(!closest.equals(position.getFirst())){ //other snake hunts me --> if the enemy snake needs to turn around + 1
+				if(oy > closest.getY() && ((Snake) o).getDirection() == 'W' || oy < closest.getY() && ((Snake) o).getDirection() == 'E'){
+					direction++;
+				}
+				if(ox > closest.getX() && ((Snake) o).getDirection() == 'N' || ox < closest.getX() && ((Snake) o).getDirection() == 'S'){
+					direction++;
+				}
+			}
 		}
-		else if(o instanceof Artifact){ //TODO compute distance to artifact
+		else if(o instanceof Artifact){
 			ox = ((Artifact) o).getPlacement().getX();
 			oy = ((Artifact) o).getPlacement().getY();
+
+			distance = Math.abs(xhead-ox)+Math.abs(yhead-oy);
 		}
-		
+
+		/*you can't turn around directly but must go around your own body
+		 *--> add +2 if at same height/width since you must 1. change pos
+		 *in relation to your body and 2. change back into that lane
+		 */
+		if(ox == xhead){ // x is up and down
+			if(oy > yhead && direction == 'E' || oy < yhead && direction == 'W'){ //same would mean we are currently on it!
+				direction += 2;
+			}
+		}
+		if(oy == yhead){ // y is left and right
+			if(ox > xhead && direction == 'S' || ox < xhead && direction == 'N'){ //same would mean we are currently on it!
+				direction += 2;
+			}
+		}
+
 		return distance;
 	}
 
@@ -157,13 +196,13 @@ public class SnakeAI extends SnakeImpl{
 		ArrayList<Object> relevantObjects = new ArrayList<Object>();
 		int xhead = position.getFirst().getX();
 		int yhead = position.getFirst().getY();
-		
+
 		for(Artifact a: game.getGrid().getArtifacts()){
 			if(inVicinity(xhead, yhead, a.getPlacement(), distance)){
 				relevantObjects.add(a);
 			}
 		}
-		
+
 		for(Snake s: game.getSnakes()){
 			if(!s.equals(this)){
 				if(inVicinity(xhead, yhead, s.getBody()[0], distance)){ //getBody()[0] is the head of another snake, right?
@@ -171,7 +210,7 @@ public class SnakeAI extends SnakeImpl{
 				}
 			}
 		}
-		
+
 		return relevantObjects;
 	}
 
@@ -181,7 +220,7 @@ public class SnakeAI extends SnakeImpl{
 		int oxpos = opoint.getX();
 		int oypos = opoint.getY();
 		GameGrid grid = game.getGrid();
-		
+
 		//checks if close to edge
 		if(xhead + distance > grid.getSize()){
 			xoverflow = xhead + distance - grid.getSize();
@@ -189,33 +228,33 @@ public class SnakeAI extends SnakeImpl{
 		else if(xhead - distance < 0){
 			xoverflow = xhead - distance;
 		}
-	
+
 		if(yhead + distance > grid.getSize()){
 			yoverflow = yhead + distance - grid.getSize();
 		}
 		else if(yhead - distance < 0){
 			yoverflow = yhead - distance;
 		}
-		
+
 		//checks the other side of the grid (up to distance), if close to edge
 		if(xoverflow != 0 || yoverflow != 0){
 			boolean xfine = true;
 			boolean yfine = true;
-			
+
 			if(xoverflow < 0 && xoverflow + grid.getSize() >= oxpos){
 				xfine = false;
 			}
 			else if(xoverflow > 0 && xoverflow < oxpos){
 				xfine = false;
 			}
-			
+
 			if(yoverflow < 0 && yoverflow + grid.getSize() >= oypos){
 				yfine = false;
 			}
 			else if(yoverflow > 0 && yoverflow < oypos){
 				yfine = false;
 			}
-			
+
 			if(yfine && xfine){
 				return true;
 			}
@@ -224,7 +263,7 @@ public class SnakeAI extends SnakeImpl{
 		else if(Math.abs(xhead-oxpos) <= distance && Math.abs(yhead-oypos) <= distance){
 			return true;
 		}
-		
+
 		return false;
 	}
 

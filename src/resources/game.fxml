@@ -15,26 +15,26 @@
         <Separator layoutX="2.0" layoutY="0.0" prefWidth="258.0" />
         <AnchorPane fx:id="player1Pane" layoutX="0.0" layoutY="0.0" prefHeight="100.0" prefWidth="258.0">
           <children>
-            <Label fx:id="player1Lbl" layoutX="28.0" layoutY="28.0" text="Player 1" />
+            <Label fx:id="player1Lbl" layoutX="28.0" layoutY="28.0" style="-fx-background-color: rgba(255,255,255,0.7);" text="Player 1" />
             <Button fx:id="readyBtn" layoutX="28.0" layoutY="50.0" mnemonicParsing="false" onAction="#onReadyClick" text="ready!" />
           </children>
         </AnchorPane>
         <Separator layoutX="0.0" layoutY="100.0" prefWidth="258.0" />
         <AnchorPane fx:id="player2Pane" layoutX="0.0" layoutY="100.0" prefHeight="100.0" prefWidth="258.0">
           <children>
-            <Label id="player1Lbl" fx:id="player2Lbl" layoutX="28.0" layoutY="28.0" text="Player 2" />
+            <Label id="player1Lbl" fx:id="player2Lbl" layoutX="28.0" layoutY="28.0" style="-fx-background-color: rgba(255,255,255,0.7);" text="Player 2" />
           </children>
         </AnchorPane>
         <Separator layoutX="0.0" layoutY="200.0" prefWidth="258.0" />
         <AnchorPane fx:id="player3Pane" layoutX="0.0" layoutY="200.0" prefHeight="100.0" prefWidth="258.0">
           <children>
-            <Label id="player1Lbl" fx:id="player3Lbl" layoutX="28.0" layoutY="28.0" text="Player 3" />
+            <Label id="player1Lbl" fx:id="player3Lbl" layoutX="28.0" layoutY="28.0" style="-fx-background-color: rgba(255,255,255,0.7);" text="Player 3" />
           </children>
         </AnchorPane>
         <Separator layoutX="0.0" layoutY="300.0" prefWidth="258.0" />
         <AnchorPane fx:id="player4Pane" layoutX="0.0" layoutY="300.0" prefHeight="100.0" prefWidth="258.0">
           <children>
-            <Label id="player1Lbl" fx:id="player4Lbl" layoutX="28.0" layoutY="28.0" text="Player 4" />
+            <Label id="player1Lbl" fx:id="player4Lbl" layoutX="28.0" layoutY="28.0" style="-fx-background-color: rgba(255,255,255,0.7);" text="Player 4" />
           </children>
         </AnchorPane>
         <Separator layoutX="0.0" layoutY="400.0" prefWidth="258.0" />
@@ -44,9 +44,10 @@
       </children>
     </AnchorPane>
     <AnchorPane id="gamePane" fx:id="playPane" layoutX="270.0" layoutY="14.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="740.0" prefWidth="740.0">
-         <children>
-            <TilePane id="gridPane" fx:id="gridPane" prefHeight="743.0" prefWidth="740.0" />
-         </children></AnchorPane>
+      <children>
+        <TilePane fx:id="gridPane" prefHeight="743.0" prefWidth="740.0" />
+      </children>
+    </AnchorPane>
     <Separator layoutX="272.0" layoutY="14.0" prefWidth="740.0" />
     <Separator layoutX="272.0" layoutY="754.0" prefWidth="740.0" />
     <Separator layoutX="1010.0" layoutY="14.0" orientation="VERTICAL" prefHeight="740.0" />
