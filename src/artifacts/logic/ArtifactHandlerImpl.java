@@ -8,13 +8,19 @@ import artifacts.Artifacts;
 import artifacts.logic.ArtifactConstants.Setting;
 import game.Game;
 import game.GameGrid;
+import game.Snake;
 
+/**
+ * TODO only place artifacts when at least one snake is alive!
+ */
 public class ArtifactHandlerImpl implements ArtifactHandler {
 
 	private ArtifactPlacementStrategy artifactPlacementStrategy;
 	private ArtifactSpawnTimer artifactSpawnTimer;
+	private Game game;
 
 	public ArtifactHandlerImpl(Game game) {
+		this.game = game;
 		this.artifactPlacementStrategy = new ArtifactsPlacementStrategyNaiveImpl(
 				new ArtifactCoordinateGeneratorImpl(game.getGrid()), game.getGrid(), game);
 		this.artifactSpawnTimer = new ArtifactSpawnTimerRandomImpl();
@@ -33,11 +39,15 @@ public class ArtifactHandlerImpl implements ArtifactHandler {
 	 */
 	@Override
 	public void placeNextArtifact() throws InterruptedException {
-
-		Artifacts type = getNextArtifactType();
-		int spawnTimer = artifactSpawnTimer.getSpawnTime();
-		Thread.sleep(spawnTimer * 1000);
-		artifactPlacementStrategy.placeArtifact(type);
+		for (Snake snek : this.game.getSnakes()) {
+			if (snek.isAlive()) {
+				Artifacts type = getNextArtifactType();
+				int spawnTimer = artifactSpawnTimer.getSpawnTime();
+				Thread.sleep(spawnTimer * 1000);
+				artifactPlacementStrategy.placeArtifact(type);
+				break;
+			}
+		}
 	}
 
 	@Override
