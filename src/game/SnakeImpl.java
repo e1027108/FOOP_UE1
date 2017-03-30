@@ -2,6 +2,10 @@ package game;
 
 import java.util.ArrayDeque;
 
+/**
+ * This class implements the {@link Snake} interface and holds the start/default
+ * values of the players snake.
+ */
 public class SnakeImpl implements Snake {
 
 	private String name;
@@ -34,7 +38,8 @@ public class SnakeImpl implements Snake {
 	}
 
 	@Override
-	public void initPosition(int x, int y) { //TODO if char codes change, AI must be changed too
+	public void initPosition(int x, int y) { // TODO if char codes change, AI
+												// must be changed too
 		for (int i = 0; i < size; i++) {
 			if (direction == 'N') {
 				position.add(new Point(x + i, y));
@@ -85,14 +90,17 @@ public class SnakeImpl implements Snake {
 		return body;
 	}
 
+	@Override
 	public boolean isAlive() {
 		return alive;
 	}
 
+	@Override
 	public void setAlive(boolean alive) {
 		this.alive = alive;
 	}
 
+	@Override
 	public Point getLastTailPosition() {
 		return lastTailPosition;
 	}
@@ -101,13 +109,24 @@ public class SnakeImpl implements Snake {
 	public int getSize() {
 		return this.size;
 	}
-	
+
+	@Override
 	public String getName() {
 		return this.name;
 	}
 
 	@Override
 	public void setDirection(char d) {
-		direction = d;		
+		direction = d;
+	}
+
+	@Override
+	public int getHealth() {
+		return this.health;
+	}
+
+	@Override
+	public double getSpeed() {
+		return this.speed;
 	}
 }
