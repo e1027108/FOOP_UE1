@@ -63,10 +63,16 @@ public class ArtifactConstants {
 	public static final int SPEED_DECREASE_SPAWN_FACTOR = 10;
 
 	/* spawn timer for the next artifact */
-	public static final int NEXT_SPAWN_INTERVAL_START = 1;
+	public static final int NEXT_SPAWN_INTERVAL_START = 5;
 	public static final int NEXT_SPAWN_INTERVAL_END = 15;
 
 	static {
+		/**
+		 * in this static block, we create a map of all existing
+		 * timers/factors/etc. grouped by effect and artifact type. with this
+		 * map we can dynamically find all constants for one type.
+		 */
+
 		artifactSettingsMap = new EnumMap(Artifacts.class);
 
 		Map<Setting, Object> healthIncrease = new EnumMap(Setting.class);
