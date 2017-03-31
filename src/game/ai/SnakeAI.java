@@ -4,6 +4,15 @@ import java.util.ArrayList;
 import java.util.Random;
 
 import artifacts.Artifact;
+import artifacts.permanent.HealthDecreaseArtifact;
+import artifacts.permanent.HealthIncreaseArtifact;
+import artifacts.permanent.SizeDecreaseArtifact;
+import artifacts.permanent.SizeIncreaseArtifact;
+import artifacts.temporary.BlockControlArtifact;
+import artifacts.temporary.InvulnerabilityArtifact;
+import artifacts.temporary.ReverseControlArtifact;
+import artifacts.temporary.SpeedDecreaseArtifact;
+import artifacts.temporary.SpeedIncreaseArtifact;
 import game.Game;
 import game.GameGrid;
 import game.Point;
@@ -119,11 +128,75 @@ public class SnakeAI extends SnakeImpl{
 		double value = 0;
 		int distance = measureDistance(o);
 
+		//all values between -1 and 1, 0 is "don't care at all"
 		if(o instanceof Snake){
 			//TODO how much health do I have, am I invincible, etc...
 		}
-		else if(o instanceof Artifact){
-			//TODO, is it a positive artifact or not, etc...
+		else if(o instanceof Artifact){ //TODO all current values currently assume DISTANCE = 5, more general computation if changed
+			//positive pickups
+			if(o instanceof HealthIncreaseArtifact){ // 0: full health already, 0.1: overheal, [0.45,1] depending on distance and health
+				value = .9 * ((double) 1 / distance); //high values, reducing in size if far away
+				/*if(this.getHealth() - this.getHealth() < ((HealthIncreaseArtifact) o).getIncrease()){ //TODO replace left by this.getHealth-this.getMaxHealth to check for overheal
+					value = .1;
+				}
+				else if(this.getHealth() == this.getHealth()){ //TODO replace by this.getHealth == this.getMaxHealth
+					value = 0;
+				}*/
+			}
+			else if(o instanceof SizeIncreaseArtifact){ //assumed, that you kinda always want to grow
+				value = .4 * ((double) 1 / distance);
+			}
+			else if(o instanceof InvulnerabilityArtifact){ //TODO need info if already invulnerable
+				/*if(this.isInvulnerable())
+					value = 0;
+				}
+				else{*/
+					value = 1 * ((double) 1 / distance);
+				//}
+			}
+			else if(o instanceof SpeedIncreaseArtifact){ //assume you always want to become faster, but less if you already are faster
+				if(this.getSpeed() > this.getSpeed()){ //TODO replace right by this.getStandardSpeed()
+					value = .3 * ((double) 1 / distance);
+				}
+				else{
+					value = .5 * ((double) 1 / distance);
+				}
+			}
+			//negative pickups
+			else if(o instanceof HealthDecreaseArtifact){//don't care if high health
+				if(this.getHealth() == this.getHealth()){ //TODO compare with maximumhealth instead
+					value = -(.1);
+				}
+				else if(this.getHealth() - ((HealthDecreaseArtifact) o).getDecrease() <= 0){
+					value = -1;
+				}
+				else{
+					double remainderPercentage = (this.getHealth() - ((HealthDecreaseArtifact) o).getDecrease())/this.getHealth(); //TODO by max health
+					
+					value = -.9 * (((double) 5 / distance) / 5) * ((remainderPercentage - 1) * -1); //the closer the less we want it, less health --> less desire
+				}
+			}
+			else if(o instanceof SizeDecreaseArtifact){
+				value = -.4 * (((double) 5 / distance) / 5); //we never want this
+			}
+			else if(o instanceof BlockControlArtifact){
+				value = -.9 * (((double) 5 / distance) / 5); //we really never want this
+			}
+			else if(o instanceof ReverseControlArtifact){
+				value = -1 * (((double) 5 / distance) / 5); //we can't stand this at all, this would actively do all the wrong things
+			}
+			else if(o instanceof SpeedDecreaseArtifact){
+				if(this.getSpeed() > this.getSpeed()){ //TODO replace right by this.getStandardSpeed()
+					value = -.3 * (((double) 5 / distance) / 5);
+				}
+				else{
+					value = -.5 * (((double) 5 / distance) / 5);
+				}
+			}
+			//as yet not defined artifacts
+			else{
+				value = 0;
+			}
 		}
 
 		return value;
