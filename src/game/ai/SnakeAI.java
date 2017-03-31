@@ -39,9 +39,9 @@ public class SnakeAI extends SnakeImpl{
 
 		System.out.println("test: " + closeObjects);
 
-		Object important = getValuedObject(closeObjects);
+		Object important = getValuedObject(closeObjects); //TODO randomize which object is chosen a bit
 
-		next = getPreferredDirection(important);
+		next = getPreferredDirection(important); //TODO prevent from going into itself!
 
 		direction = next;
 	}
@@ -57,16 +57,60 @@ public class SnakeAI extends SnakeImpl{
 			return getRandomDirection(P_OTHER);
 		}
 
-		if(value > 0){
-			//TODO choose a direction that reduces distance
+		Point goalPosition = getGoalPosition(goalObject); //TODO reuse elsewhere
+		int goalx = goalPosition.getX();
+		int goaly = goalPosition.getY();
+		int currx = position.getFirst().getX();
+		int curry = position.getFirst().getY();
+
+		if(currx < goalx && direction != 'W'){
+			if(value > 0){
+				newdirection = 'E';
+			}
+			else if(value < 0){
+				newdirection = 'W';
+			}
+		}
+		else if(currx > goalx && direction != 'E'){
+			if(value > 0){
+				newdirection = 'W';
+			}
+			else if(value < 0){
+				newdirection = 'E';
+			}
+		}
+		else if(curry < goaly && direction != 'S'){
+			if(value > 0){
+				newdirection = 'N';
+			}
+			else if(value < 0){
+				newdirection = 'S';
+			}
+		}
+		else if(curry > goaly && direction != 'N'){
+			if(value > 0){
+				newdirection = 'S';
+			}
+			else if(value < 0){
+				newdirection = 'N';
+			}
 		}
 		else{
-			//TODO choose a direction that increases distance/collision "probability"
+			newdirection = direction;
 		}
-
+		
 		//TODO, check if you'll bite yourself or maneuver into a self-biting position before returning direction
 
 		return newdirection;
+	}
+
+	private Point getGoalPosition(Object goalObject) {
+		if(goalObject instanceof Snake){
+			return ((Snake) goalObject).getBody()[0];
+		}
+		else{ //hope there will never be a non-snake, non-artifact object
+			return ((Artifact) goalObject).getPlacement();
+		}
 	}
 
 	private char getRandomDirection(double otherProbability) { //otherProbability is the chance of a direction change
@@ -122,13 +166,12 @@ public class SnakeAI extends SnakeImpl{
 	}
 
 	/*
-	 * value from -100 to +100
-	 */
+	 * value from -1 to +1
+	 */ //TODO maybe push parts of this to a value file?
 	private double valueObject(Object o) {
 		double value = 0;
 		int distance = measureDistance(o);
 
-		//all values between -1 and 1, 0 is "don't care at all"
 		if(o instanceof Snake){
 			//TODO how much health do I have, am I invincible, etc...
 		}
@@ -151,7 +194,7 @@ public class SnakeAI extends SnakeImpl{
 					value = 0;
 				}
 				else{*/
-					value = 1 * ((double) 1 / distance);
+				value = 1 * ((double) 1 / distance);
 				//}
 			}
 			else if(o instanceof SpeedIncreaseArtifact){ //assume you always want to become faster, but less if you already are faster
@@ -172,7 +215,7 @@ public class SnakeAI extends SnakeImpl{
 				}
 				else{
 					double remainderPercentage = (this.getHealth() - ((HealthDecreaseArtifact) o).getDecrease())/this.getHealth(); //TODO by max health
-					
+
 					value = -.9 * (((double) 5 / distance) / 5) * ((remainderPercentage - 1) * -1); //the closer the less we want it, less health --> less desire
 				}
 			}
@@ -225,7 +268,7 @@ public class SnakeAI extends SnakeImpl{
 			}
 
 			distance = Math.abs(closest.getX()-ox)+Math.abs(closest.getY()-oy);
-			
+
 			if(!closest.equals(position.getFirst())){ //other snake hunts me --> if the enemy snake needs to turn around + 1
 				if(oy > closest.getY() && ((Snake) o).getDirection() == 'W' || oy < closest.getY() && ((Snake) o).getDirection() == 'E'){
 					direction++;
