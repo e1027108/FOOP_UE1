@@ -49,7 +49,7 @@ public class GameGrid {
 	public void draw(ArrayList<Snake> snakes) {
 		int colour = 1;
 		for (Snake s : snakes) {
-
+			
 			Point[] body = s.getBody();
 			for (int j = 0; j < body.length; j++) {
 				Point point = body[j];
@@ -69,6 +69,12 @@ public class GameGrid {
 			}
 			colour++;
 		}
+		// TODO: mapping of colour for every type of artifact
+		/*
+		 * colour = 5; for (Artifact a : artifacts) { if
+		 * (a.getClass().equals(HealthIncreaseArtifact.class)) { Point pos =
+		 * a.getPlacement(); grid[pos.getX()][pos.getY()] = colour; } }
+		 */
 	}
 
 	// debug output

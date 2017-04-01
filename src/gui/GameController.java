@@ -203,24 +203,36 @@ public class GameController {
 	private void update() {
 
 		Rectangle r;
-
-		Snake s = game.getSnake(info.getName());
-
-		Point[] body = s.getBody();
-		for (Point p : body) {
-			r = (Rectangle) gridPane.getChildren().get((p.getX() * 28) + p.getY());
-			r.setFill(info.getColor());
+		
+		for (Snake s : game.getSnakes()) {
+			
+			Point[] body = s.getBody();
+			for (Point p : body) {
+				r = (Rectangle) gridPane.getChildren().get((p.getX() * 28) + p.getY());
+				r.setFill(info.getColor());
+			}
+	
+			Point last = s.getLastTailPosition();
+			r = (Rectangle) gridPane.getChildren().get((last.getX() * 28) + last.getY());
+			r.setFill(emptyCellColor);
 		}
-
-		Point last = s.getLastTailPosition();
-		r = (Rectangle) gridPane.getChildren().get((last.getX() * 28) + last.getY());
-		r.setFill(emptyCellColor);
 
 		// TODO: set icons for artifacts
 		/*
 		 * ImagePattern icon; try { icon = new ImagePattern(new Image(new
 		 * FileInputStream("img/artifact.png"))); r.setFill(icon); } catch
 		 * (FileNotFoundException e) { e.printStackTrace(); }
+		 */
+		
+		// TODO: image mapping with artifacts
+		/*
+		 * for (Artifact a : game.getGrid().getArtifacts()) { Point pos =
+		 * a.getPlacement(); r = (Rectangle)
+		 * gridPane.getChildren().get((pos.getX() * 28) + pos.getY()); if
+		 * (a.getClass().equals(HealthIncreaseArtifact.class)) { ImagePattern
+		 * icon; try { icon = new ImagePattern(new Image(new
+		 * FileInputStream("img/health_increase.png"))); r.setFill(icon); }
+		 * catch (FileNotFoundException e) { e.printStackTrace(); } } }
 		 */
 
 	}
