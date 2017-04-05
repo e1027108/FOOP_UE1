@@ -59,15 +59,16 @@ public class JoinController {
 		errorLbl.setStyle("-fx-text-fill: red;");
 		Locale.setDefault(Locale.ENGLISH);
 
-		
-		playerNbrComboBox.getItems().clear();;
-		
-		for(int i = 1; i <= 4; i++){
+		playerNbrComboBox.getItems().clear();
+
+		for (int i = 1; i <= 4; i++) {
 			playerNbrComboBox.getItems().add("" + i);
 		}
-		
+
 		playerNbrComboBox.getItems().add(AI_ONLY);
 		playerNbrComboBox.getSelectionModel().selectFirst();
+
+		colorPicker.setValue(Color.valueOf("#4d8080"));
 	}
 
 	@FXML

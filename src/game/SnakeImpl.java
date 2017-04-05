@@ -128,9 +128,13 @@ public class SnakeImpl implements Snake {
 		return this.name;
 	}
 
-	@Override
-	public void setDirection(char d) {
-		direction = d;
+	public void changeDirection(char d) {
+		if ((d == 'N' && direction != 'S') || 
+			(d == 'S' && direction != 'N') || 
+			(d == 'E' && direction != 'W') || 
+			(d == 'W' && direction != 'E')) {
+			direction = d;
+		}
 	}
 
 	@Override

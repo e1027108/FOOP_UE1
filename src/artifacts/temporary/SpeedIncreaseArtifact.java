@@ -1,6 +1,7 @@
 package artifacts.temporary;
 
 import artifacts.Artifact;
+import artifacts.Artifacts;
 import artifacts.logic.ArtifactConstants;
 import game.Point;
 
@@ -13,7 +14,7 @@ public class SpeedIncreaseArtifact extends Artifact implements TemporaryArtifact
 	 *            placement
 	 */
 	public SpeedIncreaseArtifact(Point placement) {
-		super(placement, ArtifactConstants.SPEED_INCREASE_DESPAWN_TIMER);
+		super(placement, ArtifactConstants.SPEED_INCREASE_DESPAWN_TIMER, Artifacts.SPEED_INCREASE);
 		this.duration = ArtifactConstants.SPEED_INCREASE_DURATION;
 		this.increase = ArtifactConstants.SPEED_INCREASE;
 	}

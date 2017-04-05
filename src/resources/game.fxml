@@ -48,6 +48,7 @@
         <TilePane fx:id="gridPane" prefHeight="743.0" prefWidth="740.0" />
       </children>
     </AnchorPane>
+    <Separator layoutX="272.0" layoutY="14.0" orientation="VERTICAL" prefHeight="740.0" />
     <Separator layoutX="272.0" layoutY="14.0" prefWidth="740.0" />
     <Separator layoutX="272.0" layoutY="754.0" prefWidth="740.0" />
     <Separator layoutX="1010.0" layoutY="14.0" orientation="VERTICAL" prefHeight="740.0" />

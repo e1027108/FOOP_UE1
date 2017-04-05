@@ -15,7 +15,7 @@ import artifacts.Artifacts;
 public class ArtifactConstants {
 
 	public enum Setting {
-		INCDEC, DURATION, DESPAWN_TIMER, SPAWN_FACTOR
+		INCDEC, DURATION, DESPAWN_TIMER, SPAWN_FACTOR, IMAGE
 	};
 
 	public static Map<Artifacts, Map<Setting, Object>> artifactSettingsMap;
@@ -65,6 +65,17 @@ public class ArtifactConstants {
 	/* spawn timer for the next artifact */
 	public static final int NEXT_SPAWN_INTERVAL_START = 5;
 	public static final int NEXT_SPAWN_INTERVAL_END = 15;
+	
+	/* images */
+	public static final String HEALTH_INCREASE_IMAGE = "img/health_increase.png";
+	public static final String HEALTH_DECREASE_IMAGE = "img/health_decrease.png";
+	public static final String SIZE_INCREASE_IMAGE   = "img/size_increase.png";
+	public static final String SIZE_DECREASE_IMAGE   = "img/size_decrease.png";
+	public static final String BLOCK_CONTROL_IMAGE   = "img/block_control.png";
+	public static final String REVERSE_CONTROL_IMAGE = "img/reverse_control.png";
+	public static final String INVULNERABILITY_IMAGE = "img/invulnerability.png";
+	public static final String SPEED_INCREASE_IMAGE  = "img/speed_increase.png";
+	public static final String SPEED_DECREASE_IMAGE  = "img/speed_decrease.png";
 
 	static {
 		/**
@@ -88,40 +99,49 @@ public class ArtifactConstants {
 		healthIncrease.put(Setting.INCDEC, HEALTH_INCREASE);
 		healthIncrease.put(Setting.DESPAWN_TIMER, HEALTH_INCREASE_DESPAWN_TIMER);
 		healthIncrease.put(Setting.SPAWN_FACTOR, HEALTH_INCREASE_SPAWN_FACTOR);
+		healthIncrease.put(Setting.IMAGE, HEALTH_INCREASE_IMAGE);
 
 		healthDecrease.put(Setting.INCDEC, HEALTH_DECREASE);
 		healthDecrease.put(Setting.DESPAWN_TIMER, HEALTH_DECREASE_DESPAWN_TIMER);
 		healthDecrease.put(Setting.SPAWN_FACTOR, HEALTH_DECREASE_SPAWN_FACTOR);
+		healthDecrease.put(Setting.IMAGE, HEALTH_DECREASE_IMAGE);
 
 		sizeIncrease.put(Setting.INCDEC, SIZE_INCREASE);
 		sizeIncrease.put(Setting.DESPAWN_TIMER, SIZE_INCREASE_DESPAWN_TIMER);
 		sizeIncrease.put(Setting.SPAWN_FACTOR, SIZE_INCREASE_SPAWN_FACTOR);
+		sizeIncrease.put(Setting.IMAGE, SIZE_INCREASE_IMAGE);
 
 		sizeDecrease.put(Setting.INCDEC, SIZE_DECREASE);
 		sizeDecrease.put(Setting.DESPAWN_TIMER, SIZE_DECREASE_DESPAWN_TIMER);
 		sizeDecrease.put(Setting.SPAWN_FACTOR, SIZE_DECREASE_SPAWN_FACTOR);
+		sizeDecrease.put(Setting.IMAGE, SIZE_DECREASE_IMAGE);
 
 		speedIncrease.put(Setting.INCDEC, SPEED_INCREASE);
 		speedIncrease.put(Setting.DURATION, SPEED_INCREASE_DURATION);
 		speedIncrease.put(Setting.DESPAWN_TIMER, SPEED_INCREASE_DESPAWN_TIMER);
 		speedIncrease.put(Setting.SPAWN_FACTOR, SPEED_INCREASE_SPAWN_FACTOR);
+		speedIncrease.put(Setting.IMAGE, SPEED_INCREASE_IMAGE);
 
 		speedDecrease.put(Setting.INCDEC, SPEED_DECREASE);
 		speedDecrease.put(Setting.DURATION, SPEED_DECREASE_DURATION);
 		speedDecrease.put(Setting.DESPAWN_TIMER, SPEED_DECREASE_DESPAWN_TIMER);
 		speedDecrease.put(Setting.SPAWN_FACTOR, SPEED_DECREASE_SPAWN_FACTOR);
+		speedDecrease.put(Setting.IMAGE, SPEED_DECREASE_IMAGE);
 
 		blockControl.put(Setting.DURATION, BLOCK_CONTROL_DURATION);
 		blockControl.put(Setting.DESPAWN_TIMER, BLOCK_CONTROL_DESPAWN_TIMER);
 		blockControl.put(Setting.SPAWN_FACTOR, BLOCK_CONTROL_SPAWN_FACTOR);
+		blockControl.put(Setting.IMAGE, BLOCK_CONTROL_IMAGE);
 
 		invulnerability.put(Setting.DURATION, INVULNERABILITY_DURATION);
 		invulnerability.put(Setting.DESPAWN_TIMER, INVULNERABILITY_DESPAWN_TIMER);
 		invulnerability.put(Setting.SPAWN_FACTOR, INVULNERABILITY_SPAWN_FACTOR);
+		invulnerability.put(Setting.IMAGE, INVULNERABILITY_IMAGE);
 
 		reverseControl.put(Setting.DURATION, REVERSE_CONTROL_DURATION);
 		reverseControl.put(Setting.DESPAWN_TIMER, REVERSE_CONTROL_DESPAWN_TIMER);
 		reverseControl.put(Setting.SPAWN_FACTOR, REVERSE_CONTROL_SPAWN_FACTOR);
+		reverseControl.put(Setting.IMAGE, REVERSE_CONTROL_IMAGE);
 
 		artifactSettingsMap.put(Artifacts.HEALTH_INCREASE, healthIncrease);
 		artifactSettingsMap.put(Artifacts.HEALTH_DECREASE, healthDecrease);

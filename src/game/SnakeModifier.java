@@ -77,12 +77,6 @@ public class SnakeModifier implements Snake {
 	}
 
 	@Override
-	public void setDirection(char d) {
-		this.snek.setDirection(d);
-
-	}
-
-	@Override
 	public String getName() {
 		return this.snek.getName();
 	}
@@ -164,5 +158,10 @@ public class SnakeModifier implements Snake {
 	@Override
 	public List<Point> getBodyList() {
 		return this.snek.getBodyList();
+	}
+
+	@Override
+	public void changeDirection(char d) {
+		this.snek.changeDirection(d);
 	}
 }

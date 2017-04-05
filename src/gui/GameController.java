@@ -1,11 +1,14 @@
 package gui;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Random;
 import java.util.ResourceBundle;
 
+import artifacts.Artifact;
 import dto.DataTransferrer;
 import dto.GameDto;
 import game.Game;
@@ -24,11 +27,13 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
+import javafx.scene.image.Image;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.TilePane;
 import javafx.scene.paint.Color;
+import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 import javafx.util.Duration;
@@ -70,7 +75,7 @@ public class GameController {
 
 	private Timeline timeline;
 
-	private final Color emptyCellColor = Color.valueOf("cccccc");
+	private final Color emptyCellColor = Color.valueOf("FFFFFF");
 
 	@FXML
 	public void initialize() {
@@ -85,6 +90,8 @@ public class GameController {
 		}
 
 		assignAIColors();
+		
+		gridPane.setStyle("-fx-background-color: #FFFFFF;");
 
 		// TODO if AI only do not contact/host any server
 
@@ -182,16 +189,16 @@ public class GameController {
 						return;
 					}
 					if (event.getCode() == KeyCode.W) {
-						game.getSnake(info.getName()).setDirection('N');
+						game.getSnake(info.getName()).changeDirection('N');
 					}
 					if (event.getCode() == KeyCode.S) {
-						game.getSnake(info.getName()).setDirection('S');
+						game.getSnake(info.getName()).changeDirection('S');
 					}
 					if (event.getCode() == KeyCode.D) {
-						game.getSnake(info.getName()).setDirection('E');
+						game.getSnake(info.getName()).changeDirection('E');
 					}
 					if (event.getCode() == KeyCode.A) {
-						game.getSnake(info.getName()).setDirection('W');
+						game.getSnake(info.getName()).changeDirection('W');
 					}
 				}
 
@@ -217,23 +224,17 @@ public class GameController {
 			r.setFill(emptyCellColor);
 		}
 
-		// TODO: set icons for artifacts
-		/*
-		 * ImagePattern icon; try { icon = new ImagePattern(new Image(new
-		 * FileInputStream("img/artifact.png"))); r.setFill(icon); } catch
-		 * (FileNotFoundException e) { e.printStackTrace(); }
-		 */
-		
-		// TODO: image mapping with artifacts
-		/*
-		 * for (Artifact a : game.getGrid().getArtifacts()) { Point pos =
-		 * a.getPlacement(); r = (Rectangle)
-		 * gridPane.getChildren().get((pos.getX() * 28) + pos.getY()); if
-		 * (a.getClass().equals(HealthIncreaseArtifact.class)) { ImagePattern
-		 * icon; try { icon = new ImagePattern(new Image(new
-		 * FileInputStream("img/health_increase.png"))); r.setFill(icon); }
-		 * catch (FileNotFoundException e) { e.printStackTrace(); } } }
-		 */
+		for (Artifact a : game.getGrid().getArtifacts()) {
+			Point pos = a.getPlacement();
+			r = (Rectangle) gridPane.getChildren().get((pos.getX() * 28) + pos.getY());
+			ImagePattern icon;
+			try {
+				icon = new ImagePattern(new Image(new FileInputStream(a.getImage())));
+				r.setFill(icon);
+			} catch (FileNotFoundException e) {
+				e.printStackTrace();
+			}
+		}
 
 	}
 

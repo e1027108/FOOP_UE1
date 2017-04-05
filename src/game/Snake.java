@@ -13,7 +13,7 @@ public interface Snake {
 
 	char getDirection();
 
-	void setDirection(char d);
+	void changeDirection(char d);
 
 	Point[] getBody();
 
