@@ -117,4 +117,8 @@ public class Game {
 			ch.interrupt();
 		}
 	}
+
+	public ArtifactHandler getArtifactHandler() {
+		return this.artifactHandler;
+	}
 }

@@ -4,15 +4,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import artifacts.Artifact;
 import artifacts.Artifacts;
 import artifacts.logic.ArtifactConstants.Setting;
 import game.Game;
 import game.GameGrid;
 import game.Snake;
 
-/**
- * TODO only place artifacts when at least one snake is alive!
- */
 public class ArtifactHandlerImpl implements ArtifactHandler {
 
 	private ArtifactPlacementStrategy artifactPlacementStrategy;
@@ -75,4 +73,12 @@ public class ArtifactHandlerImpl implements ArtifactHandler {
 		}
 	}
 
+	@Override
+	public void checkDespawn() {
+		for (Artifact art : this.game.getGrid().getArtifacts()) {
+			if (System.currentTimeMillis() <= (art.getSpawnTime() + art.getDespawnTimer())) {
+				this.game.getGrid().getArtifacts().remove(art);
+			}
+		}
+	}
 }

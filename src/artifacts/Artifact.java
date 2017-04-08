@@ -12,10 +12,12 @@ import game.Point;
 public abstract class Artifact {
 
 	private Point placement;
+	private long spawnTime;
 	private int despawnTimer;
 	protected String image;
 
 	protected Artifact(Point placement, int despawnTimer, Artifacts type) {
+		this.spawnTime = System.currentTimeMillis();
 		this.placement = placement;
 		this.despawnTimer = despawnTimer;
 		this.image = (String) ArtifactConstants.artifactSettingsMap.get(type).get(Setting.IMAGE);
@@ -28,9 +30,13 @@ public abstract class Artifact {
 	public int getDespawnTimer() {
 		return despawnTimer;
 	}
-	
+
 	public String getImage() {
 		return image;
+	}
+
+	public long getSpawnTime() {
+		return spawnTime;
 	}
 
 }

@@ -90,7 +90,7 @@ public class GameController {
 		}
 
 		assignAIColors();
-		
+
 		gridPane.setStyle("-fx-background-color: #FFFFFF;");
 
 		// TODO if AI only do not contact/host any server
@@ -210,19 +210,21 @@ public class GameController {
 	private void update() {
 
 		Rectangle r;
-		
+
 		for (Snake s : game.getSnakes()) {
-			
+
 			Point[] body = s.getBody();
 			for (Point p : body) {
 				r = (Rectangle) gridPane.getChildren().get((p.getX() * 28) + p.getY());
 				r.setFill(info.getColor());
 			}
-	
+
 			Point last = s.getLastTailPosition();
 			r = (Rectangle) gridPane.getChildren().get((last.getX() * 28) + last.getY());
 			r.setFill(emptyCellColor);
 		}
+
+		this.game.getArtifactHandler().checkDespawn();
 
 		for (Artifact a : game.getGrid().getArtifacts()) {
 			Point pos = a.getPlacement();

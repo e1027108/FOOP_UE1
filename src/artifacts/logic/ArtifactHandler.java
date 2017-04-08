@@ -11,4 +11,6 @@ public interface ArtifactHandler extends Runnable {
 	void placeNextArtifact() throws InterruptedException;
 
 	Artifacts getNextArtifactType();
+
+	void checkDespawn();
 }
