@@ -41,6 +41,8 @@ public class SnakeAI extends SnakeImpl{
 
 		next = getPreferredDirection(important);
 
+		//TODO check if next is a point of the own body, and if yes change next
+		
 		direction = next;
 	}
 
@@ -279,10 +281,10 @@ public class SnakeAI extends SnakeImpl{
 
 			if(!closest.equals(position.getFirst())){ //other snake hunts me --> if the enemy snake needs to turn around + 1
 				if(oy > closest.getY() && ((Snake) o).getDirection() == 'W' || oy < closest.getY() && ((Snake) o).getDirection() == 'E'){
-					direction++;
+					distance++;
 				}
 				if(ox > closest.getX() && ((Snake) o).getDirection() == 'N' || ox < closest.getX() && ((Snake) o).getDirection() == 'S'){
-					direction++;
+					distance++;
 				}
 			}
 		}
