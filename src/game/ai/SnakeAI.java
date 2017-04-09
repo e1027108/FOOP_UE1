@@ -301,12 +301,12 @@ public class SnakeAI extends SnakeImpl{
 		 */
 		if(ox == xhead){ // x is up and down
 			if(oy > yhead && direction == 'E' || oy < yhead && direction == 'W'){ //same would mean we are currently on it!
-				direction += 2;
+				distance += 2;
 			}
 		}
 		if(oy == yhead){ // y is left and right
 			if(ox > xhead && direction == 'S' || ox < xhead && direction == 'N'){ //same would mean we are currently on it!
-				direction += 2;
+				distance += 2;
 			}
 		}
 
