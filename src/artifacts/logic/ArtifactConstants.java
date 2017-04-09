@@ -38,15 +38,15 @@ public class ArtifactConstants {
 	public static final int SPEED_DECREASE_DURATION = 2;
 
 	/* time until despawn */
-	public static final int HEALTH_INCREASE_DESPAWN_TIMER = 3;
-	public static final int HEALTH_DECREASE_DESPAWN_TIMER = 3;
-	public static final int SIZE_INCREASE_DESPAWN_TIMER = 3;
-	public static final int SIZE_DECREASE_DESPAWN_TIMER = 3;
-	public static final int BLOCK_CONTROL_DESPAWN_TIMER = 3;
-	public static final int INVULNERABILITY_DESPAWN_TIMER = 3;
-	public static final int REVERSE_CONTROL_DESPAWN_TIMER = 3;
-	public static final int SPEED_INCREASE_DESPAWN_TIMER = 3;
-	public static final int SPEED_DECREASE_DESPAWN_TIMER = 3;
+	public static final int HEALTH_INCREASE_DESPAWN_TIMER = 15;
+	public static final int HEALTH_DECREASE_DESPAWN_TIMER = 15;
+	public static final int SIZE_INCREASE_DESPAWN_TIMER = 15;
+	public static final int SIZE_DECREASE_DESPAWN_TIMER = 15;
+	public static final int BLOCK_CONTROL_DESPAWN_TIMER = 15;
+	public static final int INVULNERABILITY_DESPAWN_TIMER = 15;
+	public static final int REVERSE_CONTROL_DESPAWN_TIMER = 15;
+	public static final int SPEED_INCREASE_DESPAWN_TIMER = 15;
+	public static final int SPEED_DECREASE_DESPAWN_TIMER = 15;
 
 	/*
 	 * spawn probability factors to ensure different occurrences according to
@@ -65,17 +65,17 @@ public class ArtifactConstants {
 	/* spawn timer for the next artifact */
 	public static final int NEXT_SPAWN_INTERVAL_START = 5;
 	public static final int NEXT_SPAWN_INTERVAL_END = 15;
-	
+
 	/* images */
 	public static final String HEALTH_INCREASE_IMAGE = "img/health_increase.png";
 	public static final String HEALTH_DECREASE_IMAGE = "img/health_decrease.png";
-	public static final String SIZE_INCREASE_IMAGE   = "img/size_increase.png";
-	public static final String SIZE_DECREASE_IMAGE   = "img/size_decrease.png";
-	public static final String BLOCK_CONTROL_IMAGE   = "img/block_control.png";
+	public static final String SIZE_INCREASE_IMAGE = "img/size_increase.png";
+	public static final String SIZE_DECREASE_IMAGE = "img/size_decrease.png";
+	public static final String BLOCK_CONTROL_IMAGE = "img/block_control.png";
 	public static final String REVERSE_CONTROL_IMAGE = "img/reverse_control.png";
 	public static final String INVULNERABILITY_IMAGE = "img/invulnerability.png";
-	public static final String SPEED_INCREASE_IMAGE  = "img/speed_increase.png";
-	public static final String SPEED_DECREASE_IMAGE  = "img/speed_decrease.png";
+	public static final String SPEED_INCREASE_IMAGE = "img/speed_increase.png";
+	public static final String SPEED_DECREASE_IMAGE = "img/speed_decrease.png";
 
 	static {
 		/**

@@ -226,6 +226,7 @@ public class GameController {
 
 		this.game.getArtifactHandler().checkDespawn();
 
+		// TODO remove artifacts that are not longer active
 		for (Artifact a : game.getGrid().getArtifacts()) {
 			Point pos = a.getPlacement();
 			r = (Rectangle) gridPane.getChildren().get((pos.getX() * 28) + pos.getY());
@@ -263,6 +264,9 @@ public class GameController {
 	private void onDisconnectClick() {
 		// TODO send info to other clients (host/other difference)
 		// TODO clean up server/client
+
+		// reset artifacts list to empty and close artifact handler thread
+		this.game.getGrid().shutdown();
 		if (game != null) {
 			game.closeChildren();
 		}
