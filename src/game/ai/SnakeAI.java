@@ -62,7 +62,7 @@ public class SnakeAI extends SnakeImpl{
 		int curry = position.getFirst().getY();
 
 		//TODO re-think direction choosing
-		if(currx < goalx && direction != 'W'){
+		if(currx < goalx){
 			if(value > 0){
 				newdirection = 'E';
 			}
@@ -70,7 +70,7 @@ public class SnakeAI extends SnakeImpl{
 				newdirection = 'W';
 			}
 		}
-		else if(currx > goalx && direction != 'E'){
+		else if(currx > goalx){
 			if(value > 0){
 				newdirection = 'W';
 			}
@@ -78,7 +78,7 @@ public class SnakeAI extends SnakeImpl{
 				newdirection = 'E';
 			}
 		}
-		else if(curry < goaly && direction != 'S'){
+		else if(curry < goaly){
 			if(value > 0){
 				newdirection = 'N';
 			}
@@ -86,7 +86,7 @@ public class SnakeAI extends SnakeImpl{
 				newdirection = 'S';
 			}
 		}
-		else if(curry > goaly && direction != 'N'){
+		else if(curry > goaly){
 			if(value > 0){
 				newdirection = 'S';
 			}
@@ -95,6 +95,12 @@ public class SnakeAI extends SnakeImpl{
 			}
 		}
 		else{
+			newdirection = direction;
+		}
+		
+		//preventing from driving into self
+		if( (newdirection == 'N' && direction == 'S') || (newdirection == 'S' && direction == 'N') ||
+				(newdirection == 'E' && direction == 'W') || (newdirection == 'W' && direction == 'E') ){
 			newdirection = direction;
 		}
 
@@ -255,6 +261,7 @@ public class SnakeAI extends SnakeImpl{
 		return value;
 	}
 
+	//TODO change to accept overflowing onto the other side of the field, alternatively take that out from scanvicinity and prevent snake from going into the side
 	private int measureDistance(Object o) {
 		int xhead = position.getFirst().getX();
 		int yhead = position.getFirst().getY();
