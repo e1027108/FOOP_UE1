@@ -41,16 +41,16 @@ public class GameGrid {
 			int x = Math.floorDiv(size, 2);
 			int y = Math.floorDiv(size, 4);
 			switch (s.getDirection()) {
-			case 'N':
+			case N:
 				s.initPosition(x, y);
 				break;
-			case 'E':
+			case E:
 				s.initPosition(x, size - y);
 				break;
-			case 'S':
+			case S:
 				s.initPosition(size - x, size - y);
 				break;
-			case 'W':
+			case W:
 				s.initPosition(size - x, y);
 				break;
 			default:

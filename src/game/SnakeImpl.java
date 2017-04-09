@@ -14,7 +14,7 @@ public class SnakeImpl implements Snake {
 
 	// TODO: colour
 
-	protected char direction;
+	protected Directions direction;
 	private int health;
 	private double speed;
 	private int size;
@@ -26,7 +26,7 @@ public class SnakeImpl implements Snake {
 
 	protected ArrayDeque<Point> position;
 
-	public SnakeImpl(String n, char dir) {
+	public SnakeImpl(String n, Directions dir) {
 		name = n;
 		direction = dir;
 		health = 5;
@@ -43,16 +43,16 @@ public class SnakeImpl implements Snake {
 	public void initPosition(int x, int y) { // TODO if char codes change, AI
 												// must be changed too
 		for (int i = 0; i < size; i++) {
-			if (direction == 'N') {
+			if (direction == Directions.N) {
 				position.add(new Point(x + i, y));
 			}
-			if (direction == 'E') {
+			if (direction == Directions.E) {
 				position.add(new Point(x, y - i));
 			}
-			if (direction == 'S') {
+			if (direction == Directions.S) {
 				position.add(new Point(x - i, y));
 			}
-			if (direction == 'W') {
+			if (direction == Directions.W) {
 				position.add(new Point(x, y + i));
 			}
 		}
@@ -62,23 +62,23 @@ public class SnakeImpl implements Snake {
 	@Override
 	public void move() {
 		Point head = position.peekFirst();
-		if (direction == 'N') {
+		if (direction == Directions.N) {
 			position.addFirst(new Point(head.getX() - 1, head.getY()));
 		}
-		if (direction == 'S') {
+		if (direction == Directions.S) {
 			position.addFirst(new Point(head.getX() + 1, head.getY()));
 		}
-		if (direction == 'E') {
+		if (direction == Directions.E) {
 			position.addFirst(new Point(head.getX(), head.getY() + 1));
 		}
-		if (direction == 'W') {
+		if (direction == Directions.W) {
 			position.addFirst(new Point(head.getX(), head.getY() - 1));
 		}
 		lastTailPosition = position.pollLast();
 	}
 
 	@Override
-	public char getDirection() {
+	public Directions getDirection() {
 		return direction;
 	}
 
@@ -128,11 +128,11 @@ public class SnakeImpl implements Snake {
 		return this.name;
 	}
 
-	public void changeDirection(char d) {
-		if ((d == 'N' && direction != 'S') || 
-			(d == 'S' && direction != 'N') || 
-			(d == 'E' && direction != 'W') || 
-			(d == 'W' && direction != 'E')) {
+	@Override
+	public void changeDirection(Directions d) {
+		if ((d == Directions.N && direction != Directions.S) || (d == Directions.S && direction != Directions.N)
+				|| (d == Directions.E && direction != Directions.W)
+				|| (d == Directions.W && direction != Directions.E)) {
 			direction = d;
 		}
 	}

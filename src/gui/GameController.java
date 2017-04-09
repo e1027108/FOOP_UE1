@@ -11,6 +11,7 @@ import java.util.ResourceBundle;
 import artifacts.Artifact;
 import dto.DataTransferrer;
 import dto.GameDto;
+import game.Directions;
 import game.Game;
 import game.Point;
 import game.Snake;
@@ -189,16 +190,16 @@ public class GameController {
 						return;
 					}
 					if (event.getCode() == KeyCode.W) {
-						game.getSnake(info.getName()).changeDirection('N');
+						game.getSnake(info.getName()).changeDirection(Directions.N);
 					}
 					if (event.getCode() == KeyCode.S) {
-						game.getSnake(info.getName()).changeDirection('S');
+						game.getSnake(info.getName()).changeDirection(Directions.S);
 					}
 					if (event.getCode() == KeyCode.D) {
-						game.getSnake(info.getName()).changeDirection('E');
+						game.getSnake(info.getName()).changeDirection(Directions.E);
 					}
 					if (event.getCode() == KeyCode.A) {
-						game.getSnake(info.getName()).changeDirection('W');
+						game.getSnake(info.getName()).changeDirection(Directions.W);
 					}
 				}
 

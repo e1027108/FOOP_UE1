@@ -11,9 +11,9 @@ public interface Snake {
 
 	void move();
 
-	char getDirection();
+	Directions getDirection();
 
-	void changeDirection(char d);
+	void changeDirection(Directions d);
 
 	Point[] getBody();
 

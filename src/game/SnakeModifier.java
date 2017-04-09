@@ -22,7 +22,7 @@ public class SnakeModifier implements Snake {
 	}
 
 	@Override
-	public char getDirection() {
+	public Directions getDirection() {
 		return this.snek.getDirection();
 	}
 
@@ -161,7 +161,7 @@ public class SnakeModifier implements Snake {
 	}
 
 	@Override
-	public void changeDirection(char d) {
+	public void changeDirection(Directions d) {
 		this.snek.changeDirection(d);
 	}
 }

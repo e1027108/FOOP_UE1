@@ -48,15 +48,20 @@ public class Game {
 
 		// init humanPlayer?
 		if (firstPlayer != null) {
-			player = new SnakeImpl(firstPlayer, directions[0]);
+			player = new SnakeImpl(firstPlayer, Directions.N);
 		} else {
-			player = new SnakeAI("AI 0", directions[0], this);
+			player = new SnakeAI("AI 0", Directions.N, this);
 		}
 		snakes.add(player);
 
 		// init AIs for now
+		List<Directions> directions = new ArrayList<Directions>();
+		directions.add(Directions.N);
+		directions.add(Directions.S);
+		directions.add(Directions.E);
+		directions.add(Directions.W);
 		for (int i = 2; i <= numPlayers; i++) {
-			player = new SnakeAI("AI_" + i, directions[i - 1], this);
+			player = new SnakeAI("AI_" + i, directions.get(i - 1), this);
 			snakes.add(player);
 		}
 
