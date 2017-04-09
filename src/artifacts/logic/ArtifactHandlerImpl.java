@@ -3,6 +3,8 @@ package artifacts.logic;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.concurrent.Callable;
+import java.util.concurrent.FutureTask;
 
 import artifacts.Artifact;
 import artifacts.Artifacts;
@@ -75,10 +77,21 @@ public class ArtifactHandlerImpl implements ArtifactHandler {
 
 	@Override
 	public void checkDespawn() {
-		for (Artifact art : this.game.getGrid().getArtifacts()) {
-			if (System.currentTimeMillis() <= (art.getSpawnTime() + art.getDespawnTimer())) {
-				this.game.getGrid().getArtifacts().remove(art);
+		List<Artifact> artifacts = this.game.getGrid().getArtifacts();
+		FutureTask<Boolean> futureRemove = new FutureTask<Boolean>(new Callable<Boolean>() {
+			@Override
+			public Boolean call() {
+				for (Artifact art : artifacts) {
+					if (System.currentTimeMillis() > (art.getSpawnTime() + (art.getDespawnTimer() * 1000))) {
+						artifacts.remove(art);
+					}
+				}
+				return true;
 			}
+		});
+
+		this.game.getGrid().getExecutor().execute(futureRemove);
+		while (!futureRemove.isDone()) {
 		}
 	}
 }

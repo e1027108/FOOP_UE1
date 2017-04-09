@@ -2,19 +2,38 @@ package game;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.FutureTask;
+import java.util.concurrent.ThreadFactory;
 
 import artifacts.Artifact;
 
 public class GameGrid {
 
+	public static final int NUM_OF_THREADS = 2;
+
 	private int size;
 	private int[][] grid; // TODO change to Point[][]?
 	private List<Artifact> artifacts;
+	private ExecutorService executor;
 
 	public GameGrid(int s) {
 		size = s;
 		grid = new int[size][size];
 		this.artifacts = new ArrayList<Artifact>();
+		// create thread pool for concurrent handling of artifacts list.
+		// all threads are daemons.
+		this.executor = Executors.newFixedThreadPool(NUM_OF_THREADS, new ThreadFactory() {
+			@Override
+			public Thread newThread(Runnable r) {
+				Thread t = Executors.defaultThreadFactory().newThread(r);
+				t.setDaemon(true);
+				return t;
+			}
+		});
 	}
 
 	public void initPositions(ArrayList<Snake> snakes) {
@@ -49,7 +68,7 @@ public class GameGrid {
 	public void draw(ArrayList<Snake> snakes) {
 		int colour = 1;
 		for (Snake s : snakes) {
-			
+
 			Point[] body = s.getBody();
 			for (int j = 0; j < body.length; j++) {
 				Point point = body[j];
@@ -93,11 +112,50 @@ public class GameGrid {
 	}
 
 	public void addArtifact(Artifact artifact) {
-		this.artifacts.add(artifact);
-		System.out.println("Successfully placed artifact at " + artifact.getPlacement().toString());
+		FutureTask<Boolean> futureAdd = new FutureTask<Boolean>(new Callable<Boolean>() {
+			@Override
+			public Boolean call() {
+				artifacts.add(artifact);
+				return artifacts.contains(artifact);
+			}
+		});
+
+		this.executor.execute(futureAdd);
+		try {
+			System.out.println("Successfully placed artifact at " + artifact.getPlacement().toString() + ", future: "
+					+ futureAdd.get());
+			for (Artifact art : artifacts) {
+				System.out.println(art.getPlacement());
+			}
+		} catch (InterruptedException | ExecutionException e) {
+			e.printStackTrace();
+		}
 	}
 
 	public List<Artifact> getArtifacts() {
-		return this.artifacts;
+		FutureTask<List<Artifact>> futureRead = new FutureTask<List<Artifact>>(new Callable<List<Artifact>>() {
+			@Override
+			public List<Artifact> call() {
+				return artifacts;
+			}
+		});
+
+		this.executor.execute(futureRead);
+		while (!futureRead.isDone()) {
+		}
+		try {
+			return futureRead.get();
+		} catch (InterruptedException | ExecutionException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	public ExecutorService getExecutor() {
+		return executor;
+	}
+
+	public void shutdown() {
+		this.artifacts = new ArrayList<Artifact>();
 	}
 }
