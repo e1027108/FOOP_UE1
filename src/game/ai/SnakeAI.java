@@ -37,17 +37,15 @@ public class SnakeAI extends SnakeImpl{
 
 		ArrayList<Object> closeObjects = scanVicinity(DISTANCE);
 
-		System.out.println("test: " + closeObjects);
+		Object important = getValuedObject(closeObjects);
 
-		Object important = getValuedObject(closeObjects); //TODO randomize which object is chosen a bit
-
-		next = getPreferredDirection(important); //TODO prevent from going into itself!
+		next = getPreferredDirection(important);
 
 		direction = next;
 	}
 
 	private char getPreferredDirection(Object goalObject) {
-		char newdirection = direction; //TODO replace with error direction, if availiable
+		char newdirection = direction;
 		double value;
 
 		if(goalObject != null){
@@ -63,6 +61,7 @@ public class SnakeAI extends SnakeImpl{
 		int currx = position.getFirst().getX();
 		int curry = position.getFirst().getY();
 
+		//TODO re-think direction choosing
 		if(currx < goalx && direction != 'W'){
 			if(value > 0){
 				newdirection = 'E';
@@ -98,8 +97,6 @@ public class SnakeAI extends SnakeImpl{
 		else{
 			newdirection = direction;
 		}
-		
-		//TODO, check if you'll bite yourself or maneuver into a self-biting position before returning direction
 
 		return newdirection;
 	}
@@ -130,14 +127,10 @@ public class SnakeAI extends SnakeImpl{
 
 			double rnd = r.nextDouble();
 
-			System.out.println(rnd);
-
 			if(rnd <= (double) 1/2){
-				System.out.println("0");
 				return directions.charAt(0);
 			}
 			else {
-				System.out.println("1");
 				return directions.charAt(1);
 			}
 		}
@@ -146,6 +139,11 @@ public class SnakeAI extends SnakeImpl{
 		}
 	}
 
+	/**
+	 * returns the best valued object to go towards
+	 * @param closeObjects possible objects
+	 * @return best object
+	 */ //TODO random chance?
 	private Object getValuedObject(ArrayList<Object> closeObjects) {
 		double currentValue = 0;
 		Object currentObject = null;
@@ -167,13 +165,25 @@ public class SnakeAI extends SnakeImpl{
 
 	/*
 	 * value from -1 to +1
-	 */ //TODO maybe push parts of this to a value file?
+	 */ //TODO push parts of this to a value file/more concise modifier method
 	private double valueObject(Object o) {
 		double value = 0;
 		int distance = measureDistance(o);
 
 		if(o instanceof Snake){
-			//TODO how much health do I have, am I invincible, etc...
+			int ox = ((Snake) o).getBody()[0].getX();
+			int oy = ((Snake) o).getBody()[0].getY();
+
+			Point closest = getClosestPoint(ox,oy);
+
+			distance = Math.abs(closest.getX()-ox)+Math.abs(closest.getY()-oy); //override necessary?
+
+			if(!closest.equals(position.getFirst())){
+				value = -.9 * (((double) 5 / distance) / 5);
+			}
+			else{
+				value = .7 * ((double) 1 / distance);
+			}
 		}
 		else if(o instanceof Artifact){ //TODO all current values currently assume DISTANCE = 5, more general computation if changed
 			//positive pickups
@@ -256,16 +266,7 @@ public class SnakeAI extends SnakeImpl{
 			ox = ((Snake) o).getBody()[0].getX();
 			oy = ((Snake) o).getBody()[0].getY();
 
-			Point closest = null;
-
-			for(Point p: position){ //TODO repeat this above to figure out if positive or negative value
-				if(closest == null){
-					closest = p;
-				}
-				else if(Math.abs(p.getX()-ox)+Math.abs(p.getY()-oy) < Math.abs(closest.getX()-ox)+Math.abs(closest.getY()-oy)){
-					closest = p;
-				}
-			}
+			Point closest = getClosestPoint(ox,oy);
 
 			distance = Math.abs(closest.getX()-ox)+Math.abs(closest.getY()-oy);
 
@@ -301,6 +302,27 @@ public class SnakeAI extends SnakeImpl{
 		}
 
 		return distance;
+	}
+
+	/**
+	 * returns the point of the own body closest to the provided coordinates
+	 * @param ox point's x position
+	 * @param oy point's y position
+	 * @return a point that's closest
+	 */
+	private Point getClosestPoint(int ox, int oy) {
+		Point closest = null;
+
+		for(Point p: position){
+			if(closest == null){
+				closest = p;
+			}
+			else if(Math.abs(p.getX()-ox)+Math.abs(p.getY()-oy) < Math.abs(closest.getX()-ox)+Math.abs(closest.getY()-oy)){
+				closest = p;
+			}
+		}
+
+		return closest;
 	}
 
 	/**
