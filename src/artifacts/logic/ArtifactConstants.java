@@ -77,6 +77,18 @@ public class ArtifactConstants {
 	public static final String SPEED_INCREASE_IMAGE = "img/speed_increase.png";
 	public static final String SPEED_DECREASE_IMAGE = "img/speed_decrease.png";
 
+	/* grid codes: permanent 1x, temporary 2x */
+	public static final int HEALTH_INCREASE_CODE = 10;
+	public static final int HEALTH_DECREASE_CODE = 11;
+	public static final int SIZE_INCREASE_CODE = 12;
+	public static final int SIZE_DECREASE_CODE = 13;
+
+	public static final int BLOCK_CONTROL_CODE = 20;
+	public static final int REVERSE_CONTROL_CODE = 21;
+	public static final int INVULNERABILITY_CODE = 22;
+	public static final int SPEED_INCREASE_CODE = 23;
+	public static final int SPEED_DECREASE_CODE = 24;
+
 	static {
 		/**
 		 * in this static block, we create a map of all existing

@@ -15,8 +15,6 @@ public class Game {
 	private ArtifactHandler artifactHandler;
 	private List<Thread> children;
 
-	private char[] directions = { 'N', 'S', 'E', 'W' };
-
 	private ArrayList<Snake> snakes;
 
 	// TODO: change error message --> just temporary
