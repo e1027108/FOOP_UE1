@@ -10,6 +10,8 @@ import java.util.concurrent.FutureTask;
 import java.util.concurrent.ThreadFactory;
 
 import artifacts.Artifact;
+import artifacts.ArtifactConstants;
+import artifacts.ArtifactConstants.Setting;
 
 public class GameGrid {
 
@@ -88,6 +90,18 @@ public class GameGrid {
 			}
 			colour++;
 		}
+		for (Artifact art : this.artifacts) {
+			int x = art.getPlacement().getX();
+			int y = art.getPlacement().getY();
+			if (art.isActive()) {
+				grid[x][y] = (int) ArtifactConstants.artifactSettingsMap.get(art.getArtifactsMapping())
+						.get(Setting.CODE);
+			} else {
+				grid[x][y] = 0;
+			}
+		}
+
+		printGrid();
 		// TODO: mapping of colour for every type of artifact
 		/*
 		 * colour = 5; for (Artifact a : artifacts) { if
@@ -98,12 +112,14 @@ public class GameGrid {
 
 	// debug output
 	public void printGrid() {
+		System.out.println("-------------------------------------");
 		for (int i = 0; i < grid.length; i++) {
 			for (int j = 0; j < grid[i].length; j++) {
 				System.out.print(grid[i][j] + " ");
 			}
 			System.out.println();
 		}
+		System.out.println("-------------------------------------");
 	}
 
 	// TODO change to Point[][]?

@@ -1,8 +1,8 @@
 package artifacts.temporary;
 
 import artifacts.Artifact;
+import artifacts.ArtifactConstants;
 import artifacts.Artifacts;
-import artifacts.logic.ArtifactConstants;
 import game.Point;
 
 public class SpeedIncreaseArtifact extends Artifact implements TemporaryArtifact {
@@ -13,8 +13,8 @@ public class SpeedIncreaseArtifact extends Artifact implements TemporaryArtifact
 	 * @param Point
 	 *            placement
 	 */
-	public SpeedIncreaseArtifact(Point placement) {
-		super(placement, ArtifactConstants.SPEED_INCREASE_DESPAWN_TIMER, Artifacts.SPEED_INCREASE);
+	public SpeedIncreaseArtifact(Point placement, int despawnTimer, Artifacts type) {
+		super(placement, despawnTimer, type);
 		this.duration = ArtifactConstants.SPEED_INCREASE_DURATION;
 		this.increase = ArtifactConstants.SPEED_INCREASE;
 	}
@@ -26,5 +26,10 @@ public class SpeedIncreaseArtifact extends Artifact implements TemporaryArtifact
 
 	public int getIncrease() {
 		return increase;
+	}
+
+	@Override
+	public Artifacts getArtifactsMapping() {
+		return super.getArtifactsMapping();
 	}
 }

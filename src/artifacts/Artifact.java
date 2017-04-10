@@ -1,7 +1,6 @@
 package artifacts;
 
-import artifacts.logic.ArtifactConstants;
-import artifacts.logic.ArtifactConstants.Setting;
+import artifacts.ArtifactConstants.Setting;
 import game.GameGrid;
 import game.Point;
 
@@ -14,12 +13,16 @@ public abstract class Artifact {
 	private Point placement;
 	private long spawnTime;
 	private int despawnTimer;
+	private boolean active;
+	private Artifacts artifacts;
 	protected String image;
 
 	protected Artifact(Point placement, int despawnTimer, Artifacts type) {
+		this.artifacts = type;
 		this.spawnTime = System.currentTimeMillis();
 		this.placement = placement;
 		this.despawnTimer = despawnTimer;
+		this.active = true;
 		this.image = (String) ArtifactConstants.artifactSettingsMap.get(type).get(Setting.IMAGE);
 	}
 
@@ -37,6 +40,18 @@ public abstract class Artifact {
 
 	public long getSpawnTime() {
 		return spawnTime;
+	}
+
+	public boolean isActive() {
+		return active;
+	}
+
+	public void setActive(boolean active) {
+		this.active = active;
+	}
+
+	public Artifacts getArtifactsMapping() {
+		return artifacts;
 	}
 
 }

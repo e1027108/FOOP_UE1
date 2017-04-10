@@ -7,8 +7,9 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.FutureTask;
 
 import artifacts.Artifact;
+import artifacts.ArtifactConstants;
 import artifacts.Artifacts;
-import artifacts.logic.ArtifactConstants.Setting;
+import artifacts.ArtifactConstants.Setting;
 import game.Game;
 import game.GameGrid;
 import game.Snake;
@@ -83,7 +84,7 @@ public class ArtifactHandlerImpl implements ArtifactHandler {
 			public Boolean call() {
 				for (Artifact art : artifacts) {
 					if (System.currentTimeMillis() > (art.getSpawnTime() + (art.getDespawnTimer() * 1000))) {
-						artifacts.remove(art);
+						art.setActive(false);
 					}
 				}
 				return true;

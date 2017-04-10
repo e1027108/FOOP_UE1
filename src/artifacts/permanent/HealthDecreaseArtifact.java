@@ -1,8 +1,8 @@
 package artifacts.permanent;
 
 import artifacts.Artifact;
+import artifacts.ArtifactConstants;
 import artifacts.Artifacts;
-import artifacts.logic.ArtifactConstants;
 import game.Point;
 
 public class HealthDecreaseArtifact extends Artifact {
@@ -13,12 +13,17 @@ public class HealthDecreaseArtifact extends Artifact {
 	 * @param Point
 	 *            placement
 	 */
-	public HealthDecreaseArtifact(Point placement) {
-		super(placement, ArtifactConstants.HEALTH_DECREASE_DESPAWN_TIMER, Artifacts.HEALTH_DECREASE);
+	public HealthDecreaseArtifact(Point placement, int despawnTimer, Artifacts type) {
+		super(placement, despawnTimer, type);
 		this.decrease = ArtifactConstants.HEALTH_DECREASE;
 	}
 
 	public int getDecrease() {
 		return decrease;
+	}
+
+	@Override
+	public Artifacts getArtifactsMapping() {
+		return super.getArtifactsMapping();
 	}
 }

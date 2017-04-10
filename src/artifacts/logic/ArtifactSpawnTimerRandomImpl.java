@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import artifacts.ArtifactConstants;
+
 /**
  * This implementation of {@link ArtifactSpawnTimer} randomly selects a spawn
  * timer from an interval (lower and upper bound are defined in

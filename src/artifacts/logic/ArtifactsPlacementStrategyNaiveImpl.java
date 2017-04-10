@@ -4,13 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import artifacts.Artifact;
+import artifacts.ArtifactFactory;
 import artifacts.Artifacts;
-import artifacts.permanent.HealthDecreaseArtifact;
-import artifacts.permanent.HealthIncreaseArtifact;
-import artifacts.permanent.SizeDecreaseArtifact;
-import artifacts.permanent.SizeIncreaseArtifact;
-import artifacts.temporary.BlockControlArtifact;
-import artifacts.temporary.InvulnerabilityArtifact;
 import game.Game;
 import game.GameGrid;
 import game.Point;
@@ -36,38 +31,7 @@ public class ArtifactsPlacementStrategyNaiveImpl implements ArtifactPlacementStr
 	@Override
 	public void placeArtifact(Artifacts artifactType) {
 		Point point = artifactCoordinateGenerator.createPlacement(createBlackList());
-		Artifact artifact = null;
-		switch (artifactType) {
-		case HEALTH_INCREASE:
-			artifact = new HealthIncreaseArtifact(point);
-			break;
-		case HEALTH_DECREASE:
-			artifact = new HealthDecreaseArtifact(point);
-			break;
-		case SIZE_INCREASE:
-			artifact = new SizeIncreaseArtifact(point);
-			break;
-		case SIZE_DECREASE:
-			artifact = new SizeDecreaseArtifact(point);
-			break;
-		case BLOCK_CONTROL:
-			artifact = new BlockControlArtifact(point);
-			break;
-		case INVULNERABILITY:
-			artifact = new InvulnerabilityArtifact(point);
-			break;
-		case REVERSE_CONTROL:
-			artifact = new HealthIncreaseArtifact(point);
-			break;
-		case SPEED_INCREASE:
-			artifact = new HealthIncreaseArtifact(point);
-			break;
-		case SPEED_DECREASE:
-			artifact = new HealthIncreaseArtifact(point);
-			break;
-		default:
-			break;
-		}
+		Artifact artifact = ArtifactFactory.getArtifact(point, artifactType);
 		gameGrid.addArtifact(artifact);
 	}
 
