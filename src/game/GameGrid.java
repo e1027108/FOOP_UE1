@@ -17,6 +17,11 @@ public class GameGrid {
 
 	public static final int NUM_OF_THREADS = 2;
 
+	public enum CollisionTypes {
+		OWN_BODY, OTHER_SNAKE, BORDER, ARTIFACT
+	}
+
+	private List<CollisionListener> collisionListeners;
 	private int size;
 	private int[][] grid; // TODO change to Point[][]?
 	private List<Artifact> artifacts;
@@ -26,8 +31,12 @@ public class GameGrid {
 		size = s;
 		grid = new int[size][size];
 		this.artifacts = new ArrayList<Artifact>();
-		// create thread pool for concurrent handling of artifacts list.
-		// all threads are daemons.
+		this.collisionListeners = new ArrayList<CollisionListener>();
+
+		/*
+		 * create thread pool for concurrent handling of artifacts list. all
+		 * threads are daemons.
+		 */
 		this.executor = Executors.newFixedThreadPool(NUM_OF_THREADS, new ThreadFactory() {
 			@Override
 			public Thread newThread(Runnable r) {
@@ -78,8 +87,14 @@ public class GameGrid {
 					grid[point.getX()][point.getY()] = colour;
 				} else {
 					s.setAlive(false);
+					/* fire collision detection : BORDER */
+					for (CollisionListener cl : this.collisionListeners) {
+						cl.collisionDetected(CollisionTypes.BORDER);
+					}
 					break;
 				}
+				
+				//TODO detection for the other collision types OWN_BODY, OTHER_SNAKE & ARTIFACT
 			}
 			// remove tail from grid
 			Point tail = s.getLastTailPosition();
@@ -173,5 +188,9 @@ public class GameGrid {
 
 	public void shutdown() {
 		this.artifacts = new ArrayList<Artifact>();
+	}
+
+	public void addCollisionListener(CollisionListener listener) {
+		this.collisionListeners.add(listener);
 	}
 }

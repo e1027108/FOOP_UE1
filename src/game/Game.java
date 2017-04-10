@@ -5,9 +5,10 @@ import java.util.List;
 
 import artifacts.logic.ArtifactHandler;
 import artifacts.logic.ArtifactHandlerImpl;
+import game.GameGrid.CollisionTypes;
 import game.ai.SnakeAI;
 
-public class Game {
+public class Game implements CollisionListener {
 
 	private GameGrid grid;
 	private int numPlayers;
@@ -33,6 +34,8 @@ public class Game {
 			System.out.println("Only 1 - 4 Players allowed.");
 			System.exit(0);
 		}
+		
+		this.grid.addCollisionListener(this);
 
 		this.children = new ArrayList<Thread>();
 		this.artifactHandler = new ArtifactHandlerImpl(this);
@@ -124,4 +127,10 @@ public class Game {
 	public ArtifactHandler getArtifactHandler() {
 		return this.artifactHandler;
 	}
+
+	@Override
+	public void collisionDetected(CollisionTypes coll) {
+		System.out.println("Detected collision of type: " + coll);
+	}
+
 }

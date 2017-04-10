@@ -227,7 +227,7 @@ public class GameController {
 
 		this.game.getArtifactHandler().checkDespawn();
 
-		// TODO remove artifacts that are not longer active
+		// set/remove artifacts
 		for (Artifact a : game.getGrid().getArtifacts()) {
 			Point pos = a.getPlacement();
 			r = (Rectangle) gridPane.getChildren().get((pos.getX() * 28) + pos.getY());
