@@ -233,8 +233,12 @@ public class GameController {
 			r = (Rectangle) gridPane.getChildren().get((pos.getX() * 28) + pos.getY());
 			ImagePattern icon;
 			try {
-				icon = new ImagePattern(new Image(new FileInputStream(a.getImage())));
-				r.setFill(icon);
+				if (a.isActive()) {
+					icon = new ImagePattern(new Image(new FileInputStream(a.getImage())));
+					r.setFill(icon);
+				} else {
+					r.setFill(emptyCellColor);
+				}
 			} catch (FileNotFoundException e) {
 				e.printStackTrace();
 			}
