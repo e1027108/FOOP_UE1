@@ -19,9 +19,9 @@ public abstract class CollisionTarget {
 		this.collisionListeners.add(listener);
 	}
 
-	protected void fireCollisionDetection(CollisionTypes coll) {
+	protected void fireCollisionDetection(CollisionTypes coll, Snake snek, Point point, int gridID) {
 		for (CollisionListener cl : this.collisionListeners) {
-			cl.collisionDetected(coll);
+			cl.collisionDetected(coll, snek, point, gridID);
 		}
 	}
 }

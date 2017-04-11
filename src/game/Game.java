@@ -3,6 +3,8 @@ package game;
 import java.util.ArrayList;
 import java.util.List;
 
+import artifacts.Artifact;
+import artifacts.Artifacts;
 import artifacts.logic.ArtifactHandler;
 import artifacts.logic.ArtifactHandlerImpl;
 import game.CollisionTarget.CollisionTypes;
@@ -129,8 +131,55 @@ public class Game implements CollisionListener {
 	}
 
 	@Override
-	public void collisionDetected(CollisionTypes coll) {
+	public void collisionDetected(CollisionTypes coll, Snake snek, Point point, int gridID) {
 		System.out.println("Detected collision of type: " + coll);
+		/* handle artifacts */
+		if(coll == CollisionTypes.ARTIFACT) {
+			System.out.println("ate an artifact");
+			eatArtifact(snek, point, gridID);
+		}
+	}
+
+	private void eatArtifact(Snake snek, Point point, int gridID) {
+		// TODO handle artifacts
+		switch (gridID) {
+		case 10: // HEALTH_INCREASE
+			System.out.println("i ate a " + Artifacts.HEALTH_INCREASE);
+			break;
+		case 11: // HEALTH_DECREASE
+			System.out.println("i ate a " + Artifacts.HEALTH_DECREASE);
+			break;
+		case 12: // SIZE_INCREASE
+			System.out.println("i ate a " + Artifacts.SIZE_INCREASE);
+			break;
+		case 13: // SIZE_DECREASE
+			System.out.println("i ate a " + Artifacts.SIZE_DECREASE);
+			break;
+		case 20: // BLOCK_CONTROL
+			System.out.println("i ate a " + Artifacts.BLOCK_CONTROL);
+			break;
+		case 21: // REVERSE_CONTROL
+			System.out.println("i ate a " + Artifacts.REVERSE_CONTROL);
+			break;
+		case 22: // INVULNERABILITY
+			System.out.println("i ate a " + Artifacts.INVULNERABILITY);
+			break;
+		case 23: // SPEED_INCREASE
+			System.out.println("i ate a " + Artifacts.SPEED_INCREASE);
+			break;
+		case 24: // SPEED_DECREASE
+			System.out.println("i ate a " + Artifacts.SPEED_DECREASE);
+			break;
+		default:
+			break;
+		}
+
+		// set artifact inactive
+		for (Artifact art : this.grid.getArtifacts()) {
+			if (art.getPlacement().equals(point)) {
+				art.setActive(false);
+			}
+		}
 	}
 
 }

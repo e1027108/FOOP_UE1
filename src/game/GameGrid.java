@@ -74,13 +74,14 @@ public class GameGrid extends CollisionTarget {
 
 			Point[] body = s.getBody();
 			Point point = body[0];
+
 			/*
 			 * do most of the collision detection when point = body[0] (head)
 			 */
 			if (point.getX() < 0 || point.getX() >= size || point.getY() < 0 || point.getY() >= size) {
 				s.setAlive(false);
 				/* fire collision detection : BORDER */
-				fireCollisionDetection(CollisionTypes.BORDER);
+				fireCollisionDetection(CollisionTypes.BORDER, s, point, 0);
 				break;
 			}
 
@@ -88,15 +89,15 @@ public class GameGrid extends CollisionTarget {
 			if (gridValue != 0) {
 				// own_body
 				if (gridValue == s.getGridID()) {
-					fireCollisionDetection(CollisionTypes.OWN_BODY);
+					fireCollisionDetection(CollisionTypes.OWN_BODY, s, point, gridValue);
 				}
 				// other_snake
 				else if (gridValue <= 4) {
-					fireCollisionDetection(CollisionTypes.OTHER_SNAKE);
+					fireCollisionDetection(CollisionTypes.OTHER_SNAKE, s, point, gridValue);
 				}
 				// artifact
 				else {
-					fireCollisionDetection(CollisionTypes.ARTIFACT);
+					fireCollisionDetection(CollisionTypes.ARTIFACT, s, point, gridValue);
 				}
 			}
 
@@ -159,14 +160,9 @@ public class GameGrid extends CollisionTarget {
 		});
 
 		this.executor.execute(futureAdd);
-		try {
-			System.out.println("Successfully placed artifact at " + artifact.getPlacement().toString() + ", future: "
-					+ futureAdd.get());
-			for (Artifact art : artifacts) {
-				System.out.println(art.getPlacement());
-			}
-		} catch (InterruptedException | ExecutionException e) {
-			e.printStackTrace();
+		System.out.println("Successfully placed artifact at " + artifact.getPlacement().toString());
+		for (Artifact art : artifacts) {
+			System.out.println(art.getPlacement() + ", " + art.isActive());
 		}
 	}
 
