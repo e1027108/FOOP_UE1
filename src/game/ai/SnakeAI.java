@@ -418,14 +418,8 @@ public class SnakeAI extends SnakeImpl {
 
 		for (Snake s : game.getSnakes()) {
 			if (!s.equals(this)) {
-				if (inVicinity(xhead, yhead, s.getBody()[0], distance)) { // getBody()[0]
-																			// is
-																			// the
-																			// head
-																			// of
-																			// another
-																			// snake,
-																			// right?
+				// getBody()[0] is the head of another snake
+				if (inVicinity(xhead, yhead, s.getBody()[0], distance)) { 
 					relevantObjects.add(s);
 				}
 			}
@@ -434,49 +428,19 @@ public class SnakeAI extends SnakeImpl {
 		return relevantObjects;
 	}
 
-	private boolean inVicinity(int xhead, int yhead, Point opoint, int distance) {
-		int xoverflow = 0;
-		int yoverflow = 0;
-		int oxpos = opoint.getX();
-		int oypos = opoint.getY();
-		GameGrid grid = game.getGrid();
+	/**
+	 * measures if other object is within distance
+	 * @param xhead our head's xposition
+	 * @param yhead our head's yposition
+	 * @param other the other object
+	 * @param distance the distance up to which can be seen
+	 * @return if the other object is in the vicinity
+	 */
+	private boolean inVicinity(int xhead, int yhead, Point other, int distance) {
+		int oxpos = other.getX();
+		int oypos = other.getY();
 
-		// checks if close to edge
-		if (xhead + distance > grid.getSize()) {
-			xoverflow = xhead + distance - grid.getSize();
-		} else if (xhead - distance < 0) {
-			xoverflow = xhead - distance;
-		}
-
-		if (yhead + distance > grid.getSize()) {
-			yoverflow = yhead + distance - grid.getSize();
-		} else if (yhead - distance < 0) {
-			yoverflow = yhead - distance;
-		}
-
-		// checks the other side of the grid (up to distance), if close to edge
-		if (xoverflow != 0 || yoverflow != 0) {
-			boolean xfine = true;
-			boolean yfine = true;
-
-			if (xoverflow < 0 && xoverflow + grid.getSize() >= oxpos) {
-				xfine = false;
-			} else if (xoverflow > 0 && xoverflow < oxpos) {
-				xfine = false;
-			}
-
-			if (yoverflow < 0 && yoverflow + grid.getSize() >= oypos) {
-				yfine = false;
-			} else if (yoverflow > 0 && yoverflow < oypos) {
-				yfine = false;
-			}
-
-			if (yfine && xfine) {
-				return true;
-			}
-		}
-		// standard check
-		else if (Math.abs(xhead - oxpos) <= distance && Math.abs(yhead - oypos) <= distance) {
+		if (Math.abs(xhead - oxpos) <= distance && Math.abs(yhead - oypos) <= distance) {
 			return true;
 		}
 
