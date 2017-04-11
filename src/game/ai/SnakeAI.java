@@ -55,7 +55,9 @@ public class SnakeAI extends SnakeImpl {
 		Object important = getValuedObject(closeObjects);
 
 		next = getPreferredDirection(important);
-		//TODO pull random out of getpreferred and check after for random variation?
+		
+		//can deviate from best choice
+		next = getRandomDirection(P_OTHER);
 
 		if(!isValidDirection(next)){
 			next = returnValidDirection(next);
@@ -118,7 +120,7 @@ public class SnakeAI extends SnakeImpl {
 		}
 		else if(d == Directions.S && direction == Directions.N || d == Directions.N && direction == Directions.S ||
 				d == Directions.E && direction == Directions.W || d == Directions.W && direction == Directions.E){
-			return false;			
+			return false;
 		}
 		else{
 			for(Point p: position){
@@ -128,6 +130,7 @@ public class SnakeAI extends SnakeImpl {
 			}
 		}
 
+		//System.out.println("Point: " + nextPoint.toString() + " is valid!.");
 		return true;
 	}
 
@@ -138,7 +141,8 @@ public class SnakeAI extends SnakeImpl {
 		if (goalObject != null) {
 			value = valueObject(goalObject);
 		} else {
-			return getRandomDirection(P_OTHER);
+			return direction;
+			//return getRandomDirection(P_OTHER);
 		}
 
 		Point goalPosition = getGoalPosition(goalObject);
