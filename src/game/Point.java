@@ -30,4 +30,13 @@ public class Point {
 	public String toString() {
 		return "(" + this.x + "," + this.y + ")";
 	}
+	
+	public boolean equals(Point other){
+		if(this.x == other.getX() && this.y == other.getY()){
+			return true;
+		}
+		else{
+			return false;
+		}
+	}
 }

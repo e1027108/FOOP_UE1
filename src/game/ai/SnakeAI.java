@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import com.sun.javafx.scene.traversal.Direction;
+
 import artifacts.Artifact;
 import artifacts.permanent.HealthDecreaseArtifact;
 import artifacts.permanent.HealthIncreaseArtifact;
@@ -16,7 +18,6 @@ import artifacts.temporary.SpeedDecreaseArtifact;
 import artifacts.temporary.SpeedIncreaseArtifact;
 import game.Directions;
 import game.Game;
-import game.GameGrid;
 import game.Point;
 import game.Snake;
 import game.SnakeImpl;
@@ -27,8 +28,8 @@ public class SnakeAI extends SnakeImpl {
 
 	private static final double P_OTHER = 0.1;
 	private static final int DISTANCE = 5; // TODO, if we use bigger grids (28
-											// seems small), greater than 5
-											// would be advised
+	// seems small), greater than 5
+	// would be advised
 
 	public SnakeAI(String name, int gridID, Directions dir, Game game) {
 		super(name, gridID, dir);
@@ -44,10 +45,77 @@ public class SnakeAI extends SnakeImpl {
 		Object important = getValuedObject(closeObjects);
 
 		next = getPreferredDirection(important);
-
-		// TODO check if next is a point of the own body, and if yes change next
+		
+		if(!isValidDirection(next)){
+			System.out.println("whoops");
+			next = returnValidDirection(next);
+		}
 
 		direction = next;
+	}
+
+	/**
+	 * checks whether next direction is valid, if not
+	 * checks other 2 possible directions and returns
+	 * something valid if possible (if not, next stays next)
+	 * @param next the direction we want to check
+	 * @return next if valid, otw other direction
+	 */
+	private Directions returnValidDirection(Directions next) {
+		if(isValidDirection(next)){
+			return next;
+		}
+		else{
+			for(Directions d: Directions.values()){
+				if(isValidDirection(d)){
+					return d;
+				}
+			}
+		}
+		
+		return next;
+	}
+
+	/**
+	 * determines if the snake is headed into itself or into the wall
+	 * @param d the planned direction
+	 * @return crash yes/no
+	 */
+	private boolean isValidDirection(Directions d) {
+		Point nextPoint = null;
+		int xpos = position.getFirst().getX();
+		int ypos = position.getFirst().getY();
+		
+		if(d == Directions.N){
+			nextPoint = new Point(xpos-1,ypos);
+		}
+		else if(d == Directions.S){
+			nextPoint = new Point(xpos+1,ypos);
+		}
+		else if(d == Directions.E){
+			nextPoint = new Point(xpos,ypos+1);
+		}
+		else if(d == Directions.W){
+			nextPoint = new Point(xpos,ypos-1);
+		}
+		
+		if(nextPoint.getX() < 0 || nextPoint.getY() < 0 
+				|| nextPoint.getX() >= game.getGrid().getSize() || nextPoint.getY() >= game.getGrid().getSize()){
+			return false;
+		}
+		else if(d == Directions.S && direction == Directions.N || d == Directions.N && direction == Directions.S ||
+				d == Directions.E && direction == Directions.W || d == Directions.W && direction == Directions.E){
+			return false;			
+		}
+		else{
+			for(Point p: position){
+				if(p.equals(nextPoint)){ //uses Point.equals(Point other)
+					return false;
+				}
+			}
+		}
+		
+		return true;
 	}
 
 	private Directions getPreferredDirection(Object goalObject) {
@@ -55,21 +123,18 @@ public class SnakeAI extends SnakeImpl {
 		double value;
 
 		if (goalObject != null) {
-			value = valueObject(goalObject); // can't really get this and the
-												// object, or should i work with
-												// Pair<Object, Double> ?
+			value = valueObject(goalObject);
 		} else {
 			return getRandomDirection(P_OTHER);
 		}
 
-		Point goalPosition = getGoalPosition(goalObject); // TODO reuse
-															// elsewhere
+		Point goalPosition = getGoalPosition(goalObject); // TODO reuse elsewhere
 		int goalx = goalPosition.getX();
 		int goaly = goalPosition.getY();
 		int currx = position.getFirst().getX();
 		int curry = position.getFirst().getY();
 
-		// TODO re-think direction choosing
+		// TODO re-think direction choosing?
 		if (currx < goalx) {
 			if (value > 0) {
 				newdirection = Directions.E;
@@ -117,14 +182,11 @@ public class SnakeAI extends SnakeImpl {
 		}
 	}
 
-	private Directions getRandomDirection(double otherProbability) { // otherProbability
-		// is the chance
-		// of a
-		// direction
-		// change
+	private Directions getRandomDirection(double changeChance) {
 		Random r = new Random();
 
-		if (r.nextDouble() <= otherProbability) {
+		if (r.nextDouble() <= changeChance) {
+			System.out.println("change!");
 			List<Directions> vertical = new ArrayList<Directions>();
 			List<Directions> horizontal = new ArrayList<Directions>();
 			List<Directions> directions = new ArrayList<Directions>();
@@ -169,9 +231,9 @@ public class SnakeAI extends SnakeImpl {
 		for (Object o : closeObjects) {
 			double objectValue = valueObject(o);
 			if (Math.abs(objectValue) > Math.abs(currentValue)) { // finds the
-																	// most
-																	// severe
-																	// value
+				// most
+				// severe
+				// value
 				currentValue = objectValue;
 				currentObject = o;
 			}
@@ -194,7 +256,7 @@ public class SnakeAI extends SnakeImpl {
 			Point closest = getClosestPoint(ox, oy);
 
 			distance = Math.abs(closest.getX() - ox) + Math.abs(closest.getY() - oy); // override
-																						// necessary?
+			// necessary?
 
 			if (!closest.equals(position.getFirst())) {
 				value = -.9 * (((double) 5 / distance) / 5);
@@ -202,16 +264,16 @@ public class SnakeAI extends SnakeImpl {
 				value = .7 * ((double) 1 / distance);
 			}
 		} else if (o instanceof Artifact) { // TODO all current values currently
-											// assume DISTANCE = 5, more general
-											// computation if changed
+			// assume DISTANCE = 5, more general
+			// computation if changed
 			// positive pickups
 			if (o instanceof HealthIncreaseArtifact) { // 0: full health
-														// already, 0.1:
-														// overheal, [0.45,1]
-														// depending on distance
-														// and health
+				// already, 0.1:
+				// overheal, [0.45,1]
+				// depending on distance
+				// and health
 				value = .9 * ((double) 1 / distance); // high values, reducing
-														// in size if far away
+				// in size if far away
 				/*
 				 * if(this.getHealth() - this.getHealth() <
 				 * ((HealthIncreaseArtifact) o).getIncrease()){ //TODO replace
@@ -221,27 +283,27 @@ public class SnakeAI extends SnakeImpl {
 				 * this.getMaxHealth value = 0; }
 				 */
 			} else if (o instanceof SizeIncreaseArtifact) { // assumed, that you
-															// kinda always want
-															// to grow
+				// kinda always want
+				// to grow
 				value = .4 * ((double) 1 / distance);
 			} else if (o instanceof InvulnerabilityArtifact) { // TODO need info
-																// if already
-																// invulnerable
+				// if already
+				// invulnerable
 				/*
 				 * if(this.isInvulnerable()) value = 0; } else{
 				 */
 				value = 1 * ((double) 1 / distance);
 				// }
 			} else if (o instanceof SpeedIncreaseArtifact) { // assume you
-																// always want
-																// to become
-																// faster, but
-																// less if you
-																// already are
-																// faster
+				// always want
+				// to become
+				// faster, but
+				// less if you
+				// already are
+				// faster
 				if (this.getSpeed() > this.getSpeed()) { // TODO replace right
-															// by
-															// this.getStandardSpeed()
+					// by
+					// this.getStandardSpeed()
 					value = .3 * ((double) 1 / distance);
 				} else {
 					value = .5 * ((double) 1 / distance);
@@ -249,10 +311,10 @@ public class SnakeAI extends SnakeImpl {
 			}
 			// negative pickups
 			else if (o instanceof HealthDecreaseArtifact) {// don't care if high
-															// health
+				// health
 				if (this.getHealth() == this.getHealth()) { // TODO compare with
-															// maximumhealth
-															// instead
+					// maximumhealth
+					// instead
 					value = -(.1);
 				} else if (this.getHealth() - ((HealthDecreaseArtifact) o).getDecrease() <= 0) {
 					value = -1;
@@ -260,35 +322,26 @@ public class SnakeAI extends SnakeImpl {
 					double remainderPercentage = (this.getHealth() - ((HealthDecreaseArtifact) o).getDecrease())
 							/ this.getHealth(); // TODO by max health
 
-					value = -.9 * (((double) 5 / distance) / 5) * ((remainderPercentage - 1) * -1); // the
-																									// closer
-																									// the
-																									// less
-																									// we
-																									// want
-																									// it,
-																									// less
-																									// health
-																									// -->
-																									// less
-																									// desire
+					// the closer the less we want it, less health --> less desire
+					value = -.9 * (((double) 5 / distance) / 5) * ((remainderPercentage - 1) * -1); 
+
 				}
 			} else if (o instanceof SizeDecreaseArtifact) {
 				value = -.4 * (((double) 5 / distance) / 5); // we never want
-																// this
+				// this
 			} else if (o instanceof BlockControlArtifact) {
 				value = -.9 * (((double) 5 / distance) / 5); // we really never
-																// want this
+				// want this
 			} else if (o instanceof ReverseControlArtifact) {
 				value = -1 * (((double) 5 / distance) / 5); // we can't stand
-															// this at all, this
-															// would actively do
-															// all the wrong
-															// things
+				// this at all, this
+				// would actively do
+				// all the wrong
+				// things
 			} else if (o instanceof SpeedDecreaseArtifact) {
 				if (this.getSpeed() > this.getSpeed()) { // TODO replace right
-															// by
-															// this.getStandardSpeed()
+					// by
+					// this.getStandardSpeed()
 					value = -.3 * (((double) 5 / distance) / 5);
 				} else {
 					value = -.5 * (((double) 5 / distance) / 5);
@@ -322,9 +375,9 @@ public class SnakeAI extends SnakeImpl {
 			distance = Math.abs(closest.getX() - ox) + Math.abs(closest.getY() - oy);
 
 			if (!closest.equals(position.getFirst())) { // other snake hunts me
-														// --> if the enemy
-														// snake needs to turn
-														// around + 1
+				// --> if the enemy
+				// snake needs to turn
+				// around + 1
 				if (oy > closest.getY() && ((Snake) o).getDirection() == Directions.W
 						|| oy < closest.getY() && ((Snake) o).getDirection() == Directions.E) {
 					distance++;
@@ -348,25 +401,13 @@ public class SnakeAI extends SnakeImpl {
 		 */
 		if (ox == xhead) { // x is up and down
 			if (oy > yhead && direction == Directions.E || oy < yhead && direction == Directions.W) { // same
-				// would
-				// mean
-				// we
-				// are
-				// currently
-				// on
-				// it!
+				// means we are currently on it!
 				distance += 2;
 			}
 		}
 		if (oy == yhead) { // y is left and right
 			if (ox > xhead && direction == Directions.S || ox < xhead && direction == Directions.N) { // same
-				// would
-				// mean
-				// we
-				// are
-				// currently
-				// on
-				// it!
+				// means we are currently on it!
 				distance += 2;
 			}
 		}
