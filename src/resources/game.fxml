@@ -5,12 +5,12 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane fx:id="gamePane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="768.0" prefWidth="1024.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2" fx:controller="gui.GameController">
+<AnchorPane fx:id="gamePane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="900.0" prefWidth="1160.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.GameController">
   <!-- TODO Add Nodes -->
   <children>
-    <Separator layoutX="12.0" layoutY="14.0" orientation="VERTICAL" prefHeight="740.0" />
-    <Separator layoutX="270.0" layoutY="14.0" orientation="VERTICAL" prefHeight="740.0" />
-    <AnchorPane layoutX="14.0" layoutY="14.0" prefHeight="740.0" prefWidth="255.9998779296875">
+    <Separator layoutX="12.0" layoutY="14.0" orientation="VERTICAL" prefHeight="870.0" />
+    <Separator layoutX="270.0" layoutY="14.0" orientation="VERTICAL" prefHeight="870.0" />
+    <AnchorPane layoutX="14.0" layoutY="14.0" prefHeight="870.0" prefWidth="260.0">
       <children>
         <Separator layoutX="2.0" layoutY="0.0" prefWidth="258.0" />
         <AnchorPane fx:id="player1Pane" layoutX="0.0" layoutY="0.0" prefHeight="100.0" prefWidth="258.0">
@@ -40,17 +40,17 @@
         <Separator layoutX="0.0" layoutY="400.0" prefWidth="258.0" />
         <TextArea fx:id="msgArea" editable="false" layoutX="28.0" layoutY="428.0" prefHeight="220.0" prefWidth="200.0" wrapText="true" />
         <Button fx:id="disconnectBtn" layoutX="28.0" layoutY="680.0" mnemonicParsing="false" onAction="#onDisconnectClick" text="Disconnect" />
-        <Separator layoutX="0.0" layoutY="740.0" prefWidth="258.0" />
+        <Separator layoutX="-1.0" layoutY="870.0" prefWidth="258.0" />
       </children>
     </AnchorPane>
-    <AnchorPane id="gamePane" fx:id="playPane" layoutX="270.0" layoutY="14.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="740.0" prefWidth="740.0">
+    <AnchorPane id="gamePane" fx:id="playPane" layoutX="270.0" layoutY="14.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="870.0" prefWidth="870.0">
       <children>
-        <TilePane fx:id="gridPane" prefHeight="743.0" prefWidth="740.0" />
+        <TilePane fx:id="gridPane" prefHeight="870.0" prefWidth="870.0" />
       </children>
     </AnchorPane>
-    <Separator layoutX="272.0" layoutY="14.0" orientation="VERTICAL" prefHeight="740.0" />
-    <Separator layoutX="272.0" layoutY="14.0" prefWidth="740.0" />
-    <Separator layoutX="272.0" layoutY="754.0" prefWidth="740.0" />
-    <Separator layoutX="1010.0" layoutY="14.0" orientation="VERTICAL" prefHeight="740.0" />
+    <Separator layoutX="272.0" layoutY="14.0" orientation="VERTICAL" prefHeight="870.0" />
+    <Separator layoutX="272.0" layoutY="14.0" prefWidth="870.0" />
+    <Separator layoutX="272.0" layoutY="884.0" prefWidth="870.0" />
+    <Separator layoutX="1142.0" layoutY="14.0" orientation="VERTICAL" prefHeight="870.0" />
   </children>
 </AnchorPane>

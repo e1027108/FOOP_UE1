@@ -21,16 +21,16 @@ public class Game implements CollisionListener {
 	private ArrayList<Snake> snakes;
 
 	// TODO: change error message --> just temporary
-	public Game(int num, String name) {
+	public Game(int num, String name, int gridSize) {
 		System.out.println(num);
 
 		firstPlayer = name;
 		if (num > 0 && num < 5) {
 			numPlayers = num;
-			grid = new GameGrid(28);
+			grid = new GameGrid(gridSize);
 		} else if (num == 0) {
 			numPlayers = 1;
-			grid = new GameGrid(28);
+			grid = new GameGrid(gridSize);
 			firstPlayer = null; // TODO this needs a better solution
 		} else {
 			System.out.println("Only 1 - 4 Players allowed.");
