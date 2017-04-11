@@ -73,6 +73,10 @@ public class GameController {
 	private Timeline timeline;
 
 	private final Color emptyCellColor = Color.valueOf("FFFFFF");
+	
+	private static final int gridSize = 39;
+	
+	private int tileSize;
 
 	@FXML
 	public void initialize() {
@@ -89,6 +93,9 @@ public class GameController {
 		assignAIColors();
 
 		gridPane.setStyle("-fx-background-color: #FFFFFF;");
+		
+		tileSize = (int) Math.floor((gridPane.getPrefHeight() - (gridSize - 1))/ gridSize);
+		System.out.println(tileSize);
 
 		// TODO if AI only do not contact/host any server
 
@@ -131,7 +138,7 @@ public class GameController {
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	private void onStart() {
 
-		game = new Game(info.getPlayers(), info.getName());
+		game = new Game(info.getPlayers(), info.getName(), gridSize);
 		game.run();
 
 		initGrid();
@@ -194,12 +201,12 @@ public class GameController {
 
 			Point[] body = s.getBody();
 			for (Point p : body) {
-				r = (Rectangle) gridPane.getChildren().get((p.getX() * 28) + p.getY());
+				r = (Rectangle) gridPane.getChildren().get((p.getX() * gridSize) + p.getY());
 				r.setFill(info.getColor());
 			}
 
 			Point last = s.getLastTailPosition();
-			r = (Rectangle) gridPane.getChildren().get((last.getX() * 28) + last.getY());
+			r = (Rectangle) gridPane.getChildren().get((last.getX() * gridSize) + last.getY());
 			r.setFill(emptyCellColor);
 		}
 
@@ -208,7 +215,7 @@ public class GameController {
 		// set/remove artifacts
 		for (Artifact a : game.getGrid().getArtifacts()) {
 			Point pos = a.getPlacement();
-			r = (Rectangle) gridPane.getChildren().get((pos.getX() * 28) + pos.getY());
+			r = (Rectangle) gridPane.getChildren().get((pos.getX() * gridSize) + pos.getY());
 			ImagePattern icon;
 			try {
 				if (a.isActive()) {
@@ -228,15 +235,15 @@ public class GameController {
 
 		gridPane.getChildren().clear();
 
-		gridPane.setPrefColumns(28);
-		gridPane.setPrefRows(28);
+		gridPane.setPrefColumns(gridSize);
+		gridPane.setPrefRows(gridSize);
 		gridPane.setVgap(1);
 		gridPane.setHgap(1);
 		gridPane.setAlignment(Pos.CENTER);
 
-		for (int i = 0; i < 28; i++) {
-			for (int j = 0; j < 28; j++) {
-				Rectangle r = new Rectangle(0, 0, 25, 25);
+		for (int i = 0; i < gridSize; i++) {
+			for (int j = 0; j < gridSize; j++) {
+				Rectangle r = new Rectangle(0, 0, tileSize, tileSize);
 				r.setFill(emptyCellColor);
 				gridPane.getChildren().add(r);
 			}
