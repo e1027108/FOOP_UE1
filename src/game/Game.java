@@ -5,7 +5,7 @@ import java.util.List;
 
 import artifacts.logic.ArtifactHandler;
 import artifacts.logic.ArtifactHandlerImpl;
-import game.GameGrid.CollisionTypes;
+import game.CollisionTarget.CollisionTypes;
 import game.ai.SnakeAI;
 
 public class Game implements CollisionListener {
@@ -49,9 +49,9 @@ public class Game implements CollisionListener {
 
 		// init humanPlayer?
 		if (firstPlayer != null) {
-			player = new SnakeImpl(firstPlayer, Directions.N);
+			player = new SnakeImpl(firstPlayer, 1, Directions.N);
 		} else {
-			player = new SnakeAI("AI 0", Directions.N, this);
+			player = new SnakeAI("AI 0", 1, Directions.N, this);
 		}
 		snakes.add(player);
 
@@ -62,7 +62,7 @@ public class Game implements CollisionListener {
 		directions.add(Directions.E);
 		directions.add(Directions.W);
 		for (int i = 2; i <= numPlayers; i++) {
-			player = new SnakeAI("AI_" + i, directions.get(i - 1), this);
+			player = new SnakeAI("AI_" + i, i, directions.get(i - 1), this);
 			snakes.add(player);
 		}
 

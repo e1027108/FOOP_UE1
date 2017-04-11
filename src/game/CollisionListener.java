@@ -1,6 +1,6 @@
 package game;
 
-import game.GameGrid.CollisionTypes;
+import game.CollisionTarget.CollisionTypes;
 
 public interface CollisionListener {
 

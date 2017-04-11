@@ -177,4 +177,9 @@ public class SnakeModifier implements Snake {
 	public void changeDirection(Directions d) {
 		this.snek.changeDirection(d);
 	}
+
+	@Override
+	public int getGridID() {
+		return this.snek.getGridID();
+	}
 }

@@ -34,4 +34,6 @@ public interface Snake {
 	double getSpeed();
 	
 	int getSize();
+
+	int getGridID();
 }

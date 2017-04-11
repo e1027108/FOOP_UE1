@@ -13,15 +13,10 @@ import artifacts.Artifact;
 import artifacts.ArtifactConstants;
 import artifacts.ArtifactConstants.Setting;
 
-public class GameGrid {
+public class GameGrid extends CollisionTarget {
 
 	public static final int NUM_OF_THREADS = 2;
 
-	public enum CollisionTypes {
-		OWN_BODY, OTHER_SNAKE, BORDER, ARTIFACT
-	}
-
-	private List<CollisionListener> collisionListeners;
 	private int size;
 	private int[][] grid; // TODO change to Point[][]?
 	private List<Artifact> artifacts;
@@ -31,7 +26,6 @@ public class GameGrid {
 		size = s;
 		grid = new int[size][size];
 		this.artifacts = new ArrayList<Artifact>();
-		this.collisionListeners = new ArrayList<CollisionListener>();
 
 		/*
 		 * create thread pool for concurrent handling of artifacts list. all
@@ -74,36 +68,50 @@ public class GameGrid {
 		return size;
 	}
 
-	// after every move draw the grid again
-	// TODO: collision detection
+	// after every move draw the grid again.
 	public void draw(ArrayList<Snake> snakes) {
-		int colour = 1;
 		for (Snake s : snakes) {
 
 			Point[] body = s.getBody();
-			for (int j = 0; j < body.length; j++) {
-				Point point = body[j];
-				if (point.getX() >= 0 && point.getX() < size && point.getY() >= 0 && point.getY() < size) {
-					grid[point.getX()][point.getY()] = colour;
-				} else {
-					s.setAlive(false);
-					/* fire collision detection : BORDER */
-					for (CollisionListener cl : this.collisionListeners) {
-						cl.collisionDetected(CollisionTypes.BORDER);
-					}
-					break;
+			Point point = body[0];
+			/*
+			 * do most of the collision detection when point = body[0] (head)
+			 */
+			if (point.getX() < 0 || point.getX() >= size || point.getY() < 0 || point.getY() >= size) {
+				s.setAlive(false);
+				/* fire collision detection : BORDER */
+				fireCollisionDetection(CollisionTypes.BORDER);
+				break;
+			}
+
+			int gridValue = grid[point.getX()][point.getY()];
+			if (gridValue != 0) {
+				// own_body
+				if (gridValue == s.getGridID()) {
+					fireCollisionDetection(CollisionTypes.OWN_BODY);
 				}
-				
-				//TODO detection for the other collision types OWN_BODY, OTHER_SNAKE & ARTIFACT
+				// other_snake
+				else if (gridValue <= 4) {
+					fireCollisionDetection(CollisionTypes.OTHER_SNAKE);
+				}
+				// artifact
+				else {
+					fireCollisionDetection(CollisionTypes.ARTIFACT);
+				}
+			}
+
+			// set ids for the whole snake body
+			for (int j = 0; j < body.length; j++) {
+				point = body[j];
+				grid[point.getX()][point.getY()] = s.getGridID();
 			}
 			// remove tail from grid
 			Point tail = s.getLastTailPosition();
 			if (tail != null) {
-				if (grid[tail.getX()][tail.getY()] == colour) {
+				if (grid[tail.getX()][tail.getY()] == s.getGridID()) {
 					grid[tail.getX()][tail.getY()] = 0;
 				}
 			}
-			colour++;
 		}
 		for (Artifact art : this.artifacts) {
 			int x = art.getPlacement().getX();
@@ -116,7 +124,6 @@ public class GameGrid {
 			}
 		}
 
-		printGrid();
 		// TODO: mapping of colour for every type of artifact
 		/*
 		 * colour = 5; for (Artifact a : artifacts) { if
@@ -188,9 +195,5 @@ public class GameGrid {
 
 	public void shutdown() {
 		this.artifacts = new ArrayList<Artifact>();
-	}
-
-	public void addCollisionListener(CollisionListener listener) {
-		this.collisionListeners.add(listener);
 	}
 }

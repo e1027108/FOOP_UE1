@@ -30,8 +30,8 @@ public class SnakeAI extends SnakeImpl {
 											// seems small), greater than 5
 											// would be advised
 
-	public SnakeAI(String name, Directions dir, Game game) {
-		super(name, dir);
+	public SnakeAI(String name, int gridID, Directions dir, Game game) {
+		super(name, gridID, dir);
 
 		this.game = game;
 	}

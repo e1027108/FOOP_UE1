@@ -11,7 +11,7 @@ import java.util.List;
 public class SnakeImpl implements Snake {
 
 	private String name;
-
+	private int gridID;
 	// TODO: colour
 
 	protected Directions direction;
@@ -26,8 +26,9 @@ public class SnakeImpl implements Snake {
 
 	protected ArrayDeque<Point> position;
 
-	public SnakeImpl(String n, Directions dir) {
+	public SnakeImpl(String n, int gridID, Directions dir) {
 		name = n;
+		this.gridID = gridID;
 		direction = dir;
 		
 		setAlive(true);
@@ -71,6 +72,7 @@ public class SnakeImpl implements Snake {
 			position.addFirst(new Point(head.getX(), head.getY() - 1));
 		}
 		lastTailPosition = position.pollLast();
+		
 	}
 
 	@Override
@@ -158,6 +160,10 @@ public class SnakeImpl implements Snake {
 	@Override
 	public int getSize() {
 		return size;
+	}
+
+	public int getGridID() {
+		return gridID;
 	}
 
 }
