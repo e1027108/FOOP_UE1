@@ -28,9 +28,21 @@ public class SnakeAI extends SnakeImpl {
 
 	private static final double P_OTHER = 0.1;
 	private static final int DISTANCE = 6;
+	private static List<Directions> vertical, horizontal;
 
 	public SnakeAI(String name, int gridID, Directions dir, Game game) {
 		super(name, gridID, dir);
+		
+		if(vertical == null){
+			vertical = new ArrayList<Directions>();
+			vertical.add(Directions.N);
+			vertical.add(Directions.S);
+		}
+		if(horizontal == null){
+			horizontal = new ArrayList<Directions>();
+			horizontal.add(Directions.E);
+			horizontal.add(Directions.W);
+		}
 
 		this.game = game;
 	}
@@ -59,12 +71,6 @@ public class SnakeAI extends SnakeImpl {
 	 * @return next if valid, otw other direction
 	 */
 	private Directions returnValidDirection(Directions next) {
-		List<Directions> vertical = new ArrayList<Directions>();
-		List<Directions> horizontal = new ArrayList<Directions>();
-		vertical.add(Directions.N);
-		vertical.add(Directions.S);
-		horizontal.add(Directions.E);
-		horizontal.add(Directions.W);
 		List<Directions> toUse;
 
 		if(vertical.contains(next)){
@@ -192,13 +198,7 @@ public class SnakeAI extends SnakeImpl {
 		Random r = new Random();
 
 		if (r.nextDouble() <= changeChance) {
-			List<Directions> vertical = new ArrayList<Directions>();
-			List<Directions> horizontal = new ArrayList<Directions>();
 			List<Directions> directions = new ArrayList<Directions>();
-			vertical.add(Directions.N);
-			vertical.add(Directions.S);
-			horizontal.add(Directions.E);
-			horizontal.add(Directions.W);
 
 			if (vertical.contains(direction)) {
 				directions = horizontal;
