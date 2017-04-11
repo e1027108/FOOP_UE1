@@ -19,8 +19,6 @@ public interface Snake {
 
 	List<Point> getBodyList();
 
-	int getSize();
-
 	void initPosition(int x, int y);
 
 	boolean isAlive();
@@ -34,4 +32,6 @@ public interface Snake {
 	int getHealth();
 
 	double getSpeed();
+	
+	int getSize();
 }

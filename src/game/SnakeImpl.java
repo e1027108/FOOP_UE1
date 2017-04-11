@@ -15,10 +15,10 @@ public class SnakeImpl implements Snake {
 	// TODO: colour
 
 	protected Directions direction;
-	private int health;
-	private double speed;
-	private int size;
-	private int timeToReact;
+	private static final int health = 5;
+	private static final double speed = 1.0;
+	private static final int size = 4;
+	private static final int timeToReact = 1;
 
 	private boolean alive;
 
@@ -29,11 +29,7 @@ public class SnakeImpl implements Snake {
 	public SnakeImpl(String n, Directions dir) {
 		name = n;
 		direction = dir;
-		health = 5;
-		speed = 1.0;
-		size = 4;
-		timeToReact = 1;
-
+		
 		setAlive(true);
 
 		position = new ArrayDeque<Point>();
@@ -119,11 +115,6 @@ public class SnakeImpl implements Snake {
 	}
 
 	@Override
-	public int getSize() {
-		return this.size;
-	}
-
-	@Override
 	public String getName() {
 		return this.name;
 	}
@@ -136,14 +127,37 @@ public class SnakeImpl implements Snake {
 			direction = d;
 		}
 	}
+	
+	public int getCurrentHealth(int diff) {
+		return health + diff;
+		
+	}
+	
+	public double getCurrentSpeed(double diff) {
+		return speed + diff;
+	}
+	
+	public int getCurrentSize(int diff) {
+		return size + diff;
+	}
+	
+	public int getCurrentTimeToReact(int diff) {
+		return timeToReact + diff;
+	}
 
 	@Override
 	public int getHealth() {
-		return this.health;
+		return health;
 	}
 
 	@Override
 	public double getSpeed() {
-		return this.speed;
+		return speed;
 	}
+	
+	@Override
+	public int getSize() {
+		return size;
+	}
+
 }

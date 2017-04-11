@@ -32,11 +32,6 @@ public class SnakeModifier implements Snake {
 	}
 
 	@Override
-	public int getSize() {
-		return this.snek.getSize() + this.sizeIncrease - this.sizeDecrease;
-	}
-
-	@Override
 	public void initPosition(int x, int y) {
 		this.snek.initPosition(x, y);
 	}
@@ -147,12 +142,30 @@ public class SnakeModifier implements Snake {
 
 	@Override
 	public int getHealth() {
-		return this.snek.getHealth() + this.healthIncrease - this.healthDecrease;
+		return this.snek.getCurrentHealth(this.healthIncrease - this.healthDecrease);
 	}
 
 	@Override
 	public double getSpeed() {
-		return this.snek.getSpeed() + this.speedIncrease - this.speedDecrease;
+		return this.snek.getCurrentSpeed(this.speedIncrease - this.speedDecrease);
+	}
+	
+
+	@Override
+	public int getSize() {
+		return this.snek.getCurrentSize(this.sizeIncrease - this.sizeDecrease);
+	}
+	
+	public int getMaxHealth() {
+		return this.snek.getHealth();
+	}
+	
+	public double getMaxSpeed() {
+		return this.snek.getSpeed();
+	}
+	
+	public int getMaxSize() {
+		return this.snek.getSize();
 	}
 
 	@Override
