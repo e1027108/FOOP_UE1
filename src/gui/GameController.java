@@ -64,12 +64,8 @@ public class GameController {
 	private TextArea msgArea;
 
 	private GameDto info;
-	private final static double RANGE_VALUE = .12; // percentage on the color
-													// scale that we want to be
-													// off, at least (needs to
-													// be at most 1/6
-													// (=0.166..), otw can't
-													// find 3 other colors)
+	// percentage on the color scale that we want to be off, at least (needs to be at most 1/6 (=0.166..), otw can't/ find 3 other colors)
+	private final static double RANGE_VALUE = .12;
 	private final static Duration MOVE_DURATION = Duration.millis(100);
 
 	private Game game;
@@ -107,31 +103,13 @@ public class GameController {
 
 	// TODO add start button for host, additional information (health ...)
 
-	private void setPlayerStyle(int player, String name, Color color) { // TODO
-																		// expand
-																		// upon
-		String style = "-fx-background-color: #" + Integer.toHexString(color.hashCode()) + ";"; // TODO,
-																								// can,
-																								// in
-																								// rare
-																								// cases
-																								// produce
-																								// colors
-																								// with
-																								// 7
-																								// hex
-																								// values
-																								// Oo
-																								// (e.g.
-																								// #96b25ff),
-																								// seems
-																								// to
-																								// happen
-																								// if
-																								// 'ff'
-																								// occurs
-
-		System.out.println(name);
+	private void setPlayerStyle(int player, String name, Color color) {
+		//Integer.toHexString(color.hashCode())
+		
+		String hexcode = String.valueOf(color);
+		hexcode = hexcode.substring(2, 8);
+		
+		String style = "-fx-background-color: #" + hexcode + ";";
 
 		if (player == 1) {
 			player1Lbl.setText(name);
