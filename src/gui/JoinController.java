@@ -100,7 +100,7 @@ public class JoinController {
 		
 		Rectangle2D screenBounds = Screen.getPrimary().getVisualBounds();
 		String resource = "";
-		if (screenBounds.getHeight() < 768) {
+		if (screenBounds.getHeight() > 768) {
 			resource = "/game.fxml";
 		}
 		else {
