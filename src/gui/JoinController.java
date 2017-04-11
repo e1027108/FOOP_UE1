@@ -13,6 +13,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.JavaFXBuilderFactory;
+import javafx.geometry.Rectangle2D;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -23,6 +24,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Color;
+import javafx.stage.Screen;
 import javafx.stage.Stage;
 
 public class JoinController {
@@ -95,16 +97,26 @@ public class JoinController {
 
 		//TODO connect to IP given (not host) or create a game before loading the gamePane (host)
 		//TODO give info to some connecting static class? later: server
-
+		
+		Rectangle2D screenBounds = Screen.getPrimary().getVisualBounds();
+		String resource = "";
+		if (screenBounds.getHeight() < 768) {
+			resource = "/game.fxml";
+		}
+		else {
+			resource = "/game_small.fxml";
+		}
+        
+		
 		Parent gamePane;
 		try {
-			gamePane = FXMLLoader.load(getClass().getResource("/game.fxml"));
+			gamePane = FXMLLoader.load(getClass().getResource(resource));
 		} catch (IOException e) {
 			errorLbl.setText("Could not load game!");
 			e.printStackTrace();
 			return;
 		}
-
+		
 		Scene scene = new Scene(gamePane);
 		Stage stage = (Stage) ((Node) joinPane).getScene().getWindow();
 		stage.setScene(scene);		

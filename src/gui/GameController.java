@@ -75,6 +75,8 @@ public class GameController {
 	private final Color emptyCellColor = Color.valueOf("FFFFFF");
 	
 	private static final int gridSize = 39;
+	
+	private int tileSize;
 
 	@FXML
 	public void initialize() {
@@ -91,6 +93,9 @@ public class GameController {
 		assignAIColors();
 
 		gridPane.setStyle("-fx-background-color: #FFFFFF;");
+		
+		tileSize = (int) Math.floor((gridPane.getPrefHeight() - (gridSize - 1))/ gridSize);
+		System.out.println(tileSize);
 
 		// TODO if AI only do not contact/host any server
 
@@ -238,7 +243,7 @@ public class GameController {
 
 		for (int i = 0; i < gridSize; i++) {
 			for (int j = 0; j < gridSize; j++) {
-				Rectangle r = new Rectangle(0, 0, 21, 21);
+				Rectangle r = new Rectangle(0, 0, tileSize, tileSize);
 				r.setFill(emptyCellColor);
 				gridPane.getChildren().add(r);
 			}
