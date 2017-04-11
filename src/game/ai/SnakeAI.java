@@ -237,12 +237,10 @@ public class SnakeAI extends SnakeImpl {
 			return currentObject;
 		}
 
+		// finds the most severe value
 		for (Object o : closeObjects) {
 			double objectValue = valueObject(o);
-			if (Math.abs(objectValue) > Math.abs(currentValue)) { // finds the
-				// most
-				// severe
-				// value
+			if (Math.abs(objectValue) > Math.abs(currentValue)) { 
 				currentValue = objectValue;
 				currentObject = o;
 			}
@@ -258,7 +256,7 @@ public class SnakeAI extends SnakeImpl {
 		double value = 0;
 		int distance = measureDistance(o);
 
-		if (o instanceof Snake) { //TODO don't always value other snake as threat (random? distance comparison?)
+		if (o instanceof Snake) {
 			int ox = ((Snake) o).getBody()[0].getX();
 			int oy = ((Snake) o).getBody()[0].getY();
 
@@ -267,10 +265,11 @@ public class SnakeAI extends SnakeImpl {
 			distance = Math.abs(closest.getX() - ox) + Math.abs(closest.getY() - oy); // override
 			// necessary?
 
+			//TODO judge according to your and other snakes current health, if same --> rnd
 			if (!closest.equals(position.getFirst())) {
-				value = -.9 * (((double) 5 / distance) / 5);
+				value = -.8 * (((double) DISTANCE / distance) / DISTANCE);
 			} else {
-				value = .7 * ((double) 1 / distance);
+				value = .8 * ((double) 1 / distance);
 			}
 		} 
 		// TODO all current values currently assume DISTANCE = 5, more general computation if changed positive pickups
@@ -322,17 +321,17 @@ public class SnakeAI extends SnakeImpl {
 							/ this.getHealth(); // TODO by max health
 
 					// the closer the less we want it, less health --> less desire
-					value = -.9 * (((double) 5 / distance) / 5) * ((remainderPercentage - 1) * -1); 
+					value = -.9 * (((double) DISTANCE / distance) / DISTANCE) * ((remainderPercentage - 1) * -1); 
 
 				}
 			} else if (o instanceof SizeDecreaseArtifact) {
-				value = -.4 * (((double) 5 / distance) / 5); // we never want
+				value = -.4 * (((double) DISTANCE / distance) / DISTANCE); // we never want
 				// this
 			} else if (o instanceof BlockControlArtifact) {
-				value = -.9 * (((double) 5 / distance) / 5); // we really never
+				value = -.9 * (((double) DISTANCE / distance) / DISTANCE); // we really never
 				// want this
 			} else if (o instanceof ReverseControlArtifact) {
-				value = -1 * (((double) 5 / distance) / 5); // we can't stand
+				value = -1 * (((double) DISTANCE / distance) / DISTANCE); // we can't stand
 				// this at all, this
 				// would actively do
 				// all the wrong
@@ -341,9 +340,9 @@ public class SnakeAI extends SnakeImpl {
 				if (this.getSpeed() > this.getSpeed()) { // TODO replace right
 					// by
 					// this.getStandardSpeed()
-					value = -.3 * (((double) 5 / distance) / 5);
+					value = -.3 * (((double) DISTANCE / distance) / DISTANCE);
 				} else {
-					value = -.5 * (((double) 5 / distance) / 5);
+					value = -.5 * (((double) DISTANCE / distance) / DISTANCE);
 				}
 			}
 			// as yet not defined artifacts
