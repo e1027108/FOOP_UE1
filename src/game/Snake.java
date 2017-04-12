@@ -2,11 +2,6 @@ package game;
 
 import java.util.List;
 
-/**
- * @author christoph <br>
- *         This interface ties {@link SnakeImpl} and the decorator
- *         {@link SnakeModifier} together.
- */
 public interface Snake {
 
 	void move();
