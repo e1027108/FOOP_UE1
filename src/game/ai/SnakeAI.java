@@ -200,7 +200,15 @@ public class SnakeAI extends SnakeImpl {
 
 	private Directions getRandomDirection(double changeChance) {
 		Random r = new Random();
-
+		Point pos = position.getFirst();
+		int gridsize = game.getGrid().getSize();
+		
+		//we don't want to hug the border
+		if(pos.getX() == gridsize - 1 || pos.getX() == 0 ||
+				pos.getY() == gridsize - 1 || pos.getY() == 0){
+			changeChance = .4;
+		}
+		
 		if (r.nextDouble() <= changeChance) {
 			List<Directions> directions = new ArrayList<Directions>();
 
@@ -240,6 +248,7 @@ public class SnakeAI extends SnakeImpl {
 		// finds the most severe value
 		for (Object o : closeObjects) {
 			double objectValue = valueObject(o);
+			//TODO if same value --> rnd
 			if (Math.abs(objectValue) > Math.abs(currentValue)) { 
 				currentValue = objectValue;
 				currentObject = o;
@@ -265,7 +274,7 @@ public class SnakeAI extends SnakeImpl {
 			distance = Math.abs(closest.getX() - ox) + Math.abs(closest.getY() - oy); // override
 			// necessary?
 
-			//TODO judge according to your and other snakes current health, if same --> rnd
+			//TODO judge according to your and other snakes current health
 			if (!closest.equals(position.getFirst())) {
 				value = -.8 * (((double) DISTANCE / distance) / DISTANCE);
 			} else {
