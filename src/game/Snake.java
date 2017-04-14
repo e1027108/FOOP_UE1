@@ -25,6 +25,8 @@ public interface Snake {
 	String getName();
 
 	int getHealth();
+	
+	int getMaxHealth();
 
 	double getSpeed();
 	

@@ -12,13 +12,15 @@ public class SnakeImpl implements Snake {
 
 	private String name;
 	private int gridID;
-	// TODO: colour
 
 	protected Directions direction;
-	private static final int health = 5;
-	private static final double speed = 1.0;
-	private static final int size = 4;
-	private static final int timeToReact = 1;
+	protected static final int DEFAULT_HEALTH = 5;
+	protected static final int DEFAULT_MAX_HEALTH = 5;
+	protected static final double DEFAULT_SPEED = 1.0;
+	protected static final int DEFAULT_SIZE = 4;
+	protected static final int DEFAULT_TIME_TO_REACT = 1;
+	private int sizeModifier, healthModifier, speedIncrease, speedDecrease;
+	private boolean blockControl, reverseControl, invulnerability;
 
 	private boolean alive;
 
@@ -30,16 +32,20 @@ public class SnakeImpl implements Snake {
 		name = n;
 		this.gridID = gridID;
 		direction = dir;
-		
+		sizeModifier = 0;
+		healthModifier = 0;
+		speedIncrease = 0;
+		speedDecrease = 0;
+
 		setAlive(true);
 
 		position = new ArrayDeque<Point>();
 	}
 
 	@Override
-	public void initPosition(int x, int y) { // TODO if char codes change, AI
-												// must be changed too
-		for (int i = 0; i < size; i++) {
+	public void initPosition(int x, int y) {
+		// must be changed too
+		for (int i = 0; i < DEFAULT_SIZE; i++) {
 			if (direction == Directions.N) {
 				position.add(new Point(x + i, y));
 			}
@@ -72,7 +78,7 @@ public class SnakeImpl implements Snake {
 			position.addFirst(new Point(head.getX(), head.getY() - 1));
 		}
 		lastTailPosition = position.pollLast();
-		
+
 	}
 
 	@Override
@@ -83,8 +89,8 @@ public class SnakeImpl implements Snake {
 	@Override
 	public Point[] getBody() {
 		ArrayDeque<Point> pos = position.clone();
-		Point[] body = new Point[size];
-		for (int i = 0; i < size; i++) {
+		Point[] body = new Point[DEFAULT_SIZE];
+		for (int i = 0; i < DEFAULT_SIZE; i++) {
 			body[i] = pos.poll();
 		}
 		return body;
@@ -129,41 +135,99 @@ public class SnakeImpl implements Snake {
 			direction = d;
 		}
 	}
-	
-	public int getCurrentHealth(int diff) {
-		return health + diff;
-		
-	}
-	
-	public double getCurrentSpeed(double diff) {
-		return speed + diff;
-	}
-	
-	public int getCurrentSize(int diff) {
-		return size + diff;
-	}
-	
-	public int getCurrentTimeToReact(int diff) {
-		return timeToReact + diff;
-	}
 
 	@Override
 	public int getHealth() {
-		return health;
+		return DEFAULT_HEALTH + healthModifier;
 	}
 
 	@Override
 	public double getSpeed() {
-		return speed;
+		return DEFAULT_SPEED + speedIncrease - speedDecrease;
 	}
-	
+
 	@Override
 	public int getSize() {
-		return size;
+		return DEFAULT_SIZE + sizeModifier;
+	}
+	
+	//TODO need better max health concept!!!
+	@Override
+	public int getMaxHealth(){
+		return DEFAULT_MAX_HEALTH + sizeModifier;
 	}
 
 	public int getGridID() {
 		return gridID;
+	}
+
+	/**
+	 * changes the current size modifier by the input
+	 * @param sizeModifier a positive or negative value
+	 */
+	public void setSizeModifier(int sizeModifier) {
+		this.sizeModifier += sizeModifier;
+	}
+
+	/**
+	 * changes the current health modifier by the input
+	 * @param healthModifier a positive or negative value
+	 */
+	public void setHealthModifier(int healthModifier) {
+		//can't be healed above max
+		if(this.healthModifier + healthModifier + DEFAULT_HEALTH > DEFAULT_MAX_HEALTH + sizeModifier){
+			this.healthModifier = DEFAULT_MAX_HEALTH + sizeModifier - DEFAULT_HEALTH;
+		}
+		else{
+			this.healthModifier += healthModifier;
+		}
+	}
+
+	
+	//these need two methods, since speed changes are temporary
+	
+	public void setSpeedIncrease(int speedIncrease) {
+		//weird cases that change increase into negative
+		if(this.speedIncrease + speedIncrease < 0){
+			this.speedIncrease = 0;
+		}
+		else{
+			this.speedIncrease += speedIncrease;
+		}
+	}
+
+	public void setSpeedDecrease(int speedDecrease) {
+		//weird cases that change decrease into negative
+		if(this.speedDecrease + speedDecrease < 0){
+			this.speedDecrease = 0;
+		}
+		else{
+			this.speedDecrease += speedDecrease;
+		}
+	}
+
+	public boolean hasBlockControl() {
+		return blockControl;
+	}
+
+	public void setBlockControl(boolean blockControl) {
+		this.blockControl = blockControl;
+	}
+
+	public boolean hasReverseControl() {
+		return reverseControl;
+	}
+
+	public void setReverseControl(boolean reverseControl) {
+		this.reverseControl = reverseControl;
+	}
+
+	public boolean isInvulnerable() {
+		return invulnerability;
+	}
+
+	public void setInvulnerability(boolean invulnerability) {
+		this.invulnerability = invulnerability;
 	}
 
 }

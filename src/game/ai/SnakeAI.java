@@ -32,7 +32,7 @@ public class SnakeAI extends SnakeImpl {
 
 	public SnakeAI(String name, int gridID, Directions dir, Game game) {
 		super(name, gridID, dir);
-		
+
 		if(vertical == null){
 			vertical = new ArrayList<Directions>();
 			vertical.add(Directions.N);
@@ -49,21 +49,25 @@ public class SnakeAI extends SnakeImpl {
 
 	public void determineNextDirection() {
 		Directions next;
+		ArrayList<Object> closeObjects;
 
-		ArrayList<Object> closeObjects = scanVicinity(DISTANCE);
+		//block control doesn't change direction, otw:
+		if(!hasBlockControl()){
+			closeObjects = scanVicinity(DISTANCE);
 
-		Object important = getValuedObject(closeObjects);
+			Object important = getValuedObject(closeObjects);
 
-		next = getPreferredDirection(important);
-		
-		//can deviate from best choice
-		next = getRandomDirection(P_OTHER);
+			next = getPreferredDirection(important);
 
-		if(!isValidDirection(next)){
-			next = returnValidDirection(next);
+			//can deviate from best choice
+			next = getRandomDirection(P_OTHER);
+
+			if(!isValidDirection(next)){
+				next = returnValidDirection(next);
+			}
+
+			direction = next;
 		}
-
-		direction = next;
 	}
 
 	/**
@@ -140,7 +144,8 @@ public class SnakeAI extends SnakeImpl {
 
 		if (goalObject != null) {
 			value = valueObject(goalObject);
-		} else {
+		}
+		else {
 			return direction;
 			//return getRandomDirection(P_OTHER);
 		}
@@ -202,13 +207,13 @@ public class SnakeAI extends SnakeImpl {
 		Random r = new Random();
 		Point pos = position.getFirst();
 		int gridsize = game.getGrid().getSize();
-		
+
 		//we don't want to hug the border
 		if(pos.getX() == gridsize - 1 || pos.getX() == 0 ||
 				pos.getY() == gridsize - 1 || pos.getY() == 0){
 			changeChance = .4;
 		}
-		
+
 		if (r.nextDouble() <= changeChance) {
 			List<Directions> directions = new ArrayList<Directions>();
 
@@ -238,6 +243,7 @@ public class SnakeAI extends SnakeImpl {
 	 * @return best object
 	 */
 	private Object getValuedObject(ArrayList<Object> closeObjects) {
+		Random rnd = new Random();		
 		double currentValue = 0;
 		Object currentObject = null;
 
@@ -248,8 +254,8 @@ public class SnakeAI extends SnakeImpl {
 		// finds the most severe value
 		for (Object o : closeObjects) {
 			double objectValue = valueObject(o);
-			//TODO if same value --> rnd
-			if (Math.abs(objectValue) > Math.abs(currentValue)) { 
+			//if same value --> rnd
+			if (Math.abs(objectValue) > Math.abs(currentValue) || (Math.abs(objectValue) == Math.abs(currentValue) && rnd.nextDouble() <= .5) ) { 
 				currentValue = objectValue;
 				currentObject = o;
 			}
@@ -260,97 +266,97 @@ public class SnakeAI extends SnakeImpl {
 
 	/*
 	 * value from -1 to +1
-	 */ // TODO push parts of this to a value file/more concise modifier method
+	 */ // TODO refactor? //TODO use grid object codes instead of instanceof checks?
 	private double valueObject(Object o) {
 		double value = 0;
 		int distance = measureDistance(o);
 
+		// TODO change everything with regards to invulnerability
 		if (o instanceof Snake) {
 			int ox = ((Snake) o).getBody()[0].getX();
 			int oy = ((Snake) o).getBody()[0].getY();
 
 			Point closest = getClosestPoint(ox, oy);
 
-			distance = Math.abs(closest.getX() - ox) + Math.abs(closest.getY() - oy); // override
-			// necessary?
+			distance = Math.abs(closest.getX() - ox) + Math.abs(closest.getY() - oy);
 
-			//TODO judge according to your and other snakes current health
 			if (!closest.equals(position.getFirst())) {
 				value = -.8 * (((double) DISTANCE / distance) / DISTANCE);
 			} else {
 				value = .8 * ((double) 1 / distance);
 			}
+
+			//these make value more severe if own or enemy health "critical"
+			if(getHealth() < (getMaxHealth() * .5) && value < 0){
+				value -= -.1;
+			}
+			else if(((Snake) o).getHealth() < ((Snake) o).getMaxHealth() * .5 && value >= 0){
+				value += .1;
+			}
 		} 
-		// TODO all current values currently assume DISTANCE = 5, more general computation if changed positive pickups
 		else if (o instanceof Artifact) {
 			if (o instanceof HealthIncreaseArtifact) { 
-				// 0: full health already, 0.1: overheal, [0.45,1] depending on distance and health
-				value = .9 * ((double) 1 / distance); // high values, reducing
-				// in size if far away
-				/*
-				 * if(this.getHealth() - this.getHealth() <
-				 * ((HealthIncreaseArtifact) o).getIncrease()){ //TODO replace
-				 * left by this.getHealth-this.getMaxHealth to check for
-				 * overheal value = .1; } else if(this.getHealth() ==
-				 * this.getHealth()){ //TODO replace by this.getHealth ==
-				 * this.getMaxHealth value = 0; }
-				 */
-			} else if (o instanceof SizeIncreaseArtifact) { // assumed, that you
-				// kinda always want
-				// to grow
-				value = .4 * ((double) 1 / distance);
-			} else if (o instanceof InvulnerabilityArtifact) { // TODO need info
-				// if already
-				// invulnerable
-				/*
-				 * if(this.isInvulnerable()) value = 0; } else{
-				 */
-				value = 1 * ((double) 1 / distance);
-				// }
-			}
-			// assume you always want to become faster, unless if you already are faster
-			else if (o instanceof SpeedIncreaseArtifact) { 
-				if (this.getSpeed() > this.getSpeed()) { // TODO replace right by this.getStandardSpeed()
+				// 0: full health already, 0.1: overheal, higher range depending on distance and health
+				value = .9 * ((double) 1 / distance);
+
+				if(getMaxHealth() - getHealth() < ((HealthIncreaseArtifact) o).getIncrease()){
+					value = .1;
+				}
+				else if(getHealth() == getMaxHealth()){
 					value = 0;
-				} else {
+				}
+			}
+			else if (o instanceof SizeIncreaseArtifact) { 
+				// AI always wants to grow
+				value = .4 * ((double) 1 / distance);
+			}
+			else if (o instanceof InvulnerabilityArtifact) {
+				if(this.isInvulnerable()){
+					value = 0;
+				}
+				else{
+					value = 1 * ((double) 1 / distance);
+				}
+			}
+			else if (o instanceof SpeedIncreaseArtifact) { 
+				if (getSpeed() > DEFAULT_SPEED) {
+					value = .1;
+				}
+				else {
 					value = .5 * ((double) 1 / distance);
 				}
 			}
 			// negative pickups
-			else if (o instanceof HealthDecreaseArtifact) {// don't care if high
-				// health
-				if (this.getHealth() == this.getHealth()) { // TODO compare with
-					// maximumhealth
-					// instead
+			else if (o instanceof HealthDecreaseArtifact) {
+				if (this.getHealth() == this.getMaxHealth()) {
 					value = -(.1);
-				} else if (this.getHealth() - ((HealthDecreaseArtifact) o).getDecrease() <= 0) {
+				}
+				else if (this.getHealth() - ((HealthDecreaseArtifact) o).getDecrease() <= 0) {
 					value = -1;
-				} else {
-					double remainderPercentage = (this.getHealth() - ((HealthDecreaseArtifact) o).getDecrease())
-							/ this.getHealth(); // TODO by max health
+				}
+				else {
+					double remainderPercentage = (this.getHealth() - ((HealthDecreaseArtifact) o).getDecrease()) / this.getMaxHealth();
 
 					// the closer the less we want it, less health --> less desire
 					value = -.9 * (((double) DISTANCE / distance) / DISTANCE) * ((remainderPercentage - 1) * -1); 
-
 				}
-			} else if (o instanceof SizeDecreaseArtifact) {
-				value = -.4 * (((double) DISTANCE / distance) / DISTANCE); // we never want
-				// this
-			} else if (o instanceof BlockControlArtifact) {
-				value = -.9 * (((double) DISTANCE / distance) / DISTANCE); // we really never
-				// want this
-			} else if (o instanceof ReverseControlArtifact) {
-				value = -1 * (((double) DISTANCE / distance) / DISTANCE); // we can't stand
-				// this at all, this
-				// would actively do
-				// all the wrong
-				// things
-			} else if (o instanceof SpeedDecreaseArtifact) {
-				if (this.getSpeed() > this.getSpeed()) { // TODO replace right
-					// by
-					// this.getStandardSpeed()
+			}
+			else if (o instanceof SizeDecreaseArtifact) {
+				value = -.4 * (((double) DISTANCE / distance) / DISTANCE); // we never want this
+			}
+			else if (o instanceof BlockControlArtifact) {
+				value = -.9 * (((double) DISTANCE / distance) / DISTANCE); // we really never want this
+			}
+			else if (o instanceof ReverseControlArtifact) {
+				// we are perfect, this doesn't harm us, all your base are belong to us
+				// -.1 because we want others to be able to pick it up
+				value = -.1;
+			}
+			else if (o instanceof SpeedDecreaseArtifact) {
+				if (this.getSpeed() > DEFAULT_SPEED) {
 					value = -.3 * (((double) DISTANCE / distance) / DISTANCE);
-				} else {
+				}
+				else {
 					value = -.5 * (((double) DISTANCE / distance) / DISTANCE);
 				}
 			}
@@ -363,9 +369,6 @@ public class SnakeAI extends SnakeImpl {
 		return value;
 	}
 
-	// TODO change to accept overflowing onto the other side of the field,
-	// alternatively take that out from scanvicinity and prevent snake from
-	// going into the side
 	private int measureDistance(Object o) {
 		int xhead = position.getFirst().getX();
 		int yhead = position.getFirst().getY();
@@ -381,10 +384,8 @@ public class SnakeAI extends SnakeImpl {
 
 			distance = Math.abs(closest.getX() - ox) + Math.abs(closest.getY() - oy);
 
-			if (!closest.equals(position.getFirst())) { // other snake hunts me
-				// --> if the enemy
-				// snake needs to turn
-				// around + 1
+			// other snake hunts me --> if the enemy snake needs to turn around + 1
+			if (!closest.equals(position.getFirst())) {
 				if (oy > closest.getY() && ((Snake) o).getDirection() == Directions.W
 						|| oy < closest.getY() && ((Snake) o).getDirection() == Directions.E) {
 					distance++;
@@ -407,14 +408,12 @@ public class SnakeAI extends SnakeImpl {
 		 * relation to your body and 2. change back into that lane
 		 */
 		if (ox == xhead) { // x is up and down
-			if (oy > yhead && direction == Directions.E || oy < yhead && direction == Directions.W) { // same
-				// means we are currently on it!
+			if (oy > yhead && direction == Directions.E || oy < yhead && direction == Directions.W) { // same means we are currently on it!
 				distance += 2;
 			}
 		}
 		if (oy == yhead) { // y is left and right
-			if (ox > xhead && direction == Directions.S || ox < xhead && direction == Directions.N) { // same
-				// means we are currently on it!
+			if (ox > xhead && direction == Directions.S || ox < xhead && direction == Directions.N) { // same means we are currently on it!
 				distance += 2;
 			}
 		}
