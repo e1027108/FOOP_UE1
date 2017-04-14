@@ -369,6 +369,13 @@ public class SnakeAI extends SnakeImpl {
 		return value;
 	}
 
+	/**
+	 * measures the manhattan distance of ai snake's head to the artifact specified
+	 * for other snakes we measure the shortest head - body distance
+	 * (time cost for turning around is added since snakes can't go into themselves)
+	 * @param o the goal object
+	 * @return the effective distance between objects
+	 */
 	private int measureDistance(Object o) {
 		int xhead = position.getFirst().getX();
 		int yhead = position.getFirst().getY();
@@ -423,11 +430,8 @@ public class SnakeAI extends SnakeImpl {
 
 	/**
 	 * returns the point of the own body closest to the provided coordinates
-	 * 
-	 * @param ox
-	 *            point's x position
-	 * @param oy
-	 *            point's y position
+	 * @param ox point's x position
+	 * @param oy point's y position
 	 * @return a point that's closest
 	 */
 	private Point getClosestPoint(int ox, int oy) {
