@@ -77,6 +77,8 @@ public class GameController {
 	private static final int gridSize = 39;
 	
 	private int tileSize;
+	
+	private Color[] colors;
 
 	@FXML
 	public void initialize() {
@@ -202,7 +204,7 @@ public class GameController {
 			Point[] body = s.getBody();
 			for (Point p : body) {
 				r = (Rectangle) gridPane.getChildren().get((p.getX() * gridSize) + p.getY());
-				r.setFill(info.getColor());
+				r.setFill(colors[s.getGridID()-1]);
 			}
 
 			Point last = s.getLastTailPosition();
@@ -316,7 +318,10 @@ public class GameController {
 				setPlayerStyle(i + 1, "AI " + i, reserved[i]);
 			}
 
+			colors = reserved;
+			
 			// TODO change script color to white if illegible bc/o dark color
+			
 		}
 	}
 
