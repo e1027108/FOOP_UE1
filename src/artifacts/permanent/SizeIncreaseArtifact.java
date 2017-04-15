@@ -5,6 +5,10 @@ import artifacts.ArtifactConstants;
 import artifacts.Artifacts;
 import game.Point;
 
+/**
+ * This artifact is the only way to increase a snakes size (which directly
+ * influences maxHealth)
+ */
 public class SizeIncreaseArtifact extends Artifact {
 
 	private int increase;

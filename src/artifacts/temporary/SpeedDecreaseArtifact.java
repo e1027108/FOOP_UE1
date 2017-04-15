@@ -5,6 +5,10 @@ import artifacts.ArtifactConstants;
 import artifacts.Artifacts;
 import game.Point;
 
+/**
+ * This artifact decreases the speed of a snake for a given time and fixed ratio
+ * (stored in {@link ArtifactConstants})
+ */
 public class SpeedDecreaseArtifact extends Artifact implements TemporaryArtifact {
 
 	private int duration, decrease;

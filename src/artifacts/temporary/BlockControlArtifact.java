@@ -5,6 +5,10 @@ import artifacts.ArtifactConstants;
 import artifacts.Artifacts;
 import game.Point;
 
+/**
+ * This artifact catches all directions to the snake and redirects them to
+ * /dev/null :)
+ */
 public class BlockControlArtifact extends Artifact implements TemporaryArtifact {
 
 	private int duration;

@@ -5,6 +5,10 @@ import artifacts.ArtifactConstants;
 import artifacts.Artifacts;
 import game.Point;
 
+/**
+ * This artifact increases the actual health of a snake (up to maxHealth) by a
+ * given value (stored in {@link ArtifactConstants})
+ */
 public class HealthIncreaseArtifact extends Artifact {
 
 	private int increase;

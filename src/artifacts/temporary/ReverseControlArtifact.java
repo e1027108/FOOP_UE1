@@ -5,6 +5,10 @@ import artifacts.ArtifactConstants;
 import artifacts.Artifacts;
 import game.Point;
 
+/**
+ * This artifact changes the directions a snake receives ('N' becomes 'S', 'E'
+ * becomes 'W')
+ */
 public class ReverseControlArtifact extends Artifact implements TemporaryArtifact {
 
 	private int duration;
