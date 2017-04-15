@@ -260,6 +260,7 @@ public class GameController {
 		if (game != null) {
 			game.closeChildren();
 		}
+		timeline.stop();
 		showJoin();
 	}
 

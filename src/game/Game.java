@@ -29,7 +29,7 @@ public class Game implements CollisionListener {
 			numPlayers = num;
 			grid = new GameGrid(gridSize);
 		} else if (num == 0) {
-			numPlayers = 1;
+			numPlayers = 4;
 			grid = new GameGrid(gridSize);
 			firstPlayer = null; // TODO this needs a better solution
 		} else {
