@@ -57,4 +57,8 @@ public interface Snake {
 	boolean hasReverseControl();
 
 	void setReverseControl(boolean reverseControl);
+
+	void checkStatus();
+
+	void getStatus();
 }

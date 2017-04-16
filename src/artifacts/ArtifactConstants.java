@@ -23,8 +23,8 @@ public class ArtifactConstants {
 	public static Map<Artifacts, Map<Setting, Object>> artifactSettingsMap;
 
 	/* permanent increases/decreases */
-	public static final int HEALTH_INCREASE = 10;
-	public static final int HEALTH_DECREASE = 10;
+	public static final int HEALTH_INCREASE = 1;
+	public static final int HEALTH_DECREASE = 1;
 	public static final int SIZE_INCREASE = 1;
 	public static final int SIZE_DECREASE = 1;
 
@@ -40,15 +40,15 @@ public class ArtifactConstants {
 	public static final int SPEED_DECREASE_DURATION = 2;
 
 	/* time until despawn */
-	public static final int HEALTH_INCREASE_DESPAWN_TIMER = 150;
-	public static final int HEALTH_DECREASE_DESPAWN_TIMER = 150;
-	public static final int SIZE_INCREASE_DESPAWN_TIMER = 150;
-	public static final int SIZE_DECREASE_DESPAWN_TIMER = 150;
-	public static final int BLOCK_CONTROL_DESPAWN_TIMER = 150;
-	public static final int INVULNERABILITY_DESPAWN_TIMER = 150;
-	public static final int REVERSE_CONTROL_DESPAWN_TIMER = 150;
-	public static final int SPEED_INCREASE_DESPAWN_TIMER = 150;
-	public static final int SPEED_DECREASE_DESPAWN_TIMER = 150;
+	public static final int HEALTH_INCREASE_DESPAWN_TIMER = 15;
+	public static final int HEALTH_DECREASE_DESPAWN_TIMER = 15;
+	public static final int SIZE_INCREASE_DESPAWN_TIMER = 15;
+	public static final int SIZE_DECREASE_DESPAWN_TIMER = 15;
+	public static final int BLOCK_CONTROL_DESPAWN_TIMER = 15;
+	public static final int INVULNERABILITY_DESPAWN_TIMER = 15;
+	public static final int REVERSE_CONTROL_DESPAWN_TIMER = 15;
+	public static final int SPEED_INCREASE_DESPAWN_TIMER = 15;
+	public static final int SPEED_DECREASE_DESPAWN_TIMER = 15;
 
 	/*
 	 * spawn probability factors to ensure different occurrences according to

@@ -2,7 +2,10 @@ package game;
 
 import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
+
+import artifacts.ArtifactConstants;
 
 /**
  * This class implements the {@link Snake} interface and holds the start/default
@@ -21,6 +24,8 @@ public class SnakeImpl implements Snake {
 	protected static final int DEFAULT_TIME_TO_REACT = 1;
 	private int sizeModifier, healthModifier, speedIncrease, speedDecrease;
 	private boolean blockControl, reverseControl, invulnerability;
+	private List<Long> speedIncreaseTimer, speedDecreaseTimer;
+	private long blockControlTimer, reverseControlTimer, invulnerabilityTimer;
 	protected static List<Directions> vertical, horizontal;
 
 	private boolean alive;
@@ -37,6 +42,9 @@ public class SnakeImpl implements Snake {
 		healthModifier = 0;
 		speedIncrease = 0;
 		speedDecrease = 0;
+
+		speedIncreaseTimer = new ArrayList<Long>();
+		speedDecreaseTimer = new ArrayList<Long>();
 
 		setAlive(true);
 		respawn = false;
@@ -235,6 +243,9 @@ public class SnakeImpl implements Snake {
 		else{
 			this.speedIncrease += change;
 		}
+		if (change > 0) {
+			speedIncreaseTimer.add(System.currentTimeMillis());
+		}
 	}
 
 	@Override
@@ -246,6 +257,9 @@ public class SnakeImpl implements Snake {
 		else{
 			this.speedDecrease += change;
 		}
+		if (change > 0) {
+			speedDecreaseTimer.add(System.currentTimeMillis());
+		}
 	}
 
 	@Override
@@ -256,6 +270,7 @@ public class SnakeImpl implements Snake {
 	@Override
 	public void setBlockControl(boolean blockControl) {
 		this.blockControl = blockControl;
+		this.blockControlTimer = System.currentTimeMillis();
 	}
 
 	@Override
@@ -266,6 +281,7 @@ public class SnakeImpl implements Snake {
 	@Override
 	public void setReverseControl(boolean reverseControl) {
 		this.reverseControl = reverseControl;
+		this.reverseControlTimer = System.currentTimeMillis();
 	}
 
 	@Override
@@ -276,6 +292,7 @@ public class SnakeImpl implements Snake {
 	@Override
 	public void setInvulnerability(boolean invulnerability) {
 		this.invulnerability = invulnerability;
+		this.invulnerabilityTimer = System.currentTimeMillis();
 	}
 
 	@Override
@@ -299,4 +316,72 @@ public class SnakeImpl implements Snake {
 		deadParts.clear();
 	}
 
+	@Override
+	public void checkStatus() {
+		/*
+		 * check for reverseControl, blockControl, invulnerability,
+		 * speedIncrease speedDecrease -> adapt if duration is over
+		 */
+		checkReverseControl();
+		checkBlockControl();
+		checkInvulnerability();
+		checkSpeedIncrease();
+		checkSpeedDecrease();
+	}
+
+	private void checkSpeedDecrease() {
+		Iterator<Long> speedDecreaseIterator = speedDecreaseTimer.iterator();
+		while (speedDecreaseIterator.hasNext()) {
+			if ((speedDecreaseIterator.next() + 1000 * ArtifactConstants.SPEED_DECREASE_DURATION) <= System
+					.currentTimeMillis()) {
+				speedDecreaseIterator.remove();
+				changeSpeedDecrease(-1 * ArtifactConstants.SPEED_DECREASE);
+			}
+		}
+	}
+
+	private void checkSpeedIncrease() {
+		Iterator<Long> speedIncreaseIterator = speedIncreaseTimer.iterator();
+		while (speedIncreaseIterator.hasNext()) {
+			if ((speedIncreaseIterator.next() + 1000 * ArtifactConstants.SPEED_INCREASE_DURATION) <= System
+					.currentTimeMillis()) {
+				speedIncreaseIterator.remove();
+				changeSpeedIncrease(-1 * ArtifactConstants.SPEED_INCREASE);
+			}
+		}
+	}
+
+	private void checkReverseControl() {
+		if (hasReverseControl()
+				&& ((this.reverseControlTimer + 1000 * ArtifactConstants.REVERSE_CONTROL_DURATION) <= System
+						.currentTimeMillis())) {
+			setReverseControl(false);
+		}
+	}
+
+	private void checkBlockControl() {
+		if (hasBlockControl() && ((this.blockControlTimer + 1000 * ArtifactConstants.BLOCK_CONTROL_DURATION) <= System
+				.currentTimeMillis())) {
+			setBlockControl(false);
+		}
+	}
+
+	private void checkInvulnerability() {
+		if (isInvulnerable()
+				&& ((this.invulnerabilityTimer + 1000 * ArtifactConstants.INVULNERABILITY_DURATION) <= System
+						.currentTimeMillis())) {
+			setInvulnerability(false);
+		}
+	}
+
+	@Override
+	public void getStatus() {
+		System.out.println("---- Snake " + getGridID() + " - Status:");
+		System.out.println("Health        : " + getHealth());
+		System.out.println("Speed         : " + getSpeed());
+		System.out.println("Invulnerable  : " + isInvulnerable());
+		System.out.println("BlockControl  : " + hasBlockControl());
+		System.out.println("ReverseControl: " + hasReverseControl());
+		System.out.println("------------------------");
+	}
 }

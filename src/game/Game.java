@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import artifacts.Artifact;
+import artifacts.ArtifactConstants;
 import artifacts.Artifacts;
 import artifacts.logic.ArtifactCoordinateGenerator;
 import artifacts.logic.ArtifactCoordinateGeneratorImpl;
@@ -100,6 +101,8 @@ public class Game implements CollisionListener {
 			if (s instanceof SnakeAI) {
 				((SnakeAI) s).determineNextDirection();
 			}
+			s.checkStatus();
+			s.getStatus();
 			s.move();
 		}
 		grid.draw(snakes);
@@ -172,30 +175,38 @@ public class Game implements CollisionListener {
 		switch (gridID) {
 		case 10: // HEALTH_INCREASE
 			System.out.println("i ate a " + Artifacts.HEALTH_INCREASE);
+			snek.changeHealthModifier(ArtifactConstants.HEALTH_INCREASE);
 			break;
 		case 11: // HEALTH_DECREASE
 			System.out.println("i ate a " + Artifacts.HEALTH_DECREASE);
+			snek.changeHealthModifier(-1 * ArtifactConstants.HEALTH_DECREASE);
 			break;
 		case 12: // SIZE_INCREASE
 			System.out.println("i ate a " + Artifacts.SIZE_INCREASE);
+			snek.changeSizeModifier(ArtifactConstants.SIZE_INCREASE);
 			break;
 		case 13: // SIZE_DECREASE
 			System.out.println("i ate a " + Artifacts.SIZE_DECREASE);
+			snek.changeSizeModifier(-1 * ArtifactConstants.SIZE_DECREASE);
 			break;
 		case 20: // BLOCK_CONTROL
 			System.out.println("i ate a " + Artifacts.BLOCK_CONTROL);
+			snek.setBlockControl(true);
 			break;
 		case 21: // REVERSE_CONTROL
 			System.out.println("i ate a " + Artifacts.REVERSE_CONTROL);
+			snek.setReverseControl(true);
 			break;
 		case 22: // INVULNERABILITY
 			System.out.println("i ate a " + Artifacts.INVULNERABILITY);
+			snek.setInvulnerability(true);
 			break;
 		case 23: // SPEED_INCREASE
 			System.out.println("i ate a " + Artifacts.SPEED_INCREASE);
 			break;
 		case 24: // SPEED_DECREASE
 			System.out.println("i ate a " + Artifacts.SPEED_DECREASE);
+			snek.changeSpeedDecrease(ArtifactConstants.SPEED_DECREASE);
 			break;
 		default:
 			break;
