@@ -28,21 +28,9 @@ public class SnakeAI extends SnakeImpl {
 
 	private static final double P_OTHER = 0.1;
 	private static final int DISTANCE = 6;
-	private static List<Directions> vertical, horizontal;
 
 	public SnakeAI(String name, int gridID, Directions dir, Game game) {
 		super(name, gridID, dir);
-
-		if(vertical == null){
-			vertical = new ArrayList<Directions>();
-			vertical.add(Directions.N);
-			vertical.add(Directions.S);
-		}
-		if(horizontal == null){
-			horizontal = new ArrayList<Directions>();
-			horizontal.add(Directions.E);
-			horizontal.add(Directions.W);
-		}
 
 		this.game = game;
 	}
@@ -267,7 +255,7 @@ public class SnakeAI extends SnakeImpl {
 	/*
 	 * value from -1 to +1
 	 */
-	// TODO use grid artifact ids instead of instanceof checks? use of snake/artifact difference? (snakes have ids too)
+	// TODO use grid artifact ids instead of instanceof checks?
 	private double valueObject(Object o) {
 		double value = 0;
 		int distance = measureDistance(o);

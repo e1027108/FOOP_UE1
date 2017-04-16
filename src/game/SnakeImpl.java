@@ -21,6 +21,7 @@ public class SnakeImpl implements Snake {
 	protected static final int DEFAULT_TIME_TO_REACT = 1;
 	private int sizeModifier, healthModifier, speedIncrease, speedDecrease;
 	private boolean blockControl, reverseControl, invulnerability;
+	protected static List<Directions> vertical, horizontal;
 
 	private boolean alive;
 
@@ -40,6 +41,17 @@ public class SnakeImpl implements Snake {
 		setAlive(true);
 
 		position = new ArrayDeque<Point>();
+
+		if(vertical == null){
+			vertical = new ArrayList<Directions>();
+			vertical.add(Directions.N);
+			vertical.add(Directions.S);
+		}
+		if(horizontal == null){
+			horizontal = new ArrayList<Directions>();
+			horizontal.add(Directions.E);
+			horizontal.add(Directions.W);
+		}
 	}
 
 	@Override
@@ -128,10 +140,34 @@ public class SnakeImpl implements Snake {
 
 	@Override
 	public void changeDirection(Directions d) {
-		if ((d == Directions.N && direction != Directions.S) || (d == Directions.S && direction != Directions.N)
-				|| (d == Directions.E && direction != Directions.W)
-				|| (d == Directions.W && direction != Directions.E)) {
-			direction = d;
+		if(!hasBlockControl()){
+			if(!hasReverseControl()){
+				if ((d == Directions.N && direction != Directions.S) || (d == Directions.S && direction != Directions.N)
+						|| (d == Directions.E && direction != Directions.W) || (d == Directions.W && direction != Directions.E)) {
+					direction = d;
+				}
+			}
+			else{
+				if ((d == Directions.N && direction != Directions.N) || (d == Directions.S && direction != Directions.S) 
+						|| (d == Directions.E && direction != Directions.E) || (d == Directions.W && direction != Directions.W)) {
+					direction = reverseDirection(d);
+				}
+			}
+		}
+	}
+
+	private Directions reverseDirection(Directions d) {
+		switch(d){
+		case E:
+			return Directions.W;
+		case W:
+			return Directions.E;
+		case S:
+			return Directions.N;
+		case N:
+			return Directions.S;
+		default:
+			return direction;
 		}
 	}
 
@@ -149,7 +185,7 @@ public class SnakeImpl implements Snake {
 	public int getSize() {
 		return DEFAULT_SIZE + sizeModifier;
 	}
-	
+
 	@Override
 	public int getMaxHealth(){
 		return DEFAULT_MAX_HEALTH + sizeModifier;
@@ -181,9 +217,9 @@ public class SnakeImpl implements Snake {
 		}
 	}
 
-	
+
 	//these need two methods, since speed changes are temporary
-	
+
 	public void changeSpeedIncrease(int change) {
 		//weird cases that change increase into negative
 		if(this.speedIncrease + change < 0){
