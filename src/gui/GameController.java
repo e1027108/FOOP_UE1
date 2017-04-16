@@ -230,9 +230,13 @@ public class GameController {
 				r.setFill(colors[s.getGridID() - 1]);
 			}
 
-			Point last = s.getLastTailPosition();
-			r = (Rectangle) gridPane.getChildren().get((last.getX() * GRID_SIZE) + last.getY());
-			r.setFill(emptyCellColor);
+			for (Point p : s.getDeadParts()){
+				if(p.getX() >= 0 && p.getX() < GRID_SIZE && p.getY() >= 0 && p.getY() < GRID_SIZE) {
+					r = (Rectangle) gridPane.getChildren().get((p.getX() * GRID_SIZE) + p.getY());
+					r.setFill(emptyCellColor);
+				}
+			}
+			s.clearDeadParts();
 		}
 	}
 

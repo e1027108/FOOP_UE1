@@ -5,8 +5,12 @@ import java.util.List;
 
 import artifacts.Artifact;
 import artifacts.Artifacts;
+import artifacts.logic.ArtifactCoordinateGenerator;
+import artifacts.logic.ArtifactCoordinateGeneratorImpl;
 import artifacts.logic.ArtifactHandler;
 import artifacts.logic.ArtifactHandlerImpl;
+import artifacts.logic.ArtifactPlacementStrategy;
+import artifacts.logic.ArtifactsPlacementStrategyNaiveImpl;
 import game.CollisionTarget.CollisionTypes;
 import game.ai.SnakeAI;
 
@@ -19,6 +23,9 @@ public class Game implements CollisionListener {
 	private List<Thread> children;
 
 	private ArrayList<Snake> snakes;
+	
+	private ArtifactPlacementStrategy placementStrategy;
+	private ArtifactCoordinateGenerator coordinateGenerator;
 
 	// TODO: change error message --> just temporary
 	public Game(int num, String name, int gridSize) {
@@ -41,6 +48,9 @@ public class Game implements CollisionListener {
 
 		this.children = new ArrayList<Thread>();
 		this.artifactHandler = new ArtifactHandlerImpl(this);
+		
+		this.coordinateGenerator = new ArtifactCoordinateGeneratorImpl(grid);		
+		this.placementStrategy = new ArtifactsPlacementStrategyNaiveImpl(coordinateGenerator, grid, this);
 	}
 
 	public void run() {
@@ -131,12 +141,29 @@ public class Game implements CollisionListener {
 	}
 
 	@Override
-	public void collisionDetected(CollisionTypes coll, Snake snek, Point point, int gridID) {
+	public void collisionDetected(CollisionTypes coll, Snake snek, Point headPosition, int gridID) {
 		System.out.println("Detected collision of type: " + coll);
+		
+		SnakeImpl bitingSnake = (SnakeImpl) snek;		
+		
 		/* handle artifacts */
 		if(coll == CollisionTypes.ARTIFACT) {
 			System.out.println("ate an artifact");
-			eatArtifact(snek, point, gridID);
+			eatArtifact(snek, headPosition, gridID);
+		}
+		/* handle other collisions */
+		if(coll == CollisionTypes.BORDER) {
+			respawnSnake(bitingSnake);
+		}
+		if(coll == CollisionTypes.OWN_BODY) {
+			respawnSnake(bitingSnake);		
+		}
+		if(coll == CollisionTypes.OTHER_SNAKE) {
+			SnakeImpl bittenSnake = (SnakeImpl) this.getSnakes().get(gridID-1);
+			if(bittenSnake.getBody()[0].equals(bitingSnake.getBody()[0])) { // do they bite each others head? -> respawn both
+				respawnSnake(bitingSnake);
+			}			
+			respawnSnake(bittenSnake);
 		}
 	}
 
@@ -180,6 +207,11 @@ public class Game implements CollisionListener {
 				art.setActive(false);
 			}
 		}
+	}
+	
+	private void respawnSnake(SnakeImpl s) {
+		Point respawnPlace = placementStrategy.getRespawnPlace();
+		s.resetPosition(respawnPlace);
 	}
 
 }

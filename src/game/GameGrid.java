@@ -76,7 +76,57 @@ public class GameGrid extends CollisionTarget {
 	 */
 	
 	public void draw(ArrayList<Snake> snakes) {
+		Snake bittenSnake = null;
+		for (Snake s : snakes) {
 
+			Point[] body = s.getBody();
+			Point headPosition = body[0];
+
+			/*
+			 * do most of the collision detection when point = body[0] (head)
+			 */
+			if (!insideGrid(headPosition)) {
+				/* fire collision detection : BORDER */
+				fireCollisionDetection(CollisionTypes.BORDER, s, headPosition, 0);
+			}
+			else {
+				int gridValue = grid[headPosition.getX()][headPosition.getY()];
+				if (gridValue != 0) {
+					// own_body
+					if (gridValue == s.getGridID()) {
+						fireCollisionDetection(CollisionTypes.OWN_BODY, s, headPosition, gridValue);
+					}
+					// other_snake
+					else if (gridValue <= 4) {
+						fireCollisionDetection(CollisionTypes.OTHER_SNAKE, s, headPosition, gridValue);
+						bittenSnake = snakes.get(gridValue-1);
+					}
+					// artifact
+					else {
+						fireCollisionDetection(CollisionTypes.ARTIFACT, s, headPosition, gridValue);
+					}
+				}
+			}
+			
+			// remove dead bodyparts of OTHER_SNAKE
+			if (bittenSnake != null) {
+				removeDeadBodyParts(bittenSnake);
+				bittenSnake = null;
+			}
+			
+			// remove all this bodyparts from grid
+			removeDeadBodyParts(s);
+
+			// body might have changed due to collisions
+			body = s.getBody();
+
+			// set ids for the whole snake body
+			for (int j = 0; j < body.length; j++) {
+				Point bodyPartPosition = body[j];
+				grid[bodyPartPosition.getX()][bodyPartPosition.getY()] = s.getGridID();
+			}
+			
+		}
 		/* draw/remove artifacts */
 		for (Artifact art : getArtifacts()) {
 			int x = art.getPlacement().getX();
@@ -86,58 +136,6 @@ public class GameGrid extends CollisionTarget {
 						.get(Setting.CODE);
 			}
 		}
-
-		for (Snake s : snakes) {
-
-			Point[] body = s.getBody();
-			Point point = body[0];
-
-			/*
-			 * do most of the collision detection when point = body[0] (head)
-			 */
-			if (point.getX() < 0 || point.getX() >= size || point.getY() < 0 || point.getY() >= size) {
-				s.setAlive(false);
-				/* fire collision detection : BORDER */
-				fireCollisionDetection(CollisionTypes.BORDER, s, point, 0);
-				break;
-			}
-
-			int gridValue = grid[point.getX()][point.getY()];
-			if (gridValue != 0) {
-				// own_body
-				if (gridValue == s.getGridID()) {
-					fireCollisionDetection(CollisionTypes.OWN_BODY, s, point, gridValue);
-				}
-				// other_snake
-				else if (gridValue <= 4) {
-					fireCollisionDetection(CollisionTypes.OTHER_SNAKE, s, point, gridValue);
-				}
-				// artifact
-				else {
-					fireCollisionDetection(CollisionTypes.ARTIFACT, s, point, gridValue);
-				}
-			}
-
-			// set ids for the whole snake body
-			for (int j = 0; j < body.length; j++) {
-				point = body[j];
-				grid[point.getX()][point.getY()] = s.getGridID();
-			}
-			// remove tail from grid
-			Point tail = s.getLastTailPosition();
-			if (tail != null) {
-				if (grid[tail.getX()][tail.getY()] == s.getGridID()) {
-					grid[tail.getX()][tail.getY()] = 0;
-				}
-			}
-		}
-
-		// TODO: mapping of colour for every type of artifact
-		/*
-		 * colour = 5; for (Artifact a : artifacts) { if
-		 * (a.getClass().equals(HealthIncreaseArtifact.class)) { Point pos =
-		 * a.getPlacement(); grid[pos.getX()][pos.getY()] = colour; } }
-		 */
 	}
 
 	// debug output
@@ -161,16 +159,15 @@ public class GameGrid extends CollisionTarget {
 			@Override
 			public Boolean call() {
 				artifacts.add(artifact);
-				System.out.println("--- Artifacts ---");
-				for (Artifact art : artifacts) {
-					System.out.println(art.getPlacement() + ", isActive: " + art.isActive());
-				}
-				System.out.println("-----------------");
 				return artifacts.contains(artifact);
 			}
 		});
 
 		this.executor.execute(futureAdd);
+		System.out.println("Successfully placed artifact at " + artifact.getPlacement().toString());
+		for (Artifact art : artifacts) {
+			System.out.println(art.getPlacement() + ", " + art.isActive());
+		}
 	}
 
 	public List<Artifact> getArtifacts() {
@@ -198,5 +195,23 @@ public class GameGrid extends CollisionTarget {
 
 	public void shutdown() {
 		this.artifacts = new ArrayList<Artifact>();
+	}
+	
+	public boolean insideGrid(Point p) {
+		if (p.getX() >= 0 && p.getX() < size && p.getY() >= 0 && p.getY() < size) {
+			return true;
+		}
+		return false;
+	}
+	
+	public void removeDeadBodyParts(Snake s) {
+		for (Point p : s.getDeadParts()) {
+			if (insideGrid(p)) {
+				if (grid[p.getX()][p.getY()] == s.getGridID()) {
+					grid[p.getX()][p.getY()] = 0;
+				}
+			}
+		}
+	
 	}
 }
