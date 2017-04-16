@@ -20,8 +20,6 @@ public interface Snake {
 
 	void setAlive(boolean alive);
 
-	Point getLastTailPosition();
-
 	String getName();
 
 	int getHealth();
@@ -33,4 +31,8 @@ public interface Snake {
 	int getSize();
 
 	int getGridID();
+
+	List<Point> getDeadParts();
+
+	void clearDeadParts();
 }

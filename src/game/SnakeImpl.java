@@ -24,9 +24,9 @@ public class SnakeImpl implements Snake {
 	protected static List<Directions> vertical, horizontal;
 
 	private boolean alive;
+	private boolean respawn;
 
-	private Point lastTailPosition;
-
+	private ArrayList<Point> deadParts;
 	protected ArrayDeque<Point> position;
 
 	public SnakeImpl(String n, int gridID, Directions dir) {
@@ -39,8 +39,10 @@ public class SnakeImpl implements Snake {
 		speedDecrease = 0;
 
 		setAlive(true);
-
+		respawn = false;
+		
 		position = new ArrayDeque<Point>();
+		deadParts = new ArrayList<Point>();
 
 		if(vertical == null){
 			vertical = new ArrayList<Directions>();
@@ -88,7 +90,14 @@ public class SnakeImpl implements Snake {
 		if (direction == Directions.W) {
 			position.addFirst(new Point(head.getX(), head.getY() - 1));
 		}
-		lastTailPosition = position.pollLast();
+		if (respawn) {
+			if (position.size() == this.getSize()) {
+				respawn = false;
+			}
+		}
+		else {
+			deadParts.add(position.pollLast());
+		}
 
 	}
 
@@ -100,8 +109,8 @@ public class SnakeImpl implements Snake {
 	@Override
 	public Point[] getBody() {
 		ArrayDeque<Point> pos = position.clone();
-		Point[] body = new Point[DEFAULT_SIZE];
-		for (int i = 0; i < DEFAULT_SIZE; i++) {
+		Point[] body = new Point[pos.size()];
+		for (int i = 0; i < body.length; i++) {
 			body[i] = pos.poll();
 		}
 		return body;
@@ -126,11 +135,6 @@ public class SnakeImpl implements Snake {
 	@Override
 	public void setAlive(boolean alive) {
 		this.alive = alive;
-	}
-
-	@Override
-	public Point getLastTailPosition() {
-		return lastTailPosition;
 	}
 
 	@Override
@@ -262,6 +266,26 @@ public class SnakeImpl implements Snake {
 
 	public void setInvulnerability(boolean invulnerability) {
 		this.invulnerability = invulnerability;
+	}
+
+	public void resetPosition(Point pos) {
+		for(Point p : position) {
+			deadParts.add(p);
+		}
+		position.clear();
+		position.add(pos);
+		direction = Directions.N;
+		respawn = true;
+	}
+	
+	@Override
+	public ArrayList<Point> getDeadParts() {
+		return this.deadParts;		
+	}
+	
+	@Override
+	public void clearDeadParts() {
+		deadParts.clear();
 	}
 
 }
