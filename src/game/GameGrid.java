@@ -82,9 +82,6 @@ public class GameGrid extends CollisionTarget {
 			Point[] body = snek.getBody();
 			Point headPosition = body[0];
 
-			/*
-			 * do most of the collision detection when point = body[0] (head)
-			 */
 			if (!insideGrid(headPosition)) {
 				/* fire collision detection : BORDER */
 				fireCollisionDetection(CollisionTypes.BORDER, snek, headPosition, 0);
@@ -101,9 +98,8 @@ public class GameGrid extends CollisionTarget {
 						bittenSnake = snakes.get(gridValue-1);
 					}
 					/**
-					 * artifact since CollisionTypes.OTHER_SNAKE is handled
-					 * first, we dont need to worry about the case of 2 snakes
-					 * eating the same artifact at the same time.
+					 * every snake that tries to eat the artifact gets added to
+					 * the artifacts list. handling later on in the "draw/remove artifacts" part
 					 */
 					else {
 						Artifact art = getArtifactByPosition(headPosition);

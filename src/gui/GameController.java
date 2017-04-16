@@ -265,7 +265,9 @@ public class GameController {
 		// TODO clean up server/client
 
 		// reset artifacts list to empty and close artifact handler thread
-		this.game.getGrid().shutdown();
+		if (game.getGrid() != null) {
+			this.game.getGrid().shutdown();
+		}
 		if (game != null) {
 			game.closeChildren();
 		}
