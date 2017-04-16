@@ -61,7 +61,6 @@ public class SnakeImpl implements Snake {
 		}
 	}
 
-	// TODO: move snake into defined direction
 	@Override
 	public void move() {
 		Point head = position.peekFirst();
@@ -151,7 +150,6 @@ public class SnakeImpl implements Snake {
 		return DEFAULT_SIZE + sizeModifier;
 	}
 	
-	//TODO need better max health concept!!!
 	@Override
 	public int getMaxHealth(){
 		return DEFAULT_MAX_HEALTH + sizeModifier;
@@ -163,46 +161,46 @@ public class SnakeImpl implements Snake {
 
 	/**
 	 * changes the current size modifier by the input
-	 * @param sizeModifier a positive or negative value
+	 * @param change a positive or negative value
 	 */
-	public void setSizeModifier(int sizeModifier) {
-		this.sizeModifier += sizeModifier;
+	public void changeSizeModifier(int change) {
+		this.sizeModifier += change;
 	}
 
 	/**
 	 * changes the current health modifier by the input
-	 * @param healthModifier a positive or negative value
+	 * @param change a positive or negative value
 	 */
-	public void setHealthModifier(int healthModifier) {
+	public void changeHealthModifier(int change) {
 		//can't be healed above max
-		if(this.healthModifier + healthModifier + DEFAULT_HEALTH > DEFAULT_MAX_HEALTH + sizeModifier){
+		if(this.healthModifier + change + DEFAULT_HEALTH > DEFAULT_MAX_HEALTH + sizeModifier){
 			this.healthModifier = DEFAULT_MAX_HEALTH + sizeModifier - DEFAULT_HEALTH;
 		}
 		else{
-			this.healthModifier += healthModifier;
+			this.healthModifier += change;
 		}
 	}
 
 	
 	//these need two methods, since speed changes are temporary
 	
-	public void setSpeedIncrease(int speedIncrease) {
+	public void changeSpeedIncrease(int change) {
 		//weird cases that change increase into negative
-		if(this.speedIncrease + speedIncrease < 0){
+		if(this.speedIncrease + change < 0){
 			this.speedIncrease = 0;
 		}
 		else{
-			this.speedIncrease += speedIncrease;
+			this.speedIncrease += change;
 		}
 	}
 
-	public void setSpeedDecrease(int speedDecrease) {
+	public void changeSpeedDecrease(int change) {
 		//weird cases that change decrease into negative
-		if(this.speedDecrease + speedDecrease < 0){
+		if(this.speedDecrease + change < 0){
 			this.speedDecrease = 0;
 		}
 		else{
-			this.speedDecrease += speedDecrease;
+			this.speedDecrease += change;
 		}
 	}
 

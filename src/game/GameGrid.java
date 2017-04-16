@@ -18,7 +18,7 @@ public class GameGrid extends CollisionTarget {
 	public static final int NUM_OF_THREADS = 2;
 
 	private int size;
-	private int[][] grid; // TODO change to Point[][]?
+	private int[][] grid;
 	private List<Artifact> artifacts;
 	private ExecutorService executor;
 
@@ -145,7 +145,6 @@ public class GameGrid extends CollisionTarget {
 		System.out.println("-------------------------------------");
 	}
 
-	// TODO change to Point[][]?
 	public int[][] getGrid() {
 		return grid;
 	}

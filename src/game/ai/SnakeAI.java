@@ -266,12 +266,12 @@ public class SnakeAI extends SnakeImpl {
 
 	/*
 	 * value from -1 to +1
-	 */ // TODO refactor? //TODO use grid object codes instead of instanceof checks?
+	 */
+	// TODO use grid artifact ids instead of instanceof checks? use of snake/artifact difference? (snakes have ids too)
 	private double valueObject(Object o) {
 		double value = 0;
 		int distance = measureDistance(o);
 
-		// TODO change everything with regards to invulnerability
 		if (o instanceof Snake) {
 			int ox = ((Snake) o).getBody()[0].getX();
 			int oy = ((Snake) o).getBody()[0].getY();
@@ -294,76 +294,78 @@ public class SnakeAI extends SnakeImpl {
 				value += .1;
 			}
 		} 
-		else if (o instanceof Artifact) {
-			if (o instanceof HealthIncreaseArtifact) { 
-				// 0: full health already, 0.1: overheal, higher range depending on distance and health
-				value = .9 * ((double) 1 / distance);
+		else if (o instanceof HealthIncreaseArtifact) { 
+			// 0: full health already, 0.1: overheal, higher range depending on distance and health
+			value = .9 * ((double) 1 / distance);
 
-				if(getMaxHealth() - getHealth() < ((HealthIncreaseArtifact) o).getIncrease()){
-					value = .1;
-				}
-				else if(getHealth() == getMaxHealth()){
-					value = 0;
-				}
+			if(getMaxHealth() - getHealth() < ((HealthIncreaseArtifact) o).getIncrease()){
+				value = .1;
 			}
-			else if (o instanceof SizeIncreaseArtifact) { 
-				// AI always wants to grow
-				value = .4 * ((double) 1 / distance);
-			}
-			else if (o instanceof InvulnerabilityArtifact) {
-				if(this.isInvulnerable()){
-					value = 0;
-				}
-				else{
-					value = 1 * ((double) 1 / distance);
-				}
-			}
-			else if (o instanceof SpeedIncreaseArtifact) { 
-				if (getSpeed() > DEFAULT_SPEED) {
-					value = .1;
-				}
-				else {
-					value = .5 * ((double) 1 / distance);
-				}
-			}
-			// negative pickups
-			else if (o instanceof HealthDecreaseArtifact) {
-				if (this.getHealth() == this.getMaxHealth()) {
-					value = -(.1);
-				}
-				else if (this.getHealth() - ((HealthDecreaseArtifact) o).getDecrease() <= 0) {
-					value = -1;
-				}
-				else {
-					double remainderPercentage = (this.getHealth() - ((HealthDecreaseArtifact) o).getDecrease()) / this.getMaxHealth();
-
-					// the closer the less we want it, less health --> less desire
-					value = -.9 * (((double) DISTANCE / distance) / DISTANCE) * ((remainderPercentage - 1) * -1); 
-				}
-			}
-			else if (o instanceof SizeDecreaseArtifact) {
-				value = -.4 * (((double) DISTANCE / distance) / DISTANCE); // we never want this
-			}
-			else if (o instanceof BlockControlArtifact) {
-				value = -.9 * (((double) DISTANCE / distance) / DISTANCE); // we really never want this
-			}
-			else if (o instanceof ReverseControlArtifact) {
-				// we are perfect, this doesn't harm us, all your base are belong to us
-				// -.1 because we want others to be able to pick it up
-				value = -.1;
-			}
-			else if (o instanceof SpeedDecreaseArtifact) {
-				if (this.getSpeed() > DEFAULT_SPEED) {
-					value = -.3 * (((double) DISTANCE / distance) / DISTANCE);
-				}
-				else {
-					value = -.5 * (((double) DISTANCE / distance) / DISTANCE);
-				}
-			}
-			// as yet not defined artifacts
-			else {
+			else if(getHealth() == getMaxHealth()){
 				value = 0;
 			}
+		}
+		else if (o instanceof SizeIncreaseArtifact) { 
+			// AI always wants to grow
+			value = .4 * ((double) 1 / distance);
+		}
+		else if (o instanceof InvulnerabilityArtifact) {
+			if(this.isInvulnerable()){
+				value = 0;
+			}
+			else{
+				value = 1 * ((double) 1 / distance);
+			}
+		}
+		else if (o instanceof SpeedIncreaseArtifact) { 
+			if (getSpeed() > DEFAULT_SPEED) {
+				value = .1;
+			}
+			else {
+				value = .5 * ((double) 1 / distance);
+			}
+		}
+		// negative pickups
+		else if (o instanceof HealthDecreaseArtifact) {
+			if (this.getHealth() == this.getMaxHealth()) {
+				value = -(.1);
+			}
+			else if (this.getHealth() - ((HealthDecreaseArtifact) o).getDecrease() <= 0) {
+				value = -1;
+			}
+			else {
+				double remainderPercentage = (this.getHealth() - ((HealthDecreaseArtifact) o).getDecrease()) / this.getMaxHealth();
+
+				// the closer the less we want it, less health --> less desire
+				value = -.9 * (((double) DISTANCE / distance) / DISTANCE) * ((remainderPercentage - 1) * -1); 
+			}
+		}
+		else if (o instanceof SizeDecreaseArtifact) {
+			value = -.4 * (((double) DISTANCE / distance) / DISTANCE); // we never want this
+		}
+		else if (o instanceof BlockControlArtifact) {
+			value = -.9 * (((double) DISTANCE / distance) / DISTANCE); // we really never want this
+		}
+		else if (o instanceof ReverseControlArtifact) {
+			// we are perfect, this doesn't harm us, all your base are belong to us
+			// -.1 because we want others to be able to pick it up
+			value = -.1;
+		}
+		else if (o instanceof SpeedDecreaseArtifact) {
+			if (this.getSpeed() > DEFAULT_SPEED) {
+				value = -.3 * (((double) DISTANCE / distance) / DISTANCE);
+			}
+			else {
+				value = -.5 * (((double) DISTANCE / distance) / DISTANCE);
+			}
+		}
+		// as yet not defined artifacts
+		else {
+			value = 0;
+		}
+
+		if(value < 0 && isInvulnerable()){
+			value = 0;
 		}
 
 		return value;
