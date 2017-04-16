@@ -15,4 +15,6 @@ public interface ArtifactPlacementStrategy {
 	void placeArtifact(Artifacts artifactType);
 
 	List<Point> createBlackList();
+	
+	Point getRespawnPlace();
 }

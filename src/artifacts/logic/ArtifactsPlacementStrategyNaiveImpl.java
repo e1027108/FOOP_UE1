@@ -57,5 +57,10 @@ public class ArtifactsPlacementStrategyNaiveImpl implements ArtifactPlacementStr
 
 		return blackList;
 	}
+	
+	@Override
+	public Point getRespawnPlace() {
+		return artifactCoordinateGenerator.createPlacement(createBlackList());
+	}
 
 }
