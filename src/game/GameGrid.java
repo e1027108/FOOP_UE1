@@ -77,9 +77,9 @@ public class GameGrid extends CollisionTarget {
 	
 	public void draw(ArrayList<Snake> snakes) {
 		Snake bittenSnake = null;
-		for (Snake s : snakes) {
+		for (Snake snek : snakes) {
 
-			Point[] body = s.getBody();
+			Point[] body = snek.getBody();
 			Point headPosition = body[0];
 
 			/*
@@ -87,23 +87,27 @@ public class GameGrid extends CollisionTarget {
 			 */
 			if (!insideGrid(headPosition)) {
 				/* fire collision detection : BORDER */
-				fireCollisionDetection(CollisionTypes.BORDER, s, headPosition, 0);
+				fireCollisionDetection(CollisionTypes.BORDER, snek, headPosition, 0);
 			}
 			else {
 				int gridValue = grid[headPosition.getX()][headPosition.getY()];
 				if (gridValue != 0) {
 					// own_body
-					if (gridValue == s.getGridID()) {
-						fireCollisionDetection(CollisionTypes.OWN_BODY, s, headPosition, gridValue);
+					if (gridValue == snek.getGridID()) {
+						fireCollisionDetection(CollisionTypes.OWN_BODY, snek, headPosition, gridValue);
 					}
-					// other_snake
 					else if (gridValue <= 4) {
-						fireCollisionDetection(CollisionTypes.OTHER_SNAKE, s, headPosition, gridValue);
+						fireCollisionDetection(CollisionTypes.OTHER_SNAKE, snek, headPosition, gridValue);
 						bittenSnake = snakes.get(gridValue-1);
 					}
-					// artifact
+					/**
+					 * artifact since CollisionTypes.OTHER_SNAKE is handled
+					 * first, we dont need to worry about the case of 2 snakes
+					 * eating the same artifact at the same time.
+					 */
 					else {
-						fireCollisionDetection(CollisionTypes.ARTIFACT, s, headPosition, gridValue);
+						Artifact art = getArtifactByPosition(headPosition);
+						art.addEatingSnake(snek);
 					}
 				}
 			}
@@ -115,25 +119,44 @@ public class GameGrid extends CollisionTarget {
 			}
 			
 			// remove all this bodyparts from grid
-			removeDeadBodyParts(s);
+			removeDeadBodyParts(snek);
 
 			// body might have changed due to collisions
-			body = s.getBody();
+			body = snek.getBody();
 
 			// set ids for the whole snake body
 			for (int j = 0; j < body.length; j++) {
 				Point bodyPartPosition = body[j];
-				grid[bodyPartPosition.getX()][bodyPartPosition.getY()] = s.getGridID();
+				grid[bodyPartPosition.getX()][bodyPartPosition.getY()] = snek.getGridID();
 			}
 			
 		}
-		/* draw/remove artifacts */
+		/* draw/remove artifacts, handle "2 snakes 1 artifact" */
 		for (Artifact art : getArtifacts()) {
 			int x = art.getPlacement().getX();
 			int y = art.getPlacement().getY();
 			if (art.isActive()) {
 				grid[x][y] = (int) ArtifactConstants.artifactSettingsMap.get(art.getArtifactsMapping())
 						.get(Setting.CODE);
+
+				
+				List<Snake> eatingSnakes = art.getEatingSnakes();
+				switch (eatingSnakes.size()) {
+				case 0: // do nothing
+					break;
+				case 1: // call fireCollisionDetection ARTIFACT
+					Snake snek = eatingSnakes.get(0);
+					fireCollisionDetection(CollisionTypes.ARTIFACT, snek, (snek.getBody())[0],
+							grid[x][y]);
+					break;
+				default: // more than one snake -> fireCollisionDetection OTHER_SNAKE
+					Snake snek1 = eatingSnakes.get(0);
+					Snake snek2 = eatingSnakes.get(1);
+					fireCollisionDetection(CollisionTypes.OTHER_SNAKE, snek1, (snek1.getBody())[0], snek2.getGridID());
+					fireCollisionDetection(CollisionTypes.OTHER_SNAKE, snek2, (snek1.getBody())[0], snek1.getGridID());
+					art.setActive(false);
+					break;
+				}
 			}
 		}
 	}
@@ -183,6 +206,31 @@ public class GameGrid extends CollisionTarget {
 		}
 		try {
 			return futureRead.get();
+		} catch (InterruptedException | ExecutionException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	public Artifact getArtifactByPosition(Point point) {
+		List<Artifact> artifacts = getArtifacts();
+		FutureTask<Artifact> futureGetByPos = new FutureTask<Artifact>(new Callable<Artifact>() {
+			@Override
+			public Artifact call() {
+				for (Artifact art : artifacts) {
+					if (art.getPlacement().equals(point)) {
+						return art;
+					}
+				}
+				return null;
+			}
+		});
+
+		this.executor.execute(futureGetByPos);
+		while (!futureGetByPos.isDone()) {
+		}
+		try {
+			return futureGetByPos.get();
 		} catch (InterruptedException | ExecutionException e) {
 			e.printStackTrace();
 		}
