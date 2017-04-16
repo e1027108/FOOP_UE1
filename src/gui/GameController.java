@@ -13,6 +13,7 @@ import dto.DataTransferrer;
 import dto.GameDto;
 import game.Directions;
 import game.Game;
+import game.GameGrid;
 import game.Point;
 import game.Snake;
 import javafx.animation.KeyFrame;
@@ -67,14 +68,13 @@ public class GameController {
 	// percentage on the color scale that we want to be off, at least (needs to be at most 1/6 (=0.166..), otw can't/ find 3 other colors)
 	private final static double RANGE_VALUE = .12;
 	private final static Duration MOVE_DURATION = Duration.millis(100);
+	private static final int GRID_SIZE = 39;
 
 	private Game game;
 
 	private Timeline timeline;
 
 	private final Color emptyCellColor = Color.valueOf("FFFFFF");
-	
-	private static final int gridSize = 39;
 	
 	private int tileSize;
 	
@@ -96,7 +96,7 @@ public class GameController {
 
 		gridPane.setStyle("-fx-background-color: #FFFFFF;");
 		
-		tileSize = (int) Math.floor((gridPane.getPrefHeight() - (gridSize - 1))/ gridSize);
+		tileSize = (int) Math.floor((gridPane.getPrefHeight() - (GRID_SIZE - 1))/ GRID_SIZE);
 		System.out.println(tileSize);
 
 		// TODO if AI only do not contact/host any server
@@ -140,7 +140,7 @@ public class GameController {
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	private void onStart() {
 
-		game = new Game(info.getPlayers(), info.getName(), gridSize);
+		game = new Game(info.getPlayers(), info.getName(), GRID_SIZE);
 		game.run();
 
 		initGrid();
@@ -195,29 +195,20 @@ public class GameController {
 
 	}
 
+	/**
+	 * THIS method is responsible for visualizing the game grid. the
+	 * {@link GameGrid}.draw() method handles the setting of the IDs.
+	 */
 	private void update() {
 
 		Rectangle r;
-
-		for (Snake s : game.getSnakes()) {
-
-			Point[] body = s.getBody();
-			for (Point p : body) {
-				r = (Rectangle) gridPane.getChildren().get((p.getX() * gridSize) + p.getY());
-				r.setFill(colors[s.getGridID()-1]);
-			}
-
-			Point last = s.getLastTailPosition();
-			r = (Rectangle) gridPane.getChildren().get((last.getX() * gridSize) + last.getY());
-			r.setFill(emptyCellColor);
-		}
 
 		this.game.getArtifactHandler().checkDespawn();
 
 		// set/remove artifacts
 		for (Artifact a : game.getGrid().getArtifacts()) {
 			Point pos = a.getPlacement();
-			r = (Rectangle) gridPane.getChildren().get((pos.getX() * gridSize) + pos.getY());
+			r = (Rectangle) gridPane.getChildren().get((pos.getX() * GRID_SIZE) + pos.getY());
 			ImagePattern icon;
 			try {
 				if (a.isActive()) {
@@ -231,20 +222,32 @@ public class GameController {
 			}
 		}
 
+		for (Snake s : game.getSnakes()) {
+
+			Point[] body = s.getBody();
+			for (Point p : body) {
+				r = (Rectangle) gridPane.getChildren().get((p.getX() * GRID_SIZE) + p.getY());
+				r.setFill(colors[s.getGridID() - 1]);
+			}
+
+			Point last = s.getLastTailPosition();
+			r = (Rectangle) gridPane.getChildren().get((last.getX() * GRID_SIZE) + last.getY());
+			r.setFill(emptyCellColor);
+		}
 	}
 
 	private void initGrid() {
 
 		gridPane.getChildren().clear();
 
-		gridPane.setPrefColumns(gridSize);
-		gridPane.setPrefRows(gridSize);
+		gridPane.setPrefColumns(GRID_SIZE);
+		gridPane.setPrefRows(GRID_SIZE);
 		gridPane.setVgap(1);
 		gridPane.setHgap(1);
 		gridPane.setAlignment(Pos.CENTER);
 
-		for (int i = 0; i < gridSize; i++) {
-			for (int j = 0; j < gridSize; j++) {
+		for (int i = 0; i < GRID_SIZE; i++) {
+			for (int j = 0; j < GRID_SIZE; j++) {
 				Rectangle r = new Rectangle(0, 0, tileSize, tileSize);
 				r.setFill(emptyCellColor);
 				gridPane.getChildren().add(r);

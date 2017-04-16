@@ -40,7 +40,9 @@ public class ArtifactsPlacementStrategyNaiveImpl implements ArtifactPlacementStr
 		List<Point> blackList = new ArrayList<Point>();
 
 		for (Artifact art : this.gameGrid.getArtifacts()) {
+			if (art.isActive()) {
 			blackList.add(art.getPlacement());
+			}
 		}
 
 		for (Snake snek : this.game.getSnakes()) {

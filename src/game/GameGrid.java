@@ -12,6 +12,7 @@ import java.util.concurrent.ThreadFactory;
 import artifacts.Artifact;
 import artifacts.ArtifactConstants;
 import artifacts.ArtifactConstants.Setting;
+import gui.GameController;
 
 public class GameGrid extends CollisionTarget {
 
@@ -68,8 +69,24 @@ public class GameGrid extends CollisionTarget {
 		return size;
 	}
 
-	// after every move draw the grid again.
+	/**
+	 * after every move draw the grid again. THIS draw method means setting the
+	 * IDs on the grid[][], the visualization is done by the
+	 * {@link GameController}.update() method!
+	 */
+	
 	public void draw(ArrayList<Snake> snakes) {
+
+		/* draw/remove artifacts */
+		for (Artifact art : getArtifacts()) {
+			int x = art.getPlacement().getX();
+			int y = art.getPlacement().getY();
+			if (art.isActive()) {
+				grid[x][y] = (int) ArtifactConstants.artifactSettingsMap.get(art.getArtifactsMapping())
+						.get(Setting.CODE);
+			}
+		}
+
 		for (Snake s : snakes) {
 
 			Point[] body = s.getBody();
@@ -114,16 +131,6 @@ public class GameGrid extends CollisionTarget {
 				}
 			}
 		}
-		for (Artifact art : this.artifacts) {
-			int x = art.getPlacement().getX();
-			int y = art.getPlacement().getY();
-			if (art.isActive()) {
-				grid[x][y] = (int) ArtifactConstants.artifactSettingsMap.get(art.getArtifactsMapping())
-						.get(Setting.CODE);
-			} else {
-				grid[x][y] = 0;
-			}
-		}
 
 		// TODO: mapping of colour for every type of artifact
 		/*
@@ -154,15 +161,16 @@ public class GameGrid extends CollisionTarget {
 			@Override
 			public Boolean call() {
 				artifacts.add(artifact);
+				System.out.println("--- Artifacts ---");
+				for (Artifact art : artifacts) {
+					System.out.println(art.getPlacement() + ", isActive: " + art.isActive());
+				}
+				System.out.println("-----------------");
 				return artifacts.contains(artifact);
 			}
 		});
 
 		this.executor.execute(futureAdd);
-		System.out.println("Successfully placed artifact at " + artifact.getPlacement().toString());
-		for (Artifact art : artifacts) {
-			System.out.println(art.getPlacement() + ", " + art.isActive());
-		}
 	}
 
 	public List<Artifact> getArtifacts() {
