@@ -195,6 +195,7 @@ public class SnakeImpl implements Snake {
 		return DEFAULT_MAX_HEALTH + sizeModifier;
 	}
 
+	@Override
 	public int getGridID() {
 		return gridID;
 	}
@@ -203,6 +204,7 @@ public class SnakeImpl implements Snake {
 	 * changes the current size modifier by the input
 	 * @param change a positive or negative value
 	 */
+	@Override
 	public void changeSizeModifier(int change) {
 		this.sizeModifier += change;
 	}
@@ -211,6 +213,7 @@ public class SnakeImpl implements Snake {
 	 * changes the current health modifier by the input
 	 * @param change a positive or negative value
 	 */
+	@Override
 	public void changeHealthModifier(int change) {
 		//can't be healed above max
 		if(this.healthModifier + change + DEFAULT_HEALTH > DEFAULT_MAX_HEALTH + sizeModifier){
@@ -223,7 +226,7 @@ public class SnakeImpl implements Snake {
 
 
 	//these need two methods, since speed changes are temporary
-
+	@Override
 	public void changeSpeedIncrease(int change) {
 		//weird cases that change increase into negative
 		if(this.speedIncrease + change < 0){
@@ -234,6 +237,7 @@ public class SnakeImpl implements Snake {
 		}
 	}
 
+	@Override
 	public void changeSpeedDecrease(int change) {
 		//weird cases that change decrease into negative
 		if(this.speedDecrease + change < 0){
@@ -244,30 +248,37 @@ public class SnakeImpl implements Snake {
 		}
 	}
 
+	@Override
 	public boolean hasBlockControl() {
 		return blockControl;
 	}
 
+	@Override
 	public void setBlockControl(boolean blockControl) {
 		this.blockControl = blockControl;
 	}
 
+	@Override
 	public boolean hasReverseControl() {
 		return reverseControl;
 	}
 
+	@Override
 	public void setReverseControl(boolean reverseControl) {
 		this.reverseControl = reverseControl;
 	}
 
+	@Override
 	public boolean isInvulnerable() {
 		return invulnerability;
 	}
 
+	@Override
 	public void setInvulnerability(boolean invulnerability) {
 		this.invulnerability = invulnerability;
 	}
 
+	@Override
 	public void resetPosition(Point pos) {
 		for(Point p : position) {
 			deadParts.add(p);

@@ -149,7 +149,6 @@ public class GameGrid extends CollisionTarget {
 					Snake snek1 = eatingSnakes.get(0);
 					Snake snek2 = eatingSnakes.get(1);
 					fireCollisionDetection(CollisionTypes.OTHER_SNAKE, snek1, (snek1.getBody())[0], snek2.getGridID());
-					fireCollisionDetection(CollisionTypes.OTHER_SNAKE, snek2, (snek1.getBody())[0], snek1.getGridID());
 					art.setActive(false);
 					break;
 				}

@@ -16,6 +16,8 @@ public interface Snake {
 
 	void initPosition(int x, int y);
 
+	void resetPosition(Point point);
+
 	boolean isAlive();
 
 	void setAlive(boolean alive);
@@ -35,4 +37,24 @@ public interface Snake {
 	List<Point> getDeadParts();
 
 	void clearDeadParts();
+
+	void setInvulnerability(boolean invulnerability);
+
+	boolean isInvulnerable();
+
+	void changeSizeModifier(int change);
+
+	void changeHealthModifier(int change);
+
+	void changeSpeedIncrease(int change);
+
+	void changeSpeedDecrease(int change);
+
+	boolean hasBlockControl();
+
+	void setBlockControl(boolean blockControl);
+
+	boolean hasReverseControl();
+
+	void setReverseControl(boolean reverseControl);
 }
