@@ -25,71 +25,71 @@ public class ArtifactConstants {
 	/* permanent increases/decreases */
 	public static final int HEALTH_INCREASE = 1;
 	public static final int HEALTH_DECREASE = 1;
-	public static final int SIZE_INCREASE = 1;
-	public static final int SIZE_DECREASE = 1;
+	public static final int SIZE_INCREASE   = 1;
+	public static final int SIZE_DECREASE   = 1;
 
 	/* temporary increases/decreases */
 	public static final int SPEED_INCREASE = 1;
 	public static final int SPEED_DECREASE = 1;
 
 	/* duration of effect */
-	public static final int BLOCK_CONTROL_DURATION = 2;
+	public static final int BLOCK_CONTROL_DURATION   = 2;
 	public static final int INVULNERABILITY_DURATION = 2;
 	public static final int REVERSE_CONTROL_DURATION = 2;
-	public static final int SPEED_INCREASE_DURATION = 2;
-	public static final int SPEED_DECREASE_DURATION = 2;
+	public static final int SPEED_INCREASE_DURATION  = 2;
+	public static final int SPEED_DECREASE_DURATION  = 2;
 
 	/* time until despawn */
 	public static final int HEALTH_INCREASE_DESPAWN_TIMER = 15;
 	public static final int HEALTH_DECREASE_DESPAWN_TIMER = 15;
-	public static final int SIZE_INCREASE_DESPAWN_TIMER = 15;
-	public static final int SIZE_DECREASE_DESPAWN_TIMER = 15;
-	public static final int BLOCK_CONTROL_DESPAWN_TIMER = 15;
+	public static final int SIZE_INCREASE_DESPAWN_TIMER   = 15;
+	public static final int SIZE_DECREASE_DESPAWN_TIMER   = 15;
+	public static final int BLOCK_CONTROL_DESPAWN_TIMER   = 15;
 	public static final int INVULNERABILITY_DESPAWN_TIMER = 15;
 	public static final int REVERSE_CONTROL_DESPAWN_TIMER = 15;
-	public static final int SPEED_INCREASE_DESPAWN_TIMER = 15;
-	public static final int SPEED_DECREASE_DESPAWN_TIMER = 15;
+	public static final int SPEED_INCREASE_DESPAWN_TIMER  = 15;
+	public static final int SPEED_DECREASE_DESPAWN_TIMER  = 15;
 
 	/*
 	 * spawn probability factors to ensure different occurrences according to
 	 * artifact effects -> Should be a positive Integer!
 	 */
-	public static final int HEALTH_INCREASE_SPAWN_FACTOR = 1;
-	public static final int HEALTH_DECREASE_SPAWN_FACTOR = 1;
-	public static final int SIZE_INCREASE_SPAWN_FACTOR = 1;
-	public static final int SIZE_DECREASE_SPAWN_FACTOR = 1;
-	public static final int BLOCK_CONTROL_SPAWN_FACTOR = 1;
-	public static final int INVULNERABILITY_SPAWN_FACTOR = 1;
-	public static final int REVERSE_CONTROL_SPAWN_FACTOR = 1;
-	public static final int SPEED_INCREASE_SPAWN_FACTOR = 1;
-	public static final int SPEED_DECREASE_SPAWN_FACTOR = 1;
+	public static final int HEALTH_INCREASE_SPAWN_FACTOR = 0;
+	public static final int HEALTH_DECREASE_SPAWN_FACTOR = 0;
+	public static final int SIZE_INCREASE_SPAWN_FACTOR   = 1;
+	public static final int SIZE_DECREASE_SPAWN_FACTOR   = 1;
+	public static final int BLOCK_CONTROL_SPAWN_FACTOR   = 0;
+	public static final int INVULNERABILITY_SPAWN_FACTOR = 0;
+	public static final int REVERSE_CONTROL_SPAWN_FACTOR = 0;
+	public static final int SPEED_INCREASE_SPAWN_FACTOR  = 0;
+	public static final int SPEED_DECREASE_SPAWN_FACTOR  = 0;
 
 	/* spawn timer for the next artifact */
 	public static final int NEXT_SPAWN_INTERVAL_START = 5;
-	public static final int NEXT_SPAWN_INTERVAL_END = 15;
+	public static final int NEXT_SPAWN_INTERVAL_END   = 15;
 
 	/* images */
 	public static final String HEALTH_INCREASE_IMAGE = "img/health_increase.png";
 	public static final String HEALTH_DECREASE_IMAGE = "img/health_decrease.png";
-	public static final String SIZE_INCREASE_IMAGE = "img/size_increase.png";
-	public static final String SIZE_DECREASE_IMAGE = "img/size_decrease.png";
-	public static final String BLOCK_CONTROL_IMAGE = "img/block_control.png";
+	public static final String SIZE_INCREASE_IMAGE   = "img/size_increase.png";
+	public static final String SIZE_DECREASE_IMAGE   = "img/size_decrease.png";
+	public static final String BLOCK_CONTROL_IMAGE   = "img/block_control.png";
 	public static final String REVERSE_CONTROL_IMAGE = "img/reverse_control.png";
 	public static final String INVULNERABILITY_IMAGE = "img/invulnerability.png";
-	public static final String SPEED_INCREASE_IMAGE = "img/speed_increase.png";
-	public static final String SPEED_DECREASE_IMAGE = "img/speed_decrease.png";
+	public static final String SPEED_INCREASE_IMAGE  = "img/speed_increase.png";
+	public static final String SPEED_DECREASE_IMAGE  = "img/speed_decrease.png";
 
 	/* grid codes: permanent 1x, temporary 2x */
 	public static final int HEALTH_INCREASE_CODE = 10;
 	public static final int HEALTH_DECREASE_CODE = 11;
-	public static final int SIZE_INCREASE_CODE = 12;
-	public static final int SIZE_DECREASE_CODE = 13;
+	public static final int SIZE_INCREASE_CODE   = 12;
+	public static final int SIZE_DECREASE_CODE   = 13;
 
-	public static final int BLOCK_CONTROL_CODE = 20;
+	public static final int BLOCK_CONTROL_CODE   = 20;
 	public static final int REVERSE_CONTROL_CODE = 21;
 	public static final int INVULNERABILITY_CODE = 22;
-	public static final int SPEED_INCREASE_CODE = 23;
-	public static final int SPEED_DECREASE_CODE = 24;
+	public static final int SPEED_INCREASE_CODE  = 23;
+	public static final int SPEED_DECREASE_CODE  = 24;
 
 	static {
 		/**
