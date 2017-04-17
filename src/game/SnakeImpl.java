@@ -218,6 +218,7 @@ public class SnakeImpl implements Snake {
 		// TODO remove/add point to Back of position queue! (this influences
 		// draw and update etc).
 		if (change < 0) {
+			changeHealthModifier(0);
 			this.deadParts.add(position.pollLast());
 			if (position.size() == 0) {
 				this.setAlive(false);
