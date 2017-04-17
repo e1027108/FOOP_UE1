@@ -223,7 +223,6 @@ public class GameController {
 		}
 
 		for (Snake s : game.getSnakes()) {
-
 			Point[] body = s.getBody();
 			for (Point p : body) {
 				r = (Rectangle) gridPane.getChildren().get((p.getX() * GRID_SIZE) + p.getY());
@@ -238,6 +237,8 @@ public class GameController {
 			}
 			s.clearDeadParts();
 		}
+
+		game.removeDeadSnakes();
 	}
 
 	private void initGrid() {

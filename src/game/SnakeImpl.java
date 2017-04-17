@@ -215,6 +215,14 @@ public class SnakeImpl implements Snake {
 	@Override
 	public void changeSizeModifier(int change) {
 		this.sizeModifier += change;
+		// TODO remove/add point to Back of position queue! (this influences
+		// draw and update etc).
+		if (change < 0) {
+			this.deadParts.add(position.pollLast());
+			if (position.size() == 0) {
+				this.setAlive(false);
+			}
+		}
 	}
 
 	/**
@@ -378,6 +386,7 @@ public class SnakeImpl implements Snake {
 	public void getStatus() {
 		System.out.println("---- Snake " + getGridID() + " - Status:");
 		System.out.println("Health        : " + getHealth());
+		System.out.println("Size          : " + getSize());
 		System.out.println("Speed         : " + getSpeed());
 		System.out.println("Invulnerable  : " + isInvulnerable());
 		System.out.println("BlockControl  : " + hasBlockControl());

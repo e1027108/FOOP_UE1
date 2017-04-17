@@ -106,14 +106,13 @@ public class Game implements CollisionListener {
 			s.move();
 		}
 		grid.draw(snakes);
-		removeDeadSnakes();
-
 	}
 
 	public void removeDeadSnakes() {
 		for (int i = 0; i < snakes.size(); i++) {
-			if (!snakes.get(i).isAlive())
+			if (!snakes.get(i).isAlive()) {
 				snakes.remove(i);
+			}
 		}
 	}
 
