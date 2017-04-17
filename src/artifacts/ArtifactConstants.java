@@ -39,7 +39,7 @@ public class ArtifactConstants {
 	public static final int SPEED_INCREASE_DURATION  = 2;
 	public static final int SPEED_DECREASE_DURATION  = 2;
 
-	/* time until despawn */
+	/* time until despawn - IN SECONDS */
 	public static final int HEALTH_INCREASE_DESPAWN_TIMER = 15;
 	public static final int HEALTH_DECREASE_DESPAWN_TIMER = 15;
 	public static final int SIZE_INCREASE_DESPAWN_TIMER   = 15;
