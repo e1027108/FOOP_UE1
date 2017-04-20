@@ -26,6 +26,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Color;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 
 public class JoinController {
 
@@ -45,15 +46,16 @@ public class JoinController {
 	private Button createBtn, joinBtn;
 
 	@FXML
-	private TextField ipTxt, nameTxt;
+	private TextField ipTxt, nameTxt, timeTxt;
 
 	@FXML
 	private Label errorLbl;
 
 	@FXML
 	private ComboBox<String> playerNbrComboBox;
-	
+
 	private static final String AI_ONLY = "AI only";
+	private static final String STANDARD_TIME = "3m";
 
 	@FXML
 	void initialize() {
@@ -97,7 +99,7 @@ public class JoinController {
 
 		//TODO connect to IP given (not host) or create a game before loading the gamePane (host)
 		//TODO give info to some connecting static class? later: server
-		
+
 		Rectangle2D screenBounds = Screen.getPrimary().getVisualBounds();
 		String resource = "";
 		if (screenBounds.getHeight() > 768) {
@@ -106,8 +108,8 @@ public class JoinController {
 		else {
 			resource = "/game_small.fxml";
 		}
-        
-		
+
+
 		Parent gamePane;
 		try {
 			gamePane = FXMLLoader.load(getClass().getResource(resource));
@@ -116,10 +118,11 @@ public class JoinController {
 			e.printStackTrace();
 			return;
 		}
-		
+
 		Scene scene = new Scene(gamePane);
 		Stage stage = (Stage) ((Node) joinPane).getScene().getWindow();
-		stage.setScene(scene);		
+		stage.setScene(scene);
+		stage.setTitle("Snake! Eliminate your foes!");
 		stage.show();
 	}
 
@@ -128,6 +131,14 @@ public class JoinController {
 		String name = nameTxt.getText();
 		InetAddress ip;
 		int players;
+		Duration d;
+		
+		try{
+			d = Duration.valueOf(timeTxt.getText()+"m");
+		}
+		catch (NumberFormatException e){
+			d = Duration.valueOf(STANDARD_TIME);
+		}
 
 		if(!host){
 			ip = InetAddress.getByName(ipTxt.getText());
@@ -142,7 +153,7 @@ public class JoinController {
 			else{
 				players = Integer.parseInt(item);
 			}
-			return new GameDto(name, color, players);
+			return new GameDto(name, color, players, d);
 		}
 	}
 

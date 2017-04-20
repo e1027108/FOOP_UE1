@@ -4,6 +4,7 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 
 import javafx.scene.paint.Color;
+import javafx.util.Duration;
 
 public class GameDto {
 
@@ -13,16 +14,17 @@ public class GameDto {
 	private Integer players;
 	private boolean host;
 	private boolean ai;
+	private Duration gameDuration;
 
 	public GameDto(String name, Color color, InetAddress ip) {
 		this.setName(name);
 		this.setColor(color);
 		this.setIp(ip);
 		this.setHost(false);
-		this.setPlayers(null); //TODO handle not knowing this ... client should just not use this until server provides info in game view?
+		this.setPlayers(null);
 	}
 
-	public GameDto(String name, Color color, Integer players) throws UnknownHostException {
+	public GameDto(String name, Color color, Integer players, Duration duration) throws UnknownHostException {
 		this.setName(name);
 		this.setColor(color);
 		this.setIp(InetAddress.getLocalHost()); //TODO replace with server specific address?
@@ -36,6 +38,8 @@ public class GameDto {
 		else{
 			this.setAi(false);
 		}
+		
+		this.setGameDuration(duration);
 	}
 
 	public String getName() {
@@ -84,6 +88,14 @@ public class GameDto {
 
 	public void setAi(boolean ai) {
 		this.ai = ai;
+	}
+
+	public Duration getGameDuration() {
+		return gameDuration;
+	}
+
+	public void setGameDuration(Duration gameDuration) {
+		this.gameDuration = gameDuration;
 	}
 
 }

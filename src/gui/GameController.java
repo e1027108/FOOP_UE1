@@ -276,8 +276,7 @@ public class GameController {
 
 	@FXML
 	private void onReadyClick() {
-		// TODO change text in button, send ready info (--> green checkmark or
-		// something)
+		// TODO change text in button, send ready info (--> green checkmark or something)
 		onStart();
 	}
 
@@ -297,6 +296,7 @@ public class GameController {
 		Scene scene = new Scene(joinPane);
 		Stage stage = (Stage) ((Node) gamePane).getScene().getWindow();
 		stage.setScene(scene);
+		stage.setTitle("Create or join a game of Snake!");
 		stage.show();
 	}
 
@@ -308,36 +308,26 @@ public class GameController {
 			relevantPlayerNumber = 4;
 		}
 
-		Color[] reserved = new Color[relevantPlayerNumber]; // currently sets
-															// null for clients,
-															// but sets correct
-															// number for host
+		Color[] reserved = new Color[relevantPlayerNumber];
 
-		reserved[0] = info.getColor(); // TODO integrate into loop as soon as we
-										// gather multiple players' data in
-										// server
+		reserved[0] = info.getColor();
 
 		for (int i = 0; i < reserved.length; i++) {
 			if (reserved[i] == null) {
 				reserved[i] = findGoodColor(reserved);
 			}
 
-			if (i != 0) { // TODO later generalize
+			if (i != 0) {
 				setPlayerStyle(i + 1, "AI " + i, reserved[i]);
 			}
 
 			colors = reserved;
 			
-			// TODO change script color to white if illegible bc/o dark color
-			
 		}
 	}
 
 	private Color findGoodColor(Color[] reserved) {
-		ArrayList<Pair<Double, Double>> redIntervals = new ArrayList<Pair<Double, Double>>(); // open
-																								// intervals
-																								// for
-																								// red
+		ArrayList<Pair<Double, Double>> redIntervals = new ArrayList<Pair<Double, Double>>();
 		ArrayList<Pair<Double, Double>> greenIntervals = new ArrayList<Pair<Double, Double>>();
 		ArrayList<Pair<Double, Double>> blueIntervals = new ArrayList<Pair<Double, Double>>();
 
@@ -353,17 +343,7 @@ public class GameController {
 				findValidColorValue(greenIntervals), 1);
 	}
 
-	private double findValidColorValue(ArrayList<Pair<Double, Double>> intervals) { // TODO
-																					// are
-																					// we
-																					// fine
-																					// with
-																					// this
-																					// maybe
-																					// never
-																					// terminating?
-																					// (though
-																					// unrealistic)
+	private double findValidColorValue(ArrayList<Pair<Double, Double>> intervals) {
 		Random r = new Random();
 		double value = 0;
 		boolean valid = false;

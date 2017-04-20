@@ -10,9 +10,9 @@
 <AnchorPane id="join" fx:id="joinPane" prefHeight="768.0" prefWidth="1024.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2" fx:controller="gui.JoinController">
   <!-- TODO Add Nodes -->
   <children>
-    <Separator layoutX="510.0" layoutY="434.0" orientation="VERTICAL" prefHeight="50.0" />
-    <Separator layoutX="510.0" layoutY="359.0" orientation="VERTICAL" prefHeight="50.0" />
-    <Label layoutX="497.0" layoutY="409.0" text="OR">
+    <Separator layoutX="510.0" layoutY="459.0" orientation="VERTICAL" prefHeight="70.0" />
+    <Separator layoutX="510.0" layoutY="359.0" orientation="VERTICAL" prefHeight="70.0" />
+    <Label layoutX="497.0" layoutY="434.0" text="OR">
       <font>
         <Font name="System Bold" size="20.0" />
       </font>
@@ -27,19 +27,22 @@
       </items>
     </ComboBox>
     <Label layoutX="245.0" layoutY="374.0" prefHeight="-1.0" text="Number of players:" />
-    <Button fx:id="createBtn" layoutX="322.0" layoutY="445.0" mnemonicParsing="false" onAction="#onCreateClick" text="Create game" />
+    <Button fx:id="createBtn" layoutX="322.0" layoutY="506.0" mnemonicParsing="false" onAction="#onCreateClick" text="Create game" />
     <Label layoutX="477.0" layoutY="187.0" text="Snake">
       <font>
         <Font name="System Bold" size="24.0" />
       </font>
     </Label>
     <Label layoutX="408.0" layoutY="239.0" text="Name:" />
-    <TextField fx:id="nameTxt" layoutX="477.0" layoutY="236.0" prefWidth="138.0" />
+    <TextField fx:id="nameTxt" layoutX="477.0" layoutY="236.0" prefWidth="138.0" promptText="Enter your name" />
     <Label layoutX="408.0" layoutY="289.0" text="Color:" />
     <ColorPicker fx:id="colorPicker" layoutX="477.0" layoutY="287.0" prefWidth="138.0" />
-    <Label layoutX="552.0" layoutY="374.0" prefHeight="-1.0" text="Host IP:" />
-    <TextField fx:id="ipTxt" layoutX="615.0" layoutY="372.0" prefWidth="119.0" />
-    <Button id="createBtn" fx:id="joinBtn" layoutX="606.0" layoutY="445.0" mnemonicParsing="false" onAction="#onJoinClick" text="Join game" />
-    <Label fx:id="errorLbl" layoutX="499.0" layoutY="552.0" text="error" />
+    <Label layoutX="546.0" layoutY="437.0" prefHeight="-1.0" text="Host IP:" />
+    <TextField fx:id="ipTxt" layoutX="606.0" layoutY="434.0" prefWidth="119.0" />
+    <Button id="createBtn" fx:id="joinBtn" layoutX="606.0" layoutY="506.0" mnemonicParsing="false" onAction="#onJoinClick" text="Join game" />
+    <Label fx:id="errorLbl" layoutX="499.0" layoutY="632.0" text="error" />
+    <Label layoutX="245.0" layoutY="437.0" prefHeight="-1.0" text="Game duration:" />
+    <TextField id="timeTxt" fx:id="timeTxt" layoutX="380.0" layoutY="434.0" prefWidth="65.0" promptText="" style="text-align: right;" text="" />
+    <Label layoutX="449.0" layoutY="440.0" prefHeight="-1.0" prefWidth="37.0" text="min" />
   </children>
 </AnchorPane>
