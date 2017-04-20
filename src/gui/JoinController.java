@@ -132,13 +132,6 @@ public class JoinController {
 		InetAddress ip;
 		int players;
 		Duration d;
-		
-		try{
-			d = Duration.valueOf(timeTxt.getText()+"m");
-		}
-		catch (NumberFormatException e){
-			d = Duration.valueOf(STANDARD_TIME);
-		}
 
 		if(!host){
 			ip = InetAddress.getByName(ipTxt.getText());
@@ -146,6 +139,7 @@ public class JoinController {
 		}
 		else{
 			String item = playerNbrComboBox.getSelectionModel().getSelectedItem();
+			
 			if(item.equals(AI_ONLY)){
 				players = 0; //TODO handle better later on, since it's obviously 4, need way to distinguish between different kinds of "4"
 				color = Color.BLUE;
@@ -153,6 +147,14 @@ public class JoinController {
 			else{
 				players = Integer.parseInt(item);
 			}
+			
+			try{
+				d = Duration.valueOf(timeTxt.getText()+"m");
+			}
+			catch (NumberFormatException e){
+				d = Duration.valueOf(STANDARD_TIME);
+			}
+			
 			return new GameDto(name, color, players, d);
 		}
 	}
