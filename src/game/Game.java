@@ -14,7 +14,6 @@ import artifacts.logic.ArtifactPlacementStrategy;
 import artifacts.logic.ArtifactsPlacementStrategyNaiveImpl;
 import game.CollisionTarget.CollisionTypes;
 import game.ai.SnakeAI;
-import javafx.util.Duration;
 
 public class Game implements CollisionListener {
 
@@ -185,6 +184,7 @@ public class Game implements CollisionListener {
 		case 13: // SIZE_DECREASE
 			System.out.println("i ate a " + Artifacts.SIZE_DECREASE);
 			snek.changeSizeModifier(-1 * ArtifactConstants.SIZE_DECREASE);
+			this.grid.removeDeadBodyParts(snek);
 			break;
 		case 20: // BLOCK_CONTROL
 			System.out.println("i ate a " + Artifacts.BLOCK_CONTROL);
