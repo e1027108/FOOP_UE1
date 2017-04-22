@@ -5,7 +5,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane fx:id="gamePane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="900.0" prefWidth="1160.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.GameController">
+<AnchorPane fx:id="gamePane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="900.0" prefWidth="1160.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2" fx:controller="gui.GameController">
   <!-- TODO Add Nodes -->
   <children>
     <Separator layoutX="12.0" layoutY="14.0" orientation="VERTICAL" prefHeight="870.0" />
@@ -38,9 +38,10 @@
           </children>
         </AnchorPane>
         <Separator layoutX="0.0" layoutY="400.0" prefWidth="258.0" />
-        <TextArea fx:id="msgArea" editable="false" layoutX="28.0" layoutY="428.0" prefHeight="220.0" prefWidth="200.0" wrapText="true" />
-        <Button fx:id="disconnectBtn" layoutX="28.0" layoutY="680.0" mnemonicParsing="false" onAction="#onDisconnectClick" text="Disconnect" />
+        <TextArea fx:id="msgArea" editable="false" layoutX="14.0" layoutY="414.0" prefHeight="409.0" prefWidth="232.0" wrapText="true" />
+        <Button fx:id="disconnectBtn" layoutX="28.0" layoutY="837.0" mnemonicParsing="false" onAction="#onDisconnectClick" text="Disconnect" />
         <Separator layoutX="-1.0" layoutY="870.0" prefWidth="258.0" />
+        <Label fx:id="timeLbl" layoutY="840.0" text="time" AnchorPane.rightAnchor="14.0" />
       </children>
     </AnchorPane>
     <AnchorPane id="gamePane" fx:id="playPane" layoutX="272.0" layoutY="14.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="870.0" prefWidth="870.0">
