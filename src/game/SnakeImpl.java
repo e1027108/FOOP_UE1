@@ -215,14 +215,58 @@ public class SnakeImpl implements Snake {
 	@Override
 	public void changeSizeModifier(int change) {
 		this.sizeModifier += change;
-		// TODO remove/add point to Back of position queue! (this influences
-		// draw and update etc).
+		changeHealthModifier(0);
 		if (change < 0) {
-			changeHealthModifier(0);
 			this.deadParts.add(position.pollLast());
 			if (position.size() == 0) {
 				this.setAlive(false);
 			}
+		}
+		else {
+			// last and second-to-last snake points from queue
+			Iterator<Point> snakeIterator = position.descendingIterator();
+			Point last = null, secondLast = null, newPoint = null;
+			if (snakeIterator.hasNext()) {
+				last = snakeIterator.next();
+			}
+			if (snakeIterator.hasNext()) {
+				secondLast = snakeIterator.next();
+			}
+			int lastX = last.getX(), lastY = last.getY();
+
+			if (secondLast == null) { // place new snake part opposed to direction
+				switch (getDirection()) {
+				case N:
+					newPoint = new Point(lastX + 1, lastY);
+					break;
+				case S:
+					newPoint = new Point(lastX - 1, lastY);
+					break;
+				case E:
+					newPoint = new Point(lastX, lastY - 1);
+					break;
+				case W:
+					newPoint = new Point(lastX, lastY + 1);
+					break;
+				}
+
+			} else { // place new snake part in a straight line (x or y)
+				int secondX = secondLast.getX(), secondY = secondLast.getY();
+				if (lastY == secondY) {
+					if (lastX < secondX) {
+						newPoint = new Point(lastX - 1, lastY);
+					} else {
+						newPoint = new Point(lastX + 1, lastY);
+					}
+				} else {
+					if (lastY < secondY) {
+						newPoint = new Point(lastX, lastY - 1);
+					} else {
+						newPoint = new Point(lastX, lastY + 1);
+					}
+				}
+			}
+			position.addLast(newPoint);
 		}
 	}
 
