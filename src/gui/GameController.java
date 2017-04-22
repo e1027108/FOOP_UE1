@@ -16,8 +16,10 @@ import game.Game;
 import game.GameGrid;
 import game.Point;
 import game.Snake;
+import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
+import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -56,7 +58,7 @@ public class GameController {
 	private TilePane gridPane;
 
 	@FXML
-	private Label player1Lbl, player2Lbl, player3Lbl, player4Lbl;
+	private Label player1Lbl, player2Lbl, player3Lbl, player4Lbl, timeLbl;
 
 	@FXML
 	private Button disconnectBtn, readyBtn;
@@ -75,27 +77,36 @@ public class GameController {
 	private Timeline timeline;
 
 	private final Color emptyCellColor = Color.valueOf("FFFFFF");
-	
+
 	private int tileSize;
-	
+
 	private Color[] colors;
+
+	private MessageEngine engine;
 
 	@FXML
 	public void initialize() {
-		msgArea.setText("");
+		engine = new MessageEngine(msgArea);
 
 		info = DataTransferrer.getInfo();
 
 		if (info == null) {
-			// TODO error handling
+			engine.writeError("Error: could not find game information, please disconnect!");
 		} else {
 			setPlayerStyle(1, info.getName(), info.getColor());
 		}
 
+		//TODO feed messages into queue
+		engine.writeMessage("Welcome to Snake, " + info.getName() + "!");
+		engine.writeMessage("Control your snake with the WASD keys.");
+		engine.writeMessage("The longest snake at the end, wins!");
+
+		timeLbl.setText(((int) info.getGameDuration().toSeconds()) + "s");
+
 		assignAIColors();
 
 		gridPane.setStyle("-fx-background-color: #FFFFFF;");
-		
+
 		tileSize = (int) Math.floor((gridPane.getPrefHeight() - (GRID_SIZE - 1))/ GRID_SIZE);
 		System.out.println(tileSize);
 
@@ -114,10 +125,10 @@ public class GameController {
 
 	private void setPlayerStyle(int player, String name, Color color) {
 		//Integer.toHexString(color.hashCode())
-		
+
 		String hexcode = String.valueOf(color);
 		hexcode = hexcode.substring(2, 8);
-		
+
 		String style = "-fx-background-color: #" + hexcode + ";";
 
 		if (player == 1) {
@@ -139,7 +150,6 @@ public class GameController {
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	private void onStart() {
-
 		game = new Game(info.getPlayers(), info.getName(), GRID_SIZE);
 		game.run();
 
@@ -147,13 +157,16 @@ public class GameController {
 
 		Duration d = MOVE_DURATION;
 		timeline = new Timeline();
-		timeline.setCycleCount(Timeline.INDEFINITE);
+		timeline.setCycleCount((int) (info.getGameDuration().toMillis()/d.toMillis()));
+		//timeline.setCycleCount(Timeline.INDEFINITE);
 		timeline.setAutoReverse(false);
 
-		KeyFrame keyframe = new KeyFrame(d, new EventHandler() {
+		KeyFrame loopFrame = new KeyFrame(d, new EventHandler() {
+			private int count = 0;
 
 			@Override
 			public void handle(Event event) {
+				timeLbl.setText(getRemainingTime() + "s");
 				game.loop();
 				if (game.getSnakes().size() == 0) {
 					timeline.stop();
@@ -162,12 +175,25 @@ public class GameController {
 				update();
 			}
 
+			private int getRemainingTime(){
+				count++;
+				return (int) (info.getGameDuration().toSeconds() - (int) (count/10));
+			}
 		});
-		timeline.getKeyFrames().add(keyframe);
+		timeline.getKeyFrames().add(loopFrame);
+
+		timeline.setOnFinished(new EventHandler () {
+			@Override
+			public void handle(Event event) {
+				timeline.stop();
+				evaluateGame(game);
+				return;
+			}
+		});
 
 		timeline.play();
 
-		if (!info.isAi()) { // TODO replace by check for instanceof SnakeAI
+		if (!info.isAi()) {
 			gamePane.setOnKeyPressed(new EventHandler<KeyEvent>() {
 
 				@Override
@@ -193,6 +219,53 @@ public class GameController {
 			});
 		}
 
+	}
+
+	protected void evaluateGame(Game game) {
+		String endMessage = "";
+		ArrayList<Snake> winners = new ArrayList<Snake>();
+
+		//collect all snakes with max size
+		for(Snake s: game.getSnakes()){
+			if(winners.isEmpty()){
+				if(s.isAlive()){
+					winners.add(s);
+				}
+			}
+			else{
+				if(s.isAlive()){
+					if(s.getSize() > winners.get(0).getSize()){
+						winners.clear();
+						winners.add(s);
+					}
+					else if(s.getSize() == winners.get(0).getSize()){
+						winners.add(s);
+					}
+				}
+			}
+		}
+
+		if(winners.size() == 0){
+			endMessage = "All snakes are dead, no one wins!";
+		}
+		else if(winners.size() == 1){
+			endMessage = winners.get(0).getName() + " wins!";
+		}
+		else{
+			//collect multiple winner's names in comma-seperated list
+			for(Snake w: winners){
+				endMessage += w.getName() + ", ";
+			}
+			
+			endMessage += "win!";
+			
+			//remove useless commas, make it sound like a sentence
+			endMessage = endMessage.replace(", win", " win");
+			String back = endMessage.substring(endMessage.lastIndexOf(','), endMessage.length() - 1);
+			endMessage = endMessage.replace(back, " and" + back.substring(1,back.length()));
+		}
+		
+		engine.writeMessage(endMessage);
 	}
 
 	/**
@@ -280,17 +353,12 @@ public class GameController {
 		onStart();
 	}
 
-	private void addMsg(String msg) {
-		msgArea.setScrollTop(Double.MAX_VALUE); // scrolls down
-		msgArea.appendText("\n" + msg);
-	}
-
 	private void showJoin() {
 		Parent joinPane;
 		try {
 			joinPane = FXMLLoader.load(getClass().getResource("/join.fxml"));
 		} catch (IOException e) {
-			addMsg("Load menu failed, please restart game!");
+			engine.writeError("Load menu failed, please restart game!");
 			return;
 		}
 		Scene scene = new Scene(joinPane);
@@ -322,7 +390,7 @@ public class GameController {
 			}
 
 			colors = reserved;
-			
+
 		}
 	}
 

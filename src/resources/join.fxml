@@ -42,7 +42,7 @@
     <Button id="createBtn" fx:id="joinBtn" layoutX="606.0" layoutY="506.0" mnemonicParsing="false" onAction="#onJoinClick" text="Join game" />
     <Label fx:id="errorLbl" layoutX="499.0" layoutY="632.0" text="error" />
     <Label layoutX="245.0" layoutY="437.0" prefHeight="-1.0" text="Game duration:" />
-    <TextField id="timeTxt" fx:id="timeTxt" layoutX="380.0" layoutY="434.0" prefWidth="65.0" promptText="" style="text-align: right;" text="" />
+    <TextField fx:id="timeTxt" alignment="CENTER_RIGHT" layoutX="380.0" layoutY="434.0" prefWidth="65.0" promptText="" style="text-align: right;" text="" />
     <Label layoutX="449.0" layoutY="440.0" prefHeight="-1.0" prefWidth="37.0" text="min" />
   </children>
 </AnchorPane>

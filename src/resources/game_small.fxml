@@ -38,9 +38,10 @@
           </children>
         </AnchorPane>
         <Separator layoutX="0.0" layoutY="400.0" prefWidth="258.0" />
-        <TextArea fx:id="msgArea" editable="false" layoutX="28.0" layoutY="428.0" prefHeight="220.0" prefWidth="200.0" wrapText="true" />
-        <Button fx:id="disconnectBtn" layoutX="28.0" layoutY="680.0" mnemonicParsing="false" onAction="#onDisconnectClick" text="Disconnect" />
+        <TextArea fx:id="msgArea" editable="false" layoutX="14.0" layoutY="414.0" prefHeight="276.0" prefWidth="228.0" wrapText="true" />
+        <Button fx:id="disconnectBtn" layoutX="14.0" layoutY="707.0" mnemonicParsing="false" onAction="#onDisconnectClick" text="Disconnect" />
         <Separator layoutX="0.0" layoutY="740.0" prefWidth="258.0" />
+        <Label fx:id="timeLbl" layoutY="710.0" text="time" AnchorPane.rightAnchor="14.0" />
       </children>
     </AnchorPane>
     <AnchorPane id="gamePane" fx:id="playPane" layoutX="272.0" layoutY="14.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="740.0" prefWidth="740.0">

@@ -14,6 +14,7 @@ import artifacts.logic.ArtifactPlacementStrategy;
 import artifacts.logic.ArtifactsPlacementStrategyNaiveImpl;
 import game.CollisionTarget.CollisionTypes;
 import game.ai.SnakeAI;
+import javafx.util.Duration;
 
 public class Game implements CollisionListener {
 
@@ -30,8 +31,6 @@ public class Game implements CollisionListener {
 
 	// TODO: change error message --> just temporary
 	public Game(int num, String name, int gridSize) {
-		System.out.println(num);
-
 		firstPlayer = name;
 		if (num > 0 && num < 5) {
 			numPlayers = num;
@@ -96,7 +95,6 @@ public class Game implements CollisionListener {
 	}
 
 	public void loop() {
-
 		for (Snake s : snakes) {
 			if (s instanceof SnakeAI) {
 				((SnakeAI) s).determineNextDirection();
@@ -223,5 +221,5 @@ public class Game implements CollisionListener {
 		Point respawnPlace = placementStrategy.getRespawnPlace();
 		s.resetPosition(respawnPlace);
 	}
-
+	
 }

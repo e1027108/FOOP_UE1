@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-import com.sun.javafx.scene.traversal.Direction;
-
 import artifacts.Artifact;
 import artifacts.permanent.HealthDecreaseArtifact;
 import artifacts.permanent.HealthIncreaseArtifact;
@@ -255,7 +253,6 @@ public class SnakeAI extends SnakeImpl {
 	/*
 	 * value from -1 to +1
 	 */
-	// TODO use grid artifact ids instead of instanceof checks?
 	private double valueObject(Object o) {
 		double value = 0;
 		int distance = measureDistance(o);
@@ -441,9 +438,7 @@ public class SnakeAI extends SnakeImpl {
 
 	/**
 	 * scans vicinity of ai to "see" what there is
-	 * 
-	 * @param distance
-	 *            how far we can "see"
+	 * @param distance how far we can "see"
 	 * @return list of artifacts and other snakes found
 	 */
 	private ArrayList<Object> scanVicinity(int distance) {
