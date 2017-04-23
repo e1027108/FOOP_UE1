@@ -83,23 +83,26 @@ public class GameController {
 	private Color[] colors;
 
 	private MessageEngine engine;
+	private Thread msgThread;
 
 	@FXML
 	public void initialize() {
 		engine = new MessageEngine(msgArea);
-
+		msgThread = new Thread(engine);
+		msgThread.start();
+		
 		info = DataTransferrer.getInfo();
 
 		if (info == null) {
-			engine.writeError("Error: could not find game information, please disconnect!");
+			engine.addError("Error: could not find game information, please disconnect!");
 		} else {
 			setPlayerStyle(1, info.getName(), info.getColor());
 		}
 
 		//TODO feed messages into queue
-		engine.writeMessage("Welcome to Snake, " + info.getName() + "!");
-		engine.writeMessage("Control your snake with the WASD keys.");
-		engine.writeMessage("The longest snake at the end, wins!");
+		engine.addMessage("Welcome to Snake, " + info.getName() + "!");
+		engine.addMessage("Control your snake with the WASD keys.");
+		engine.addMessage("The longest snake at the end, wins!");
 
 		timeLbl.setText(((int) info.getGameDuration().toSeconds()) + "s");
 
@@ -265,7 +268,7 @@ public class GameController {
 			endMessage = endMessage.replace(back, " and" + back.substring(1,back.length()));
 		}
 		
-		engine.writeMessage(endMessage);
+		engine.addMessage(endMessage);
 	}
 
 	/**
@@ -358,7 +361,7 @@ public class GameController {
 		try {
 			joinPane = FXMLLoader.load(getClass().getResource("/join.fxml"));
 		} catch (IOException e) {
-			engine.writeError("Load menu failed, please restart game!");
+			engine.addError("Load menu failed, please restart game!");
 			return;
 		}
 		Scene scene = new Scene(joinPane);
