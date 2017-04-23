@@ -16,8 +16,6 @@ public class MessageEngine implements Runnable{
 	private static final String RED = "-fx-text-fill: red;";
 	private static final String BLACK = "-fx-text-fill: black;";
 	private static final long WAIT_TIME = 100;
-
-	//TODO have a minimum delay of .1 s between messages being written, use queue
 	
 	public MessageEngine(TextArea msgArea) {
 		this.area = msgArea;

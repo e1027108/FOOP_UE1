@@ -99,7 +99,6 @@ public class GameController {
 			setPlayerStyle(1, info.getName(), info.getColor());
 		}
 
-		//TODO feed messages into queue
 		engine.addMessage("Welcome to Snake, " + info.getName() + "!");
 		engine.addMessage("Control your snake with the WASD keys.");
 		engine.addMessage("The longest snake at the end, wins!");
