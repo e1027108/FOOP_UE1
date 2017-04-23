@@ -343,6 +343,8 @@ public class GameController {
 		// reset artifacts list to empty and close artifact handler thread
 		if (game != null) {
 			game.closeChildren();
+			engine.interrupt();
+			msgThread.interrupt();
 			this.game.getGrid().shutdown();
 			timeline.stop();
 		}
