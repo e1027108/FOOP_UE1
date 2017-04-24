@@ -16,10 +16,8 @@ import game.Game;
 import game.GameGrid;
 import game.Point;
 import game.Snake;
-import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
-import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -201,7 +199,7 @@ public class GameController {
 
 			private int getRemainingTime(){
 				count++;
-				return (int) (info.getGameDuration().toSeconds() - (int) (count/10));
+				return (int) (info.getGameDuration().toSeconds() - count/10);
 			}
 		});
 		timeline.getKeyFrames().add(loopFrame);
@@ -335,7 +333,6 @@ public class GameController {
 			s.clearDeadParts();
 		}
 
-		game.removeDeadSnakes();
 		updateLifeBars();
 	}
 
@@ -477,7 +474,9 @@ public class GameController {
 			if (playerNames[i] != null) {
 				Snake s = game.getSnake(playerNames[i]);
 				ProgressBar life = playerLifeBars[i];
-				life.setProgress((double) s.getHealth() / s.getMaxHealth());
+				if (s != null) {
+					life.setProgress((double) s.getHealth() / s.getMaxHealth());
+				}
 			}
 		}
 	}

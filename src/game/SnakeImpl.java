@@ -218,7 +218,8 @@ public class SnakeImpl implements Snake {
 		changeHealthModifier(0);
 		if (change < 0) {
 			this.deadParts.add(position.pollLast());
-			if (position.size() == 0) {
+			if (getSize() == 0) {
+				System.out.println("im dead :X");
 				this.setAlive(false);
 			}
 		}
@@ -370,6 +371,14 @@ public class SnakeImpl implements Snake {
 	}
 
 	@Override
+	public boolean checkHealth() {
+		if (getHealth() == 0) {
+			setAlive(false);
+		}
+		return isAlive();
+	}
+
+	@Override
 	public void checkStatus() {
 		/*
 		 * check for reverseControl, blockControl, invulnerability,
@@ -428,7 +437,7 @@ public class SnakeImpl implements Snake {
 	}
 
 	@Override
-	public void getStatus() {
+	public void printStatus() {
 		System.out.println("---- Snake " + getGridID() + " - Status:");
 		System.out.println("Health        : " + getHealth());
 		System.out.println("Size          : " + getSize());

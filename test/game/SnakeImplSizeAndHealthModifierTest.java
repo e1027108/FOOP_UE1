@@ -23,6 +23,7 @@ public class SnakeImplSizeAndHealthModifierTest {
 		startHealth = testSnake.getHealth();
 		startMaxHealth = testSnake.getMaxHealth();
 		startSize = testSnake.getSize();
+		testSnake.initPosition(15, 15);
 	}
 	
 	@After

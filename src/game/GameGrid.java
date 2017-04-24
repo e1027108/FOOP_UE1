@@ -22,7 +22,6 @@ public class GameGrid extends CollisionTarget {
 	private int[][] grid;
 	private List<Artifact> artifacts;
 	private ExecutorService executor;
-
 	public GameGrid(int s) {
 		size = s;
 		grid = new int[size][size];
@@ -95,7 +94,11 @@ public class GameGrid extends CollisionTarget {
 					}
 					else if (gridValue <= 4) {
 						fireCollisionDetection(CollisionTypes.OTHER_SNAKE, snek, headPosition, gridValue);
-						bittenSnake = snakes.get(gridValue-1);
+						for (Snake s : snakes) {
+							if (s.getGridID() == gridValue) {
+								bittenSnake = s;
+							}
+						}
 					}
 					/**
 					 * every snake that tries to eat the artifact gets added to

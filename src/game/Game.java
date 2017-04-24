@@ -1,6 +1,7 @@
 package game;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import artifacts.Artifact;
@@ -94,15 +95,19 @@ public class Game implements CollisionListener {
 	}
 
 	public void loop() {
-		for (Snake s : snakes) {
-			if (s instanceof SnakeAI) {
-				((SnakeAI) s).determineNextDirection();
+		Iterator<Snake> snakeIterator = snakes.iterator();
+		while (snakeIterator.hasNext()) {
+			Snake s = snakeIterator.next();
+			if (s.checkHealth()) {
+				if (s instanceof SnakeAI) {
+					((SnakeAI) s).determineNextDirection();
+				}
+				s.checkStatus();
+				s.move();
 			}
-			s.checkStatus();
-			//s.getStatus();
-			s.move();
 		}
 		grid.draw(snakes);
+		removeDeadSnakes();
 	}
 
 	public void removeDeadSnakes() {
@@ -125,6 +130,15 @@ public class Game implements CollisionListener {
 		return snakes;
 	}
 
+	public Snake getSnakeByGridID(int gridID) {
+		for (Snake snek : snakes) {
+			if (snek.getGridID() == gridID) {
+				return snek;
+			}
+		}
+		return null;
+	}
+
 	public GameGrid getGrid() {
 		return grid;
 	}
@@ -141,27 +155,29 @@ public class Game implements CollisionListener {
 
 	@Override
 	public void collisionDetected(CollisionTypes coll, Snake snek, Point headPosition, int gridID) {
-		//System.out.println("Detected collision of type: " + coll);
-		
 		SnakeImpl bitingSnake = (SnakeImpl) snek;		
 		
 		/* handle artifacts */
 		if(coll == CollisionTypes.ARTIFACT) {
-			//System.out.println("ate an artifact");
 			eatArtifact(snek, headPosition, gridID);
 		}
 		/* handle other collisions */
 		if(coll == CollisionTypes.BORDER) {
+			bitingSnake.changeHealthModifier(GameConstants.BORDER_HEALTH_DECREASE);
+			bitingSnake.printStatus();
 			respawnSnake(bitingSnake);
 		}
 		if(coll == CollisionTypes.OWN_BODY) {
+			bitingSnake.changeHealthModifier(GameConstants.OWN_BITE_HEALTH_DECREASE);
 			respawnSnake(bitingSnake);		
 		}
 		if(coll == CollisionTypes.OTHER_SNAKE) {
-			SnakeImpl bittenSnake = (SnakeImpl) this.getSnakes().get(gridID-1);
+			SnakeImpl bittenSnake = (SnakeImpl) getSnakeByGridID(gridID);
 			if(bittenSnake.getBody()[0].equals(bitingSnake.getBody()[0])) { // do they bite each others head? -> respawn both
+				bitingSnake.changeHealthModifier(GameConstants.SNAKE_BITE_HEALTH_DECREASE);
 				respawnSnake(bitingSnake);
 			}			
+			bittenSnake.changeHealthModifier(GameConstants.SNAKE_BITE_HEALTH_DECREASE);
 			respawnSnake(bittenSnake);
 		}
 	}

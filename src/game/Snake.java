@@ -60,5 +60,7 @@ public interface Snake {
 
 	void checkStatus();
 
-	void getStatus();
+	void printStatus();
+
+	boolean checkHealth();
 }
