@@ -137,6 +137,8 @@ public class GameController {
 
 	private void setPlayerStyle(int player, String name, Color color) {
 		//Integer.toHexString(color.hashCode())
+		
+		playerNames[player - 1] = name;
 
 		String hexcode = String.valueOf(color);
 		hexcode = hexcode.substring(2, 8);
