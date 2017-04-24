@@ -96,6 +96,7 @@ public class GameController {
 	public void initialize() {
 		engine = new MessageEngine(msgArea);
 		msgThread = new Thread(engine);
+		msgThread.setDaemon(true);
 		msgThread.start();
 		
 		info = DataTransferrer.getInfo();
