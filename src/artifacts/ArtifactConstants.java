@@ -54,19 +54,19 @@ public class ArtifactConstants {
 	 * spawn probability factors to ensure different occurrences according to
 	 * artifact effects -> Should be a positive Integer!
 	 */
-	public static final int HEALTH_INCREASE_SPAWN_FACTOR = 0;
-	public static final int HEALTH_DECREASE_SPAWN_FACTOR = 0;
-	public static final int SIZE_INCREASE_SPAWN_FACTOR   = 10;
-	public static final int SIZE_DECREASE_SPAWN_FACTOR   = 0;
-	public static final int BLOCK_CONTROL_SPAWN_FACTOR   = 0;
-	public static final int INVULNERABILITY_SPAWN_FACTOR = 0;
-	public static final int REVERSE_CONTROL_SPAWN_FACTOR = 0;
-	public static final int SPEED_INCREASE_SPAWN_FACTOR  = 0;
-	public static final int SPEED_DECREASE_SPAWN_FACTOR  = 0;
+	public static final int HEALTH_INCREASE_SPAWN_FACTOR = 1;
+	public static final int HEALTH_DECREASE_SPAWN_FACTOR = 1;
+	public static final int SIZE_INCREASE_SPAWN_FACTOR   = 1;
+	public static final int SIZE_DECREASE_SPAWN_FACTOR   = 1;
+	public static final int BLOCK_CONTROL_SPAWN_FACTOR   = 1;
+	public static final int INVULNERABILITY_SPAWN_FACTOR = 1;
+	public static final int REVERSE_CONTROL_SPAWN_FACTOR = 1;
+	public static final int SPEED_INCREASE_SPAWN_FACTOR  = 1;
+	public static final int SPEED_DECREASE_SPAWN_FACTOR  = 1;
 
 	/* spawn timer for the next artifact */
-	public static final int NEXT_SPAWN_INTERVAL_START = 5;
-	public static final int NEXT_SPAWN_INTERVAL_END   = 15;
+	public static final int NEXT_SPAWN_INTERVAL_START = 2;
+	public static final int NEXT_SPAWN_INTERVAL_END   = 8;
 
 	/* images */
 	public static final String HEALTH_INCREASE_IMAGE = "img/health_increase.png";
