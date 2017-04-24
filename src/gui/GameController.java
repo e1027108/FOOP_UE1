@@ -30,6 +30,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.ProgressBar;
 import javafx.scene.control.TextArea;
 import javafx.scene.image.Image;
 import javafx.scene.input.KeyCode;
@@ -64,6 +65,9 @@ public class GameController {
 	private Button disconnectBtn, readyBtn;
 
 	@FXML
+	private ProgressBar player1LifeBar, player2LifeBar, player3LifeBar, player4LifeBar;
+	
+	@FXML
 	private TextArea msgArea;
 
 	private GameDto info;
@@ -85,6 +89,9 @@ public class GameController {
 	private MessageEngine engine;
 	private Thread msgThread;
 
+	private String[] playerNames;
+	private ProgressBar[] playerLifeBars;
+	
 	@FXML
 	public void initialize() {
 		engine = new MessageEngine(msgArea);
@@ -93,6 +100,9 @@ public class GameController {
 		
 		info = DataTransferrer.getInfo();
 
+		playerNames = new String[4];
+		playerLifeBars = new ProgressBar[] { player1LifeBar, player2LifeBar, player3LifeBar, player4LifeBar };
+		
 		if (info == null) {
 			engine.addError("Error: could not find game information, please disconnect!");
 		} else {
@@ -109,8 +119,7 @@ public class GameController {
 
 		gridPane.setStyle("-fx-background-color: #FFFFFF;");
 
-		tileSize = (int) Math.floor((gridPane.getPrefHeight() - (GRID_SIZE - 1))/ GRID_SIZE);
-		System.out.println(tileSize);
+		tileSize = (int) Math.floor((gridPane.getPrefHeight() - (GRID_SIZE - 1)) / GRID_SIZE);
 
 		// TODO if AI only do not contact/host any server
 
@@ -132,22 +141,32 @@ public class GameController {
 		hexcode = hexcode.substring(2, 8);
 
 		String style = "-fx-background-color: #" + hexcode + ";";
+		String lifeBarStyle = "-fx-accent: lawngreen;";
+
+		ProgressBar life = null;
 
 		if (player == 1) {
 			player1Lbl.setText(name);
 			player1Pane.setStyle(style);
+			life = player1LifeBar;
 		} else if (player == 2) {
 			player2Lbl.setText(name);
 			player2Pane.setStyle(style);
+			life = player2LifeBar;
 		} else if (player == 3) {
 			player3Lbl.setText(name);
 			player3Pane.setStyle(style);
+			life = player3LifeBar;
 		} else if (player == 4) {
 			player4Lbl.setText(name);
 			player4Pane.setStyle(style);
+			life = player4LifeBar;
 		} else {
 			// TODO some error
 		}
+
+		life.setProgress(1.0);
+		life.setStyle(lifeBarStyle);
 	}
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
@@ -314,6 +333,7 @@ public class GameController {
 		}
 
 		game.removeDeadSnakes();
+		updateLifeBars();
 	}
 
 	private void initGrid() {
@@ -390,7 +410,7 @@ public class GameController {
 			}
 
 			if (i != 0) {
-				setPlayerStyle(i + 1, "AI " + i, reserved[i]);
+				setPlayerStyle(i + 1, "AI_" + (i + 1), reserved[i]);
 			}
 
 			colors = reserved;
@@ -447,6 +467,16 @@ public class GameController {
 		}
 
 		return new Pair<Double, Double>(value - negrange, value + posrange);
+	}
+
+	private void updateLifeBars() {
+		for (int i = 0; i < playerNames.length; i++) {
+			if (playerNames[i] != null) {
+				Snake s = game.getSnake(playerNames[i]);
+				ProgressBar life = playerLifeBars[i];
+				life.setProgress((double) s.getHealth() / s.getMaxHealth());
+			}
+		}
 	}
 
 }
