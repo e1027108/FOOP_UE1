@@ -44,7 +44,7 @@ public class ArtifactHandlerImpl implements ArtifactHandler {
 			if (snek.isAlive()) {
 				Artifacts type = getNextArtifactType();
 				int spawnTimer = artifactSpawnTimer.getSpawnTime();
-				Thread.sleep(spawnTimer * 1000);
+				Thread.sleep(spawnTimer * 500);
 				artifactPlacementStrategy.placeArtifact(type);
 				break;
 			}

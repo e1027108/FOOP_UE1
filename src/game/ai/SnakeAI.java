@@ -25,6 +25,7 @@ public class SnakeAI extends SnakeImpl {
 	private Game game;
 
 	private static final double P_OTHER = 0.1;
+	private static final double P_OTHER_SECONDARY = 0.4;
 	private static final int DISTANCE = 6;
 
 	public SnakeAI(String name, int gridID, Directions dir, Game game) {
@@ -44,14 +45,14 @@ public class SnakeAI extends SnakeImpl {
 			Object important = getValuedObject(closeObjects);
 
 			next = getPreferredDirection(important);
-
+			
 			//can deviate from best choice
-			next = getRandomDirection(P_OTHER);
-
+			next = getRandomDirection(next, P_OTHER);
+			
 			if(!isValidDirection(next)){
 				next = returnValidDirection(next);
 			}
-
+			
 			direction = next;
 		}
 	}
@@ -120,7 +121,6 @@ public class SnakeAI extends SnakeImpl {
 			}
 		}
 
-		//System.out.println("Point: " + nextPoint.toString() + " is valid!.");
 		return true;
 	}
 
@@ -144,27 +144,27 @@ public class SnakeAI extends SnakeImpl {
 
 		if (currx < goalx) {
 			if (value > 0) {
-				newdirection = Directions.E;
+				newdirection = Directions.S;
 			} else if (value < 0) {
-				newdirection = Directions.W;
+				newdirection = Directions.N;
 			}
 		} else if (currx > goalx) {
 			if (value > 0) {
-				newdirection = Directions.W;
+				newdirection = Directions.N;
 			} else if (value < 0) {
-				newdirection = Directions.E;
+				newdirection = Directions.S;
 			}
 		} else if (curry < goaly) {
 			if (value > 0) {
-				newdirection = Directions.N;
+				newdirection = Directions.E;
 			} else if (value < 0) {
-				newdirection = Directions.S;
+				newdirection = Directions.W;
 			}
 		} else if (curry > goaly) {
 			if (value > 0) {
-				newdirection = Directions.S;
+				newdirection = Directions.W;
 			} else if (value < 0) {
-				newdirection = Directions.N;
+				newdirection = Directions.E;
 			}
 		} else {
 			newdirection = direction;
@@ -189,7 +189,7 @@ public class SnakeAI extends SnakeImpl {
 		}
 	}
 
-	private Directions getRandomDirection(double changeChance) {
+	private Directions getRandomDirection(Directions initial, double changeChance) {
 		Random r = new Random();
 		Point pos = position.getFirst();
 		int gridsize = game.getGrid().getSize();
@@ -197,10 +197,12 @@ public class SnakeAI extends SnakeImpl {
 		//we don't want to hug the border
 		if(pos.getX() == gridsize - 1 || pos.getX() == 0 ||
 				pos.getY() == gridsize - 1 || pos.getY() == 0){
-			changeChance = .4;
+			changeChance = P_OTHER_SECONDARY;
 		}
 
-		if (r.nextDouble() <= changeChance) {
+		double d = r.nextDouble();
+		
+		if (d <= changeChance) {
 			List<Directions> directions = new ArrayList<Directions>();
 
 			if (vertical.contains(direction)) {
@@ -217,7 +219,7 @@ public class SnakeAI extends SnakeImpl {
 				return directions.get(1);
 			}
 		} else {
-			return direction;
+			return initial;
 		}
 	}
 

@@ -49,11 +49,11 @@ public class ArtifactsPlacementStrategyNaiveImpl implements ArtifactPlacementStr
 			blackList.addAll(snek.getBodyList());
 		}
 
-		System.out.println("---Black List---");
-		for (Point p : blackList) {
-			System.out.println(p.toString());
-		}
-		System.out.println("----------------");
+		//System.out.println("---Black List---");
+		//for (Point p : blackList) {
+		//	System.out.println(p.toString());
+		//}
+		//System.out.println("----------------");
 
 		return blackList;
 	}

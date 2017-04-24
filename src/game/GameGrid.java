@@ -182,10 +182,10 @@ public class GameGrid extends CollisionTarget {
 		});
 
 		this.executor.execute(futureAdd);
-		System.out.println("Successfully placed artifact at " + artifact.getPlacement().toString());
-		for (Artifact art : getArtifacts()) {
-			System.out.println(art.getPlacement() + ", " + art.isActive());
-		}
+		//System.out.println("Successfully placed artifact at " + artifact.getPlacement().toString());
+		//for (Artifact art : getArtifacts()) {
+		//	System.out.println(art.getPlacement() + ", " + art.isActive());
+		//}
 	}
 
 	public List<Artifact> getArtifacts() {

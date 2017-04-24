@@ -56,8 +56,8 @@ public class ArtifactConstants {
 	 */
 	public static final int HEALTH_INCREASE_SPAWN_FACTOR = 0;
 	public static final int HEALTH_DECREASE_SPAWN_FACTOR = 0;
-	public static final int SIZE_INCREASE_SPAWN_FACTOR   = 1;
-	public static final int SIZE_DECREASE_SPAWN_FACTOR   = 1;
+	public static final int SIZE_INCREASE_SPAWN_FACTOR   = 10;
+	public static final int SIZE_DECREASE_SPAWN_FACTOR   = 0;
 	public static final int BLOCK_CONTROL_SPAWN_FACTOR   = 0;
 	public static final int INVULNERABILITY_SPAWN_FACTOR = 0;
 	public static final int REVERSE_CONTROL_SPAWN_FACTOR = 0;

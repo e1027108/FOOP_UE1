@@ -99,7 +99,7 @@ public class Game implements CollisionListener {
 				((SnakeAI) s).determineNextDirection();
 			}
 			s.checkStatus();
-			s.getStatus();
+			//s.getStatus();
 			s.move();
 		}
 		grid.draw(snakes);
@@ -141,13 +141,13 @@ public class Game implements CollisionListener {
 
 	@Override
 	public void collisionDetected(CollisionTypes coll, Snake snek, Point headPosition, int gridID) {
-		System.out.println("Detected collision of type: " + coll);
+		//System.out.println("Detected collision of type: " + coll);
 		
 		SnakeImpl bitingSnake = (SnakeImpl) snek;		
 		
 		/* handle artifacts */
 		if(coll == CollisionTypes.ARTIFACT) {
-			System.out.println("ate an artifact");
+			//System.out.println("ate an artifact");
 			eatArtifact(snek, headPosition, gridID);
 		}
 		/* handle other collisions */
