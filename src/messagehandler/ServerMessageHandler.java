@@ -110,7 +110,7 @@ public class ServerMessageHandler extends MessageHandler{
 			encoded = encodeYouLose();
 			break;
 		case PLL:
-			encoded = encodePlayerLeft();
+			encoded = encodePlayerLeft((PlayerLeftMessage) input);
 			break;
 		default:
 			break;
@@ -119,8 +119,8 @@ public class ServerMessageHandler extends MessageHandler{
 		return encoded;
 	}
 
-	private String encodePlayerLeft() {
-		return PLAYER_LEFT;
+	private String encodePlayerLeft(PlayerLeftMessage input) {
+		return PLAYER_LEFT + input.getPlayerNumber();
 	}
 
 	private String encodeYouLose() {
