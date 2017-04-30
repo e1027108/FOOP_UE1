@@ -1,4 +1,6 @@
-package MessageHandler;
+package messagehandler;
+
+import messagehandler.message.Message;
 
 public abstract class MessageHandler {
 	

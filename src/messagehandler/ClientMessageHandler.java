@@ -1,7 +1,9 @@
-package MessageHandler;
+package messagehandler;
 
-import MessageHandler.Message.MessageType;
 import game.Directions;
+import messagehandler.message.DirectionChangeMessage;
+import messagehandler.message.Message;
+import messagehandler.message.Message.MessageType;
 
 /**
  * this class implements message handling for all messages coming from the client
@@ -13,17 +15,17 @@ public class ClientMessageHandler extends MessageHandler {
 	@Override
 	public Message decode(String input){
 		Message decoded = null;
-		String head = input.substring(0,2);
+		String head = input.substring(0,3);
 
 		switch(head){		
 		case DIRECTION_CHANGE:
 			decoded = decodeDirectionChange(input);
 			break;
 		case PLAYER_READY:
-			decoded = decodeReady(input);
+			decoded = decodeReady();
 			break;
 		case DISCONNECT:
-			decoded = decodeDisconnect(input);
+			decoded = decodeDisconnect();
 			break;
 		default:
 			//TODO this is not a message OR this is a server message
@@ -33,11 +35,11 @@ public class ClientMessageHandler extends MessageHandler {
 		return decoded;
 	}
 
-	private Message decodeDisconnect(String input) {
+	private Message decodeDisconnect() {
 		return new Message(MessageType.DIS);
 	}
 
-	private Message decodeReady(String input) {
+	private Message decodeReady() {
 		return new Message(MessageType.PLR);
 	}
 
@@ -72,10 +74,10 @@ public class ClientMessageHandler extends MessageHandler {
 			encoded = encodeDirectionChange((DirectionChangeMessage) input);
 			break;
 		case PLR:
-			encoded = encodeReady(input);
+			encoded = encodeReady();
 			break;
 		case DIS:
-			encoded = encodeDisconnect(input);
+			encoded = encodeDisconnect();
 			break;
 		default:
 			break;
@@ -84,11 +86,11 @@ public class ClientMessageHandler extends MessageHandler {
 		return encoded;
 	}
 
-	private String encodeDisconnect(Message input) {
+	private String encodeDisconnect() {
 		return DISCONNECT;
 	}
 
-	private String encodeReady(Message input) {
+	private String encodeReady() {
 		return PLAYER_READY;
 	}
 

@@ -1,8 +1,8 @@
-package MessageHandler;
+package messagehandler.message;
 
 public class Message {
 	
-	protected static enum MessageType {
+	public static enum MessageType {
 		UPD, BAI, STR, END, TXT, SAD, PLL, PLR, DIC, DIS
 	}
 

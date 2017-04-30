@@ -1,4 +1,4 @@
-package MessageHandler;
+package messagehandler.message;
 
 import game.Directions;
 
