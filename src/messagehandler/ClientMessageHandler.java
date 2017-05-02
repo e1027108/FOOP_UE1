@@ -43,7 +43,7 @@ public class ClientMessageHandler extends MessageHandler {
 		return new Message(MessageType.PLR);
 	}
 
-	private Message decodeDirectionChange(String input) {
+	private DirectionChangeMessage decodeDirectionChange(String input) {
 		String payload = input.substring(3,input.length());
 
 		if(payload.length() > 1){

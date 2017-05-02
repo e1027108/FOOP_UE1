@@ -1,8 +1,10 @@
 package messagehandler;
 
+import messagehandler.message.BaseMessage;
 import messagehandler.message.Message;
 import messagehandler.message.PlayerLeftMessage;
 import messagehandler.message.TextMessage;
+import messagehandler.message.UpdateMessage;
 import messagehandler.message.Message.MessageType;
 
 public class ServerMessageHandler extends MessageHandler{
@@ -41,7 +43,7 @@ public class ServerMessageHandler extends MessageHandler{
 		return decoded;
 	}
 
-	private Message decodePlayerLeft(String input) {
+	private PlayerLeftMessage decodePlayerLeft(String input) {
 		String payload = input.substring(3,input.length());
 
 		if(payload.length() > 1){
@@ -56,7 +58,7 @@ public class ServerMessageHandler extends MessageHandler{
 		return new Message(MessageType.SAD);
 	}
 
-	private Message decodeTextMessage(String input) {
+	private TextMessage decodeTextMessage(String input) {
 		String payload = input.substring(3,input.length());
 		
 		return new TextMessage(MessageType.TXT, payload);
@@ -70,7 +72,7 @@ public class ServerMessageHandler extends MessageHandler{
 		return new Message(MessageType.STR);
 	}
 
-	private Message decodeBaseInfo(String input) {
+	private BaseMessage decodeBaseInfo(String input) {
 		String payload = input.substring(3,input.length());
 		
 		//TODO implement code for all player's informations
@@ -78,7 +80,7 @@ public class ServerMessageHandler extends MessageHandler{
 		return null;
 	}
 
-	private Message decodeUpdate(String input) {
+	private UpdateMessage decodeUpdate(String input) {
 		String payload = input.substring(3,input.length());
 		
 		//TODO implement code for all player's position and status information
@@ -92,10 +94,10 @@ public class ServerMessageHandler extends MessageHandler{
 		
 		switch(input.getType()){
 		case UPD:
-			encoded = encodeUpdate(input);
+			encoded = encodeUpdate((UpdateMessage) input);
 			break;
 		case BAI:
-			encoded = encodeBaseInfo(input);
+			encoded = encodeBaseInfo((BaseMessage) input);
 			break;
 		case STR:
 			encoded = encodeGameStart();
@@ -139,13 +141,13 @@ public class ServerMessageHandler extends MessageHandler{
 		return GAME_START;
 	}
 
-	private String encodeBaseInfo(Message input) {
+	private String encodeBaseInfo(BaseMessage input) {
 		//TODO read from then implemented BaseMessage
 		
 		return null;
 	}
 
-	private String encodeUpdate(Message input) {
+	private String encodeUpdate(UpdateMessage input) {
 		//TODO read from then implemented UpdateMessage
 
 		return null;
