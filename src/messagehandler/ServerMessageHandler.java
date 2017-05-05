@@ -1,11 +1,15 @@
 package messagehandler;
 
-import messagehandler.message.BaseMessage;
+import java.util.ArrayList;
+
+import game.Point;
+import javafx.scene.paint.Color;
+import messagehandler.message.InfoMessage;
 import messagehandler.message.Message;
 import messagehandler.message.PlayerLeftMessage;
 import messagehandler.message.TextMessage;
-import messagehandler.message.UpdateMessage;
 import messagehandler.message.Message.MessageType;
+import messagehandler.message.PlayerInfo;
 
 public class ServerMessageHandler extends MessageHandler{
 
@@ -13,13 +17,13 @@ public class ServerMessageHandler extends MessageHandler{
 	public Message decode(String input) {
 		Message decoded = null;
 		String head = input.substring(0,3);
-		
+
 		switch(head){
 		case UPDATE:
-			decoded = decodeUpdate(input);
+			decoded = decodePlayerInfo(MessageType.UPD, input);
 			break;
 		case BASE_INFO:
-			decoded = decodeBaseInfo(input);
+			decoded = decodePlayerInfo(MessageType.BAI, input);
 			break;
 		case GAME_START:
 			decoded = decodeGameStart();
@@ -37,9 +41,9 @@ public class ServerMessageHandler extends MessageHandler{
 			decoded = decodePlayerLeft(input);
 			break;
 		default:
-			break;
+			throw new IllegalArgumentException("Invalid message type code: " + head);
 		}
-		
+
 		return decoded;
 	}
 
@@ -60,7 +64,7 @@ public class ServerMessageHandler extends MessageHandler{
 
 	private TextMessage decodeTextMessage(String input) {
 		String payload = input.substring(3,input.length());
-		
+
 		return new TextMessage(MessageType.TXT, payload);
 	}
 
@@ -72,32 +76,76 @@ public class ServerMessageHandler extends MessageHandler{
 		return new Message(MessageType.STR);
 	}
 
-	private BaseMessage decodeBaseInfo(String input) {
+	private InfoMessage decodePlayerInfo(MessageType type, String input) {
 		String payload = input.substring(3,input.length());
-		
-		//TODO implement code for all player's informations
-		
-		return null;
+		//split the strings into substrings starting with upper case letter
+		String info[] = payload.split("(?>=[A-Z])");
+		PlayerInfo pi = new PlayerInfo();
+
+		for(String s: info){
+			switch(s.charAt(0)){
+			case 'P': //playerNumber
+				pi.setNumber(Integer.parseInt(s.substring(1)));
+				break;
+			case 'N': //name
+				pi.setName(s.substring(1));
+				break;
+			case 'C': //color
+				pi.setColor(Color.web(s.substring(1),1));
+				break;
+			case 'M': //max health
+				pi.setMaxHealth(Integer.parseInt(s.substring(1)));
+				break;
+			case 'H': //current health
+				pi.setHealth(Integer.parseInt(s.substring(1)));
+				break;
+			case 'B': //body positions
+				pi.setBody(computePosition(s.substring(1)));
+				break;
+			case 'L': //bLocked
+				pi.setBlocked(true);
+				break;
+			case 'I': //invincible
+				pi.setInvincible(true);
+				break;
+			case 'R': //reverse control
+				pi.setReversed(true);
+				break;
+			default:
+				throw new IllegalArgumentException("Invalid information code: " + s.charAt(0));
+			}
+		}
+
+		return new InfoMessage(type,pi);
 	}
 
-	private UpdateMessage decodeUpdate(String input) {
-		String payload = input.substring(3,input.length());
-		
-		//TODO implement code for all player's position and status information
-		
-		return null;
+	private ArrayList<Point> computePosition(String coded) {
+		ArrayList<Point> points = new ArrayList<Point>();
+
+		if(coded.length()%POINT_CODE_LENGTH != 0){
+			throw new IllegalArgumentException("Invalid position code!");
+		}
+
+		for(int i = 0; i < (coded.length()/POINT_CODE_LENGTH); i++){
+			String point = coded.substring(i*POINT_CODE_LENGTH, i*POINT_CODE_LENGTH + POINT_CODE_LENGTH);
+
+			points.add(new Point(Integer.parseInt(point.substring(0, POINT_CODE_LENGTH/2)),
+					Integer.parseInt(point.substring(POINT_CODE_LENGTH/2, POINT_CODE_LENGTH))));
+		}
+
+		return points;
 	}
 
 	@Override
 	public String encode(Message input) {
 		String encoded = "";
-		
+
 		switch(input.getType()){
 		case UPD:
-			encoded = encodeUpdate((UpdateMessage) input);
+			encoded = UPDATE + encodePlayerInfo((InfoMessage) input);
 			break;
 		case BAI:
-			encoded = encodeBaseInfo((BaseMessage) input);
+			encoded = BASE_INFO + encodePlayerInfo((InfoMessage) input);
 			break;
 		case STR:
 			encoded = encodeGameStart();
@@ -115,9 +163,9 @@ public class ServerMessageHandler extends MessageHandler{
 			encoded = encodePlayerLeft((PlayerLeftMessage) input);
 			break;
 		default:
-			break;
+			throw new IllegalArgumentException("Invalid message type: " + input.getType());
 		}
-		
+
 		return encoded;
 	}
 
@@ -141,16 +189,60 @@ public class ServerMessageHandler extends MessageHandler{
 		return GAME_START;
 	}
 
-	private String encodeBaseInfo(BaseMessage input) {
-		//TODO read from then implemented BaseMessage
-		
-		return null;
+	private String encodePlayerInfo(InfoMessage input) {
+		String encoded = "";
+		MessageType type = input.getType();
+		PlayerInfo info = input.getInfo();
+
+		if(type == MessageType.BAI){
+			encoded += BASE_INFO;
+		}
+		else if(type == MessageType.UPD){
+			encoded += UPDATE;
+		}
+
+		//TODO code constants?
+		if(info.getNumber() != null){
+			encoded += "P" + info.getNumber();
+		}
+		if(info.getName() != null){
+			encoded += "N" + info.getName();
+		}
+		if(info.getColor() != null){
+			encoded += "C" + String.valueOf(info.getColor()).substring(2,8);
+		}
+		if(info.getMaxHealth() != null){
+			encoded += "M" + info.getMaxHealth();
+		}
+		if(info.getHealth() != null){
+			encoded += "H" + info.getHealth();
+		}
+		if(info.getBody() != null){
+			encoded += "B" + encodeBody(info.getBody());
+		}
+		if(info.isBlocked()){
+			encoded += "L";
+		}
+		if(info.isInvincible()){
+			encoded += "I";
+		}
+		if(info.isReversed()){
+			encoded += "R";
+		}
+
+		return encoded;
 	}
 
-	private String encodeUpdate(UpdateMessage input) {
-		//TODO read from then implemented UpdateMessage
-
-		return null;
+	private String encodeBody(ArrayList<Point> body) {
+		String bodyCode = "";
+		
+		//assertion x,y never over 99, never negative ( (0,37) currently standard?)
+		for(Point p: body){
+			//fills string with leading zeros if necessary
+			bodyCode += String.format("%02d",p.getX()) + String.format("%02d",p.getY());
+		}
+		
+		return bodyCode;
 	}
 
 }

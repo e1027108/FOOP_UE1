@@ -22,6 +22,8 @@ public abstract class MessageHandler {
 	protected static final String DIRECTION_CHANGE = "DIC";
 	protected static final String DISCONNECT = "DIS";
 	
+	protected static final int POINT_CODE_LENGTH = 4;
+	
 	public abstract Message decode(String input);
 	
 	public abstract String encode(Message input);
