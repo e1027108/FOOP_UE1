@@ -95,7 +95,7 @@ public class GameController {
 	private String[] playerNames;
 	private ProgressBar[] playerLifeBars;
 
-	private ImageView[] playerInvincible;
+	private ImageView[] playerInvulnerable;
 	private ImageView[] playerBlocked;
 	private ImageView[] playerReversed;
 
@@ -111,7 +111,7 @@ public class GameController {
 		playerNames = new String[4];
 		playerLifeBars = new ProgressBar[] { player1LifeBar, player2LifeBar, player3LifeBar, player4LifeBar };
 
-		playerInvincible = new ImageView[] { inv1img, inv2img, inv3img, inv4img };
+		playerInvulnerable = new ImageView[] { inv1img, inv2img, inv3img, inv4img };
 		playerBlocked = new ImageView[] { block1img, block2img, block3img, block4img };
 		playerReversed = new ImageView[] { rev1img, rev2img, rev3img, rev4img };
 
@@ -495,36 +495,46 @@ public class GameController {
 	}
 
 	//give b=block, r=reverse, i=invisible as effect
-	private void togglePlayerStatus(int player, imgType effect){
-		try {
-			switch(effect){
-			case B:
-				toggleStatusImage(playerBlocked[player-1], new Image(new FileInputStream("img/block_control.png")));
-				break;
-			case I:
-				toggleStatusImage(playerBlocked[player-1], new Image(new FileInputStream("img/invulnerability.png")));
-				break;
-			case R:
-				toggleStatusImage(playerBlocked[player-1], new Image(new FileInputStream("img/reverse_control.png")));
-				break;
-			default:
-				//nothing
-				break;
+	private void setPlayerStatus(int player, imgType effect, boolean on){
+		Image toSet = null;
+
+		if(on){
+			try {
+				switch(effect){
+				case B:
+					toSet = new Image(new FileInputStream("img/block_control.png"));
+					break;
+				case I:
+					toSet = new Image(new FileInputStream("img/invulnerability.png"));
+					break;
+				case R:
+					toSet =  new Image(new FileInputStream("img/reverse_control.png"));
+					break;
+				default:
+					//nothing
+					break;
+				}
+			}
+			catch (FileNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
 		}
-		catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+
+		getImageView(effect)[player-1].setImage(toSet);
 	}
 
-	private void toggleStatusImage(ImageView view, Image img){
-		if(view.getImage() == null){
-			view.setImage(img);
+	private ImageView[] getImageView(imgType effect) {
+		if(effect == imgType.B){
+			return playerBlocked;
 		}
-		else{
-			view.setImage(null);
+		if(effect == imgType.I){
+			return playerInvulnerable;
 		}
+		if(effect == imgType.R){
+			return playerReversed;
+		}
+		return null;
 	}
 
 }
