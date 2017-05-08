@@ -31,6 +31,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.control.TextArea;
 import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
@@ -64,15 +65,19 @@ public class GameController {
 
 	@FXML
 	private ProgressBar player1LifeBar, player2LifeBar, player3LifeBar, player4LifeBar;
-	
+
 	@FXML
 	private TextArea msgArea;
+
+	@FXML
+	private ImageView block1img, block2img, block3img, block4img, rev1img, rev2img, rev3img, rev4img, inv1img, inv2img, inv3img, inv4img;
 
 	private GameDto info;
 	// percentage on the color scale that we want to be off, at least (needs to be at most 1/6 (=0.166..), otw can't/ find 3 other colors)
 	private final static double RANGE_VALUE = .12;
 	private final static Duration MOVE_DURATION = Duration.millis(100);
 	private static final int GRID_SIZE = 39;
+	private static enum imgType { B, R, I };
 
 	private Game game;
 
@@ -89,19 +94,27 @@ public class GameController {
 
 	private String[] playerNames;
 	private ProgressBar[] playerLifeBars;
-	
+
+	private ImageView[] playerInvincible;
+	private ImageView[] playerBlocked;
+	private ImageView[] playerReversed;
+
 	@FXML
 	public void initialize() {
 		engine = new MessageEngine(msgArea);
 		msgThread = new Thread(engine);
 		msgThread.setDaemon(true);
 		msgThread.start();
-		
+
 		info = DataTransferrer.getInfo();
 
 		playerNames = new String[4];
 		playerLifeBars = new ProgressBar[] { player1LifeBar, player2LifeBar, player3LifeBar, player4LifeBar };
-		
+
+		playerInvincible = new ImageView[] { inv1img, inv2img, inv3img, inv4img };
+		playerBlocked = new ImageView[] { block1img, block2img, block3img, block4img };
+		playerReversed = new ImageView[] { rev1img, rev2img, rev3img, rev4img };
+
 		if (info == null) {
 			engine.addError("Error: could not find game information, please disconnect!");
 		} else {
@@ -135,7 +148,7 @@ public class GameController {
 
 	private void setPlayerStyle(int player, String name, Color color) {
 		//Integer.toHexString(color.hashCode())
-		
+
 		playerNames[player - 1] = name;
 
 		String hexcode = String.valueOf(color);
@@ -278,15 +291,15 @@ public class GameController {
 			for(Snake w: winners){
 				endMessage += w.getName() + ", ";
 			}
-			
+
 			endMessage += "win!";
-			
+
 			//remove useless commas, make it sound like a sentence
 			endMessage = endMessage.replace(", win", " win");
 			String back = endMessage.substring(endMessage.lastIndexOf(','), endMessage.length() - 1);
 			endMessage = endMessage.replace(back, " and" + back.substring(1,back.length()));
 		}
-		
+
 		engine.addMessage(endMessage);
 	}
 
@@ -478,6 +491,39 @@ public class GameController {
 					life.setProgress((double) s.getHealth() / s.getMaxHealth());
 				}
 			}
+		}
+	}
+
+	//give b=block, r=reverse, i=invisible as effect
+	private void togglePlayerStatus(int player, imgType effect){
+		try {
+			switch(effect){
+			case B:
+				toggleStatusImage(playerBlocked[player-1], new Image(new FileInputStream("img/block_control.png")));
+				break;
+			case I:
+				toggleStatusImage(playerBlocked[player-1], new Image(new FileInputStream("img/invulnerability.png")));
+				break;
+			case R:
+				toggleStatusImage(playerBlocked[player-1], new Image(new FileInputStream("img/reverse_control.png")));
+				break;
+			default:
+				//nothing
+				break;
+			}
+		}
+		catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+	private void toggleStatusImage(ImageView view, Image img){
+		if(view.getImage() == null){
+			view.setImage(img);
+		}
+		else{
+			view.setImage(null);
 		}
 	}
 
