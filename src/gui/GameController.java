@@ -127,9 +127,7 @@ public class GameController {
 			setPlayerStyle(1, info.getName(), info.getColor());
 			if (host = info.isHost()) {
 				try {
-					// TODO server.init() blocks game panel.. adapt!
-					server = Server.getServer(1234);
-					server.init();
+					server = Server.getServer(1234, info.getPlayers());
 				} catch (IOException e) {
 					System.out.println("server IOException:");
 					e.printStackTrace();

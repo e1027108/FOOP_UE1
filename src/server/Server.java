@@ -1,33 +1,28 @@
 package server;
 
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.net.ServerSocket;
-import java.net.Socket;
-import java.net.SocketException;
 import java.util.ArrayList;
 import java.util.List;
 
 public class Server {
 
-	private static final String CLIENT_THREAD = "AcceptClients";
 	private static Server server;
-	private ServerSocket serverSocket;
-	private List<Socket> clientSockets;
+	private static ServerSocket serverSocket;
+	private static List<ClientThread> clientThreads;
+	private static AcceptThread acceptThread;
 
-	private static Thread acceptClients;
-
-	private Server(int port) throws IOException {
-		ServerSocket serverSocket = new ServerSocket(port);
-		clientSockets = new ArrayList<Socket>();
-		server = null;
-		acceptClients = new Thread(CLIENT_THREAD);
-		acceptClients.setDaemon(true);
+	private Server(int port, int players) throws IOException {
+		serverSocket = new ServerSocket(port);
+		clientThreads = new ArrayList<ClientThread>();
+		acceptThread = new AcceptThread(this, players);
+		acceptThread.setDaemon(true);
+		acceptThread.start();
 	}
 
-	public static Server getServer(int port) throws IOException {
+	public static Server getServer(int port, int players) throws IOException {
 		if (server == null) {
-			server = new Server(port);
+			server = new Server(port, players);
 		}
 		return server;
 	}
@@ -39,25 +34,11 @@ public class Server {
 		return server;
 	}
 
-	public void init() throws IOException, SocketException {
-		acceptClients.start();
-		while (true) {
-			if (Thread.currentThread().getName().equals(CLIENT_THREAD)) {
-				Socket clientSocket = serverSocket.accept();
-				clientSockets.add(clientSocket);
-				System.out.println("Server: accepted new client");
-			}
-			for (Socket cs : clientSockets) {
-				PrintWriter out = new PrintWriter(cs.getOutputStream(), true);
-				out.println("Hallo, test test :D");
-			}
-		}
+	public List<ClientThread> getClientThreads() {
+		return clientThreads;
 	}
 
-	// TODO more methods/threads for other server tasks
-
-	public void initDone() {
-		acceptClients.interrupt();
+	public ServerSocket getServerSocket() {
+		return serverSocket;
 	}
-
 }

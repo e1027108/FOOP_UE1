@@ -7,9 +7,15 @@ import java.io.PrintWriter;
 import java.net.Socket;
 
 import javafx.util.Duration;
+import messagehandler.ClientMessageHandler;
+import messagehandler.ServerMessageHandler;
+import messagehandler.message.Message;
+import messagehandler.message.Message.MessageType;
 
 public class Client {
 
+	private static ClientMessageHandler clientMessageHandler;
+	private static ServerMessageHandler serverMessageHandler;
 	private static String host;
 	private static final int PORT = 1234;
 	private static Client client;
@@ -19,6 +25,8 @@ public class Client {
 
 	private Client(String host) {
 		Client.host = host;
+		clientMessageHandler = new ClientMessageHandler();
+		serverMessageHandler = new ServerMessageHandler();
 	}
 	
 	public static Client getClient(String host) throws IOException {
@@ -40,13 +48,13 @@ public class Client {
 		sock = new Socket(host, PORT);
 		in = new BufferedReader(new InputStreamReader(sock.getInputStream()));
 		out = new PrintWriter(sock.getOutputStream(), true);
-		System.out.println("Client: connection established");
-		System.out.println(in.readLine());
+		System.out.println("Client: setup done");
+		out.println(clientMessageHandler.encode(new Message(MessageType.PLR)));
 	}
 	
 	public Duration getGameDuration() {
 		Duration ret = null;
-
+		// TODO get duration from server
 		return ret;
 	}
 }
