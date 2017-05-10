@@ -17,11 +17,8 @@ public class Server {
 
 	private static Thread acceptClients;
 
-	private Server() {
-	}
-
 	private Server(int port) throws IOException {
-		ServerSocket serverSocket = new ServerSocket();
+		ServerSocket serverSocket = new ServerSocket(port);
 		clientSockets = new ArrayList<Socket>();
 		server = null;
 		acceptClients = new Thread(CLIENT_THREAD);

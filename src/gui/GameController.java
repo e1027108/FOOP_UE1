@@ -9,6 +9,7 @@ import java.util.Random;
 import java.util.ResourceBundle;
 
 import artifacts.Artifact;
+import client.Client;
 import dto.DataTransferrer;
 import dto.GameDto;
 import game.Directions;
@@ -42,6 +43,7 @@ import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import javafx.util.Pair;
+import server.Server;
 
 public class GameController {
 
@@ -81,6 +83,10 @@ public class GameController {
 
 	private Game game;
 
+	private Client client;
+	private Server server;
+	private boolean host;
+
 	private Timeline timeline;
 
 	private final Color emptyCellColor = Color.valueOf("FFFFFF");
@@ -119,13 +125,37 @@ public class GameController {
 			engine.addError("Error: could not find game information, please disconnect!");
 		} else {
 			setPlayerStyle(1, info.getName(), info.getColor());
+			if (host = info.isHost()) {
+				try {
+					// TODO server.init() blocks game panel.. adapt!
+					server = Server.getServer(1234);
+					server.init();
+				} catch (IOException e) {
+					System.out.println("server IOException:");
+					e.printStackTrace();
+				}
+			} else {
+				try {
+					System.out.println("IP ADDRESS: " + info.getIp().toString().substring(1));
+					client = Client.getClient(info.getIp().toString().substring(1));
+				} catch (IOException e) {
+					System.out.println("client IOException:");
+					e.printStackTrace();
+				}
+			}
 		}
 
 		engine.addMessage("Welcome to Snake, " + info.getName() + "!");
 		engine.addMessage("Control your snake with the WASD keys.");
 		engine.addMessage("The longest snake at the end, wins!");
 
-		timeLbl.setText(((int) info.getGameDuration().toSeconds()) + "s");
+		// TODO get duration from server
+		if (host) {
+			timeLbl.setText(((int) info.getGameDuration().toSeconds()) + "s");
+		} else {
+			Duration duration = client.getGameDuration();
+			timeLbl.setText((int) duration.toSeconds() + "s");
+		}
 
 		assignAIColors();
 

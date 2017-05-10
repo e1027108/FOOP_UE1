@@ -9,10 +9,8 @@ import java.util.ResourceBundle;
 
 import dto.DataTransferrer;
 import dto.GameDto;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.fxml.JavaFXBuilderFactory;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Node;
 import javafx.scene.Parent;
@@ -131,7 +129,7 @@ public class JoinController {
 		String name = nameTxt.getText();
 		InetAddress ip;
 		int players;
-		Duration d;
+		Duration duration;
 
 		if(!host){
 			ip = InetAddress.getByName(ipTxt.getText());
@@ -149,13 +147,13 @@ public class JoinController {
 			}
 			
 			try{
-				d = Duration.valueOf(timeTxt.getText()+"m");
+				duration = Duration.valueOf(timeTxt.getText()+"m");
 			}
 			catch (NumberFormatException e){
-				d = Duration.valueOf(STANDARD_TIME);
+				duration = Duration.valueOf(STANDARD_TIME);
 			}
 			
-			return new GameDto(name, color, players, d);
+			return new GameDto(name, color, players, duration);
 		}
 	}
 
