@@ -81,6 +81,7 @@ public class ServerMessageHandler extends MessageHandler{
 		//split the strings into substrings starting with upper case letter
 		String info[] = payload.split("(?>=[A-Z])");
 		PlayerInfo pi = new PlayerInfo();
+		int remainingTime = 0;
 
 		for(String s: info){
 			switch(s.charAt(0)){
@@ -111,12 +112,15 @@ public class ServerMessageHandler extends MessageHandler{
 			case 'R': //reverse control
 				pi.setReversed(true);
 				break;
+			case 'T':
+				remainingTime = Integer.parseInt(s.substring(1));
+				break;
 			default:
 				throw new IllegalArgumentException("Invalid information code: " + s.charAt(0));
 			}
 		}
 
-		return new InfoMessage(type,pi);
+		return new InfoMessage(type,pi,remainingTime);
 	}
 
 	private ArrayList<Point> computePosition(String coded) {
@@ -229,6 +233,8 @@ public class ServerMessageHandler extends MessageHandler{
 		if(info.isReversed()){
 			encoded += "R";
 		}
+		
+		encoded += "T" + input.getRemainingTime();
 
 		return encoded;
 	}
