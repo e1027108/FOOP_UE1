@@ -78,49 +78,58 @@ public class ServerMessageHandler extends MessageHandler{
 
 	private InfoMessage decodePlayerInfo(MessageType type, String input) {
 		String payload = input.substring(3,input.length());
-		//split the strings into substrings starting with upper case letter
-		String info[] = payload.split("(?=[A-Z])");
-		PlayerInfo pi = new PlayerInfo();
+		ArrayList<PlayerInfo> pis = new ArrayList<PlayerInfo>();
 		int remainingTime = 0;
 
-		for(String s: info){
-			switch(s.charAt(0)){
-			case 'P': //playerNumber
-				pi.setNumber(Integer.parseInt(s.substring(1,2)));
-				break;
-			case 'N': //name
-				pi.setName(s.substring(1));
-				break;
-			case 'C': //color
-				pi.setColor(Color.web(s.substring(1),1));
-				break;
-			case 'M': //max health
-				pi.setMaxHealth(Integer.parseInt(s.substring(1)));
-				break;
-			case 'H': //current health
-				pi.setHealth(Integer.parseInt(s.substring(1)));
-				break;
-			case 'B': //body positions
-				pi.setBody(computePosition(s.substring(1)));
-				break;
-			case 'L': //bLocked
-				pi.setBlocked(true);
-				break;
-			case 'I': //invincible
-				pi.setInvincible(true);
-				break;
-			case 'R': //reverse control
-				pi.setReversed(true);
-				break;
-			case 'T':
-				remainingTime = Integer.parseInt(s.substring(1));
-				break;
-			default:
-				throw new IllegalArgumentException("Invalid information code: " + s.charAt(0));
+		//split string into player's information and time left (at end of message)
+		String players[] = payload.split("(?=[PT])");
+
+		for(String p: players){
+			//split the strings into substrings starting with upper case letter
+			String info[] = p.split("(?=[A-Z])");
+			for(String s: info){
+				PlayerInfo playerInf = new PlayerInfo();
+				
+				switch(s.charAt(0)){
+				case 'P': //playerNumber
+					playerInf.setNumber(Integer.parseInt(s.substring(1,2)));
+					break;
+				case 'N': //name
+					playerInf.setName(s.substring(1));
+					break;
+				case 'C': //color
+					playerInf.setColor(Color.web(s.substring(1),1));
+					break;
+				case 'M': //max health
+					playerInf.setMaxHealth(Integer.parseInt(s.substring(1)));
+					break;
+				case 'H': //current health
+					playerInf.setHealth(Integer.parseInt(s.substring(1)));
+					break;
+				case 'B': //body positions
+					playerInf.setBody(computePosition(s.substring(1)));
+					break;
+				case 'L': //bLocked
+					playerInf.setBlocked(true);
+					break;
+				case 'I': //invincible
+					playerInf.setInvincible(true);
+					break;
+				case 'R': //reverse control
+					playerInf.setReversed(true);
+					break;
+				case 'T':
+					remainingTime = Integer.parseInt(s.substring(1));
+					break;
+				default:
+					throw new IllegalArgumentException("Invalid information code: " + s.charAt(0));
+				}
+				
+				pis.add(playerInf);
 			}
 		}
 
-		return new InfoMessage(type,pi,remainingTime);
+		return new InfoMessage(type,pis,remainingTime);
 	}
 
 	private ArrayList<Point> computePosition(String coded) {
@@ -195,47 +204,40 @@ public class ServerMessageHandler extends MessageHandler{
 
 	private String encodePlayerInfo(InfoMessage input) {
 		String encoded = "";
-		MessageType type = input.getType();
-		PlayerInfo info = input.getInfo();
+		ArrayList<PlayerInfo> infos = input.getInfos();
 
-		/*if(type == MessageType.BAI){
-			encoded += BASE_INFO;
+		for(PlayerInfo i: infos){
+			if(i.getNumber() != null){
+				encoded += "P" + i.getNumber();
+			}
+			if(i.getName() != null){
+				encoded += "N" + i.getName();
+			}
+			if(i.getColor() != null){
+				encoded += "C" + String.valueOf(i.getColor()).substring(2,8);
+			}
+			if(i.getMaxHealth() != null){
+				encoded += "M" + i.getMaxHealth();
+			}
+			if(i.getHealth() != null){
+				encoded += "H" + i.getHealth();
+			}
+			if(i.getBody() != null){
+				encoded += "B" + encodeBody(i.getBody());
+			}
+			if(i.isBlocked()){
+				encoded += "L";
+			}
+			if(i.isInvincible()){
+				encoded += "I";
+			}
+			if(i.isReversed()){
+				encoded += "R";
+			}
 		}
-		else if(type == MessageType.UPD){
-			encoded += UPDATE;
-		}*/
 
-		//TODO code constants?
-		if(info.getNumber() != null){
-			encoded += "P" + info.getNumber();
-		}
-		if(info.getName() != null){
-			encoded += "N" + info.getName();
-		}
-		if(info.getColor() != null){
-			encoded += "C" + String.valueOf(info.getColor()).substring(2,8);
-		}
-		if(info.getMaxHealth() != null){
-			encoded += "M" + info.getMaxHealth();
-		}
-		if(info.getHealth() != null){
-			encoded += "H" + info.getHealth();
-		}
-		if(info.getBody() != null){
-			encoded += "B" + encodeBody(info.getBody());
-		}
-		if(info.isBlocked()){
-			encoded += "L";
-		}
-		if(info.isInvincible()){
-			encoded += "I";
-		}
-		if(info.isReversed()){
-			encoded += "R";
-		}
-		
 		encoded += "T" + input.getRemainingTime();
-		
+
 		System.out.println(encoded);
 
 		return encoded;
@@ -243,13 +245,13 @@ public class ServerMessageHandler extends MessageHandler{
 
 	private String encodeBody(ArrayList<Point> body) {
 		String bodyCode = "";
-		
+
 		//assertion x,y never over 99, never negative ( (0,37) currently standard?)
 		for(Point p: body){
 			//fills string with leading zeros if necessary
 			bodyCode += String.format("%02d",p.getX()) + String.format("%02d",p.getY());
 		}
-		
+
 		return bodyCode;
 	}
 

@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.util.ArrayList;
 
 import javafx.scene.paint.Color;
 import javafx.util.Duration;
@@ -62,11 +63,13 @@ public class Client {
 		state = new PlayerInfo();
 		state.setName(name);
 		state.setColor(color);
-		out.println(clientMessageHandler.encode(new InfoMessage(MessageType.INI, state, 0)));
+		ArrayList<PlayerInfo> container = new ArrayList<PlayerInfo>();
+		container.add(state);
+		out.println(clientMessageHandler.encode(new InfoMessage(MessageType.INI, container, 0)));
 		InfoMessage info;
 		try {
 			info = (InfoMessage) serverMessageHandler.decode(in.readLine());
-			state = info.getInfo();
+			state = info.getInfos().get(0);
 			remainingTime = info.getRemainingTime();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block

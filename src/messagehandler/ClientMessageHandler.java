@@ -1,5 +1,7 @@
 package messagehandler;
 
+import java.util.ArrayList;
+
 import game.Directions;
 import javafx.scene.paint.Color;
 import messagehandler.message.DirectionChangeMessage;
@@ -74,7 +76,9 @@ public class ClientMessageHandler extends MessageHandler {
 	private Message decodeInitialization(String input) {
 		String payload = input.substring(3,input.length());
 		String info[] = payload.split("(?=[A-Z])");
+		ArrayList<PlayerInfo> infoContainer = new ArrayList<PlayerInfo>();
 		PlayerInfo pi = new PlayerInfo();
+		infoContainer.add(pi);
 		int remainingTime = 0;
 		for(String s: info){
 			switch(s.charAt(0)){
@@ -92,7 +96,7 @@ public class ClientMessageHandler extends MessageHandler {
 			}
 		}
 		
-		return new InfoMessage(MessageType.INI,pi,remainingTime);
+		return new InfoMessage(MessageType.INI,infoContainer,remainingTime);
 	}
 
 	@Override
@@ -131,7 +135,7 @@ public class ClientMessageHandler extends MessageHandler {
 	}
 	
 	private String encodeInitialization(InfoMessage input) {
-		return INITIALIZATION + "N" + input.getInfo().getName() + "C" + input.getInfo().getColor();
+		return INITIALIZATION + "N" + input.getInfos().get(0).getName() + "C" + input.getInfos().get(0).getColor();
 	}
 
 }

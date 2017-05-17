@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.util.ArrayList;
 
 import messagehandler.ClientMessageHandler;
 import messagehandler.ServerMessageHandler;
@@ -53,12 +54,15 @@ public class ClientThread extends Thread {
 					case INI:
 						// update player info with name and color from client
 						InfoMessage clientInfo = (InfoMessage) message;
-						server.getPlayer(playerReferenceNumber).setName(clientInfo.getInfo().getName());
-						server.getPlayer(playerReferenceNumber).setColor(clientInfo.getInfo().getColor());
+						server.getPlayer(playerReferenceNumber).setName(clientInfo.getInfos().get(0).getName());
+						server.getPlayer(playerReferenceNumber).setColor(clientInfo.getInfos().get(0).getColor());
 						
 						// return InfoMessage with updated player info and duration to client
 						PlayerInfo player = server.getPlayer(playerReferenceNumber);
-						InfoMessage info = new InfoMessage(MessageType.BAI, player,(int) server.getGameInfo().getGameDuration().toSeconds());
+						ArrayList<PlayerInfo> container = new ArrayList<PlayerInfo>();
+						container.add(player);
+						InfoMessage info = new InfoMessage(MessageType.BAI, container,
+								(int) server.getGameInfo().getGameDuration().toSeconds());
 						out.println(serverMessageHandler.encode(info));
 						break;
 					default:

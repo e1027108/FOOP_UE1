@@ -109,7 +109,12 @@ public class PlayerInfo {
 	}
 	
 	public String toString() {
-		return "{ playerNumber: " + String.valueOf(playerNumber) + " name: " + name + " color: " + color.toString() + " }";
+		if(playerNumber != null && name != null && color != null){
+			return "{ playerNumber: " + String.valueOf(playerNumber) + " name: " + name + " color: " + color.toString() + " }";
+		}
+		else{
+			return "player info incomplete!";
+		}
 	}
 
 }
