@@ -16,11 +16,11 @@ public class AcceptThread extends Thread {
 
 	@Override
 	public void run() {
-		int playerNum = 2;
-		while (server.getClientThreads().size() < players - 1) {
+		int listSize = server.getClientThreads().size();
+		while (listSize < players - 1) {
 			try {
 				Socket clientSocket = server.getServerSocket().accept();
-				ClientThread clientThread = new ClientThread(clientSocket, server, playerNum);
+				ClientThread clientThread = new ClientThread(clientSocket, server, listSize + 1);
 				server.getClientThreads().add(clientThread);
 				clientThread.start();
 			} catch (IOException e) {
