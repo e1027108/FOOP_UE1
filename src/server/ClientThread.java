@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.net.SocketException;
 import java.util.ArrayList;
 
 import messagehandler.ClientMessageHandler;
@@ -22,9 +23,9 @@ public class ClientThread extends Thread {
 	private BufferedReader in;
 	private PrintWriter out;
 	private Server server;
-	
+
 	private int playerReferenceNumber;
-	
+
 	public ClientThread(Socket clientSocket, Server server, int playerNum) throws IOException {
 		super();
 		this.clientSocket = clientSocket;
@@ -56,7 +57,7 @@ public class ClientThread extends Thread {
 						InfoMessage clientInfo = (InfoMessage) message;
 						server.getPlayer(playerReferenceNumber).setName(clientInfo.getInfos().get(0).getName());
 						server.getPlayer(playerReferenceNumber).setColor(clientInfo.getInfos().get(0).getColor());
-						
+
 						// return InfoMessage with updated player info and duration to client
 						PlayerInfo player = server.getPlayer(playerReferenceNumber);
 						ArrayList<PlayerInfo> container = new ArrayList<PlayerInfo>();
@@ -72,6 +73,9 @@ public class ClientThread extends Thread {
 
 					System.out.println("ClientThread - received message: " + clientMessageHandler.encode(message));
 				}
+			} catch (SocketException se){
+				server.getClientThreads().remove(this);
+				this.interrupt();
 			} catch (IOException e) {
 				e.printStackTrace();
 			}

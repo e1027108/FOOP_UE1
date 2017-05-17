@@ -58,7 +58,7 @@ public class Client {
 		System.out.println("Client: setup done");
 	}
 	
-	public void init(String name, Color color) {
+	public void init(String name, Color color) throws IOException {
 		// send color and name information to server
 		state = new PlayerInfo();
 		state.setName(name);
@@ -72,10 +72,9 @@ public class Client {
 			state = info.getInfos().get(0);
 			remainingTime = info.getRemainingTime();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			sock.close();
+			System.out.println("Lost connection to server!");
 		}
-		
 	}
 	
 	

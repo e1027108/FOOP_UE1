@@ -166,7 +166,13 @@ public class GameController {
 			
 		} else {
 			
-			client.init(info.getName(), info.getColor());
+			try {
+				client.init(info.getName(), info.getColor());
+			} catch (IOException e) {
+				engine.addError("Client initialisation problem!");
+				return;
+			}
+			
 			Duration duration = client.getGameDuration();
 			setPlayerStyle(client.getPlayerNumber(), info.getName(), info.getColor());
 			client.printState();
