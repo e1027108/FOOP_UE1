@@ -6,13 +6,13 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.List;
 
 import javafx.scene.paint.Color;
 import javafx.util.Duration;
 import messagehandler.ClientMessageHandler;
 import messagehandler.ServerMessageHandler;
 import messagehandler.message.InfoMessage;
-import messagehandler.message.Message;
 import messagehandler.message.Message.MessageType;
 import messagehandler.message.PlayerInfo;
 
@@ -26,12 +26,16 @@ public class Client {
 	private static Socket sock;
 	private static BufferedReader in;
 	private static PrintWriter out;
+	private static ReadThread readThread;
+	private static List<PlayerInfo> playerList;
+	private static boolean gameActive;
 	
 	private PlayerInfo state;
 	private int remainingTime;
 
 	private Client(String host) {
 		Client.host = host;
+		gameActive = false;
 		clientMessageHandler = new ClientMessageHandler();
 		serverMessageHandler = new ServerMessageHandler();
 	}
@@ -66,17 +70,10 @@ public class Client {
 		ArrayList<PlayerInfo> container = new ArrayList<PlayerInfo>();
 		container.add(state);
 		out.println(clientMessageHandler.encode(new InfoMessage(MessageType.INI, container, 0)));
-		InfoMessage info;
-		try {
-			info = (InfoMessage) serverMessageHandler.decode(in.readLine());
-			state = info.getInfos().get(0);
-			remainingTime = info.getRemainingTime();
-		} catch (IOException e) {
-			sock.close();
-			System.out.println("Lost connection to server!");
-		}
+		readThread = new ReadThread(this, sock);
+		readThread.setDaemon(true);
+		readThread.start();
 	}
-	
 	
 	public Duration getGameDuration() {
 		Duration ret = null;
@@ -91,6 +88,40 @@ public class Client {
 	public void printState() {
 		System.out.println(state.toString());
 	}
-	
-	
+
+	public BufferedReader getIn() {
+		return in;
+	}
+
+	public List<PlayerInfo> getPlayerList() {
+		return playerList;
+	}
+
+	public void setPlayerList(List<PlayerInfo> playerList) {
+		Client.playerList = playerList;
+	}
+
+	public int getRemainingTime() {
+		return remainingTime;
+	}
+
+	public void setRemainingTime(int remainingTime) {
+		this.remainingTime = remainingTime;
+	}
+
+	public boolean isGameActive() {
+		return gameActive;
+	}
+
+	public void setGameActive(boolean gameActive) {
+		Client.gameActive = gameActive;
+	}
+
+	public PlayerInfo getState() {
+		return state;
+	}
+
+	public void setState(PlayerInfo state) {
+		this.state = state;
+	}
 }

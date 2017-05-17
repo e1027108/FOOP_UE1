@@ -1,17 +1,18 @@
 package messagehandler;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import game.Point;
 import javafx.scene.paint.Color;
 import messagehandler.message.InfoMessage;
 import messagehandler.message.Message;
-import messagehandler.message.PlayerLeftMessage;
-import messagehandler.message.TextMessage;
 import messagehandler.message.Message.MessageType;
 import messagehandler.message.PlayerInfo;
+import messagehandler.message.PlayerLeftMessage;
+import messagehandler.message.TextMessage;
 
-public class ServerMessageHandler extends MessageHandler{
+public class ServerMessageHandler extends MessageHandler {
 
 	@Override
 	public Message decode(String input) {
@@ -21,9 +22,6 @@ public class ServerMessageHandler extends MessageHandler{
 		switch(head){
 		case UPDATE:
 			decoded = decodePlayerInfo(MessageType.UPD, input);
-			break;
-		case BASE_INFO:
-			decoded = decodePlayerInfo(MessageType.BAI, input);
 			break;
 		case GAME_START:
 			decoded = decodeGameStart();
@@ -76,6 +74,9 @@ public class ServerMessageHandler extends MessageHandler{
 		return new Message(MessageType.STR);
 	}
 
+	/**
+	 * TODO: irgendwie broken, alles == null!
+	 */
 	private InfoMessage decodePlayerInfo(MessageType type, String input) {
 		String payload = input.substring(3,input.length());
 		ArrayList<PlayerInfo> pis = new ArrayList<PlayerInfo>();
@@ -87,11 +88,11 @@ public class ServerMessageHandler extends MessageHandler{
 		for(String p: players){
 			//split the strings into substrings starting with upper case letter
 			String info[] = p.split("(?=[A-Z])");
+			PlayerInfo playerInf = new PlayerInfo();
 			for(String s: info){
-				PlayerInfo playerInf = new PlayerInfo();
-				
 				switch(s.charAt(0)){
 				case 'P': //playerNumber
+					System.out.println(s);
 					playerInf.setNumber(Integer.parseInt(s.substring(1,2)));
 					break;
 				case 'N': //name
@@ -124,7 +125,9 @@ public class ServerMessageHandler extends MessageHandler{
 				default:
 					throw new IllegalArgumentException("Invalid information code: " + s.charAt(0));
 				}
-				
+			}
+			if (p.charAt(0) == 'T') {
+				System.out.println("bliblibliirgendwas" + playerInf.getName() + ", " + playerInf.getNumber());
 				pis.add(playerInf);
 			}
 		}
@@ -156,9 +159,6 @@ public class ServerMessageHandler extends MessageHandler{
 		switch(input.getType()){
 		case UPD:
 			encoded = UPDATE + encodePlayerInfo((InfoMessage) input);
-			break;
-		case BAI:
-			encoded = BASE_INFO + encodePlayerInfo((InfoMessage) input);
 			break;
 		case STR:
 			encoded = encodeGameStart();
@@ -204,7 +204,7 @@ public class ServerMessageHandler extends MessageHandler{
 
 	private String encodePlayerInfo(InfoMessage input) {
 		String encoded = "";
-		ArrayList<PlayerInfo> infos = input.getInfos();
+		List<PlayerInfo> infos = input.getInfos();
 
 		for(PlayerInfo i: infos){
 			if(i.getNumber() != null){

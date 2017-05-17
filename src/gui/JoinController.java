@@ -73,6 +73,7 @@ public class JoinController {
 		colorPicker.setValue(Color.valueOf("#4d8080"));
 		// TODO: delete (just set for debugging)
 		playerNbrComboBox.getSelectionModel().select(1);
+		ipTxt.setText("127.0.0.1");
 	}
 
 	@FXML
@@ -132,6 +133,10 @@ public class JoinController {
 		InetAddress ip;
 		int players;
 		Duration duration;
+
+		if (name == null) {
+			name = "Heini";
+		}
 
 		if(!host){
 			ip = InetAddress.getByName(ipTxt.getText());

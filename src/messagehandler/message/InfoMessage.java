@@ -1,20 +1,20 @@
 package messagehandler.message;
 
-import java.util.ArrayList;
+import java.util.List;
 
 public class InfoMessage extends Message {
 
-	private ArrayList<PlayerInfo> infos;
+	private List<PlayerInfo> infos;
 	private int remainingTime;
 
-	public InfoMessage(MessageType type, ArrayList<PlayerInfo> infos, int remainingTime) {
+	public InfoMessage(MessageType type, List<PlayerInfo> infos, int remainingTime) {
 		super(type);
 
 		this.infos = (infos);
 		this.setRemainingTime(remainingTime);
 	}
 
-	public ArrayList<PlayerInfo> getInfos(){
+	public List<PlayerInfo> getInfos() {
 		return this.infos;
 	}
 

@@ -158,12 +158,9 @@ public class GameController {
 		
 		// TODO get duration from server
 		if (host) {
-			assignAIColors();
 			timeLbl.setText(((int) info.getGameDuration().toSeconds()) + "s");
-			// TODO: save game info on server
 			server.setGameInfo(info);
 			setPlayerStyle(1, info.getName(), info.getColor());
-			
 		} else {
 			
 			try {
@@ -173,10 +170,13 @@ public class GameController {
 				return;
 			}
 			
-			Duration duration = client.getGameDuration();
-			setPlayerStyle(client.getPlayerNumber(), info.getName(), info.getColor());
-			client.printState();
-			timeLbl.setText((int) duration.toSeconds() + "s");
+			// Duration duration = client.getGameDuration();
+			// setPlayerStyle(client.getPlayerNumber(), info.getName(),
+			// info.getColor());
+			// client.printState();
+			// timeLbl.setText((int) duration.toSeconds() + "s");
+
+			onStartClient();
 		}
 
 		
@@ -232,7 +232,9 @@ public class GameController {
 	}
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-	private void onStart() {
+	private void onStartServer() {
+		// TODO AI auffüllen
+		server.interruptAcceptThread();
 		game = new Game(info.getPlayers(), info.getName(), GRID_SIZE);
 		game.run();
 
@@ -266,6 +268,69 @@ public class GameController {
 		timeline.getKeyFrames().add(loopFrame);
 
 		timeline.setOnFinished(new EventHandler () {
+			@Override
+			public void handle(Event event) {
+				timeline.stop();
+				evaluateGame(game);
+				return;
+			}
+		});
+
+		timeline.play();
+
+		if (!info.isAi()) {
+			gamePane.setOnKeyPressed(new EventHandler<KeyEvent>() {
+
+				@Override
+				public void handle(KeyEvent event) {
+					if (game.getSnakes().size() == 0) {
+						timeline.stop();
+						return;
+					}
+					if (event.getCode() == KeyCode.W) {
+						game.getSnake(info.getName()).changeDirection(Directions.N);
+					}
+					if (event.getCode() == KeyCode.S) {
+						game.getSnake(info.getName()).changeDirection(Directions.S);
+					}
+					if (event.getCode() == KeyCode.D) {
+						game.getSnake(info.getName()).changeDirection(Directions.E);
+					}
+					if (event.getCode() == KeyCode.A) {
+						game.getSnake(info.getName()).changeDirection(Directions.W);
+					}
+				}
+
+			});
+		}
+
+	}
+
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	private void onStartClient() {
+		initGrid();
+
+		Duration d = MOVE_DURATION;
+		timeline = new Timeline();
+		timeline.setCycleCount(Timeline.INDEFINITE);
+		timeline.setAutoReverse(false);
+
+		KeyFrame loopFrame = new KeyFrame(d, new EventHandler() {
+			@Override
+			public void handle(Event event) {
+				timeLbl.setText(client.getRemainingTime() + "s");
+				for (PlayerInfo pi : client.getPlayerList()) {
+					System.out.println("Number: " + pi.getName() + "Name: " + pi.getName() + "Color: " + pi.getColor());
+					setPlayerStyle(pi.getNumber(), pi.getName(), pi.getColor());
+				}
+				if (client.isGameActive()) {
+					updateClient();
+				}
+			}
+		});
+		timeline.getKeyFrames().add(loopFrame);
+
+		timeline.setOnFinished(new EventHandler() {
 			@Override
 			public void handle(Event event) {
 				timeline.stop();
@@ -397,6 +462,43 @@ public class GameController {
 		updateLifeBars();
 	}
 
+	private void updateClient() {
+		initGrid();
+
+		Rectangle r;
+
+		this.game.getArtifactHandler().checkDespawn();
+
+		// TODO ----------------
+		for (Artifact a : game.getGrid().getArtifacts()) {
+			Point pos = a.getPlacement();
+			r = (Rectangle) gridPane.getChildren().get((pos.getX() * GRID_SIZE) + pos.getY());
+			ImagePattern icon;
+			try {
+				if (a.isActive()) {
+					icon = new ImagePattern(new Image(new FileInputStream(a.getImage())));
+					r.setFill(icon);
+				} else {
+					r.setFill(emptyCellColor);
+				}
+			} catch (FileNotFoundException e) {
+				e.printStackTrace();
+			}
+		} // ---------------------TODO--
+
+		for (PlayerInfo s : client.getPlayerList()) {
+			// life bars
+			ProgressBar life = playerLifeBars[s.getNumber()];
+			life.setProgress((double) s.getHealth() / s.getMaxHealth());
+			// snakes
+			ArrayList<Point> body = s.getBody();
+			for (Point p : body) {
+				r = (Rectangle) gridPane.getChildren().get((p.getX() * GRID_SIZE) + p.getY());
+				r.setFill(s.getColor());
+			}
+		}
+	}
+
 	private void initGrid() {
 
 		gridPane.getChildren().clear();
@@ -435,7 +537,7 @@ public class GameController {
 	@FXML
 	private void onReadyClick() {
 		// TODO change text in button, send ready info (--> green checkmark or something)
-		onStart();
+		onStartServer();
 	}
 
 	private void showJoin() {
@@ -453,8 +555,8 @@ public class GameController {
 		stage.show();
 	}
 
-	// TODO move that to server
 	private void assignAIColors() {
+		// TODO
 		int relevantPlayerNumber = info.getPlayers();
 
 		if (relevantPlayerNumber == 0) {

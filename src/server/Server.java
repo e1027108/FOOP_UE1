@@ -7,6 +7,9 @@ import java.util.HashMap;
 import java.util.List;
 
 import dto.GameDto;
+import messagehandler.ServerMessageHandler;
+import messagehandler.message.InfoMessage;
+import messagehandler.message.Message.MessageType;
 import messagehandler.message.PlayerInfo;
 
 public class Server {
@@ -15,11 +18,12 @@ public class Server {
 	private static ServerSocket serverSocket;
 	private static List<ClientThread> clientThreads;
 	private static AcceptThread acceptThread;
-	
-	private GameDto info;
-	private HashMap<Integer,PlayerInfo> playerList;
+	private static ServerMessageHandler serverMessageHandler;
+	private static GameDto info;
+	private static HashMap<Integer, PlayerInfo> playerList;
 
 	private Server(int port, int players) throws IOException {
+		serverMessageHandler = new ServerMessageHandler();
 		serverSocket = new ServerSocket(port);
 		clientThreads = new ArrayList<ClientThread>();
 		acceptThread = new AcceptThread(this, players);
@@ -72,4 +76,29 @@ public class Server {
 		return playerList;
 	}
 	
+	public void interruptAcceptThread() {
+		this.acceptThread.interrupt();
+	}
+
+	/**
+	 * TODO!! -------------------------------------------------
+	 * 			ClientThread list einträge werden nicht entfernt, 
+	 * 			auch wenn der client mit ALT+F4 geschlossen wird und
+	 * 			das socket ding nicht mehr reagieren kann.
+	 * 		---------------------------------------------------
+	 */
+	public void updateAll() {
+
+		List<PlayerInfo> container = new ArrayList<PlayerInfo>();
+		container.addAll(playerList.values());
+
+		InfoMessage info = new InfoMessage(MessageType.UPD, container,
+				(int) server.getGameInfo().getGameDuration().toSeconds());
+		
+		String msg = serverMessageHandler.encode(info);
+		System.out.println("UPD Message: " + msg);
+		for (ClientThread ct : clientThreads) {
+			ct.getOut().println(msg);
+		}
+	}
 }
