@@ -8,7 +8,10 @@ import java.net.Socket;
 
 import messagehandler.ClientMessageHandler;
 import messagehandler.ServerMessageHandler;
+import messagehandler.message.InfoMessage;
 import messagehandler.message.Message;
+import messagehandler.message.Message.MessageType;
+import messagehandler.message.PlayerInfo;
 
 public class ClientThread extends Thread {
 
@@ -17,15 +20,19 @@ public class ClientThread extends Thread {
 	private Socket clientSocket;
 	private BufferedReader in;
 	private PrintWriter out;
-
-	public ClientThread(Socket clientSocket) throws IOException {
+	private Server server;
+	
+	private int playerReferenceNumber;
+	
+	public ClientThread(Socket clientSocket, Server server, int playerNum) throws IOException {
 		super();
 		this.clientSocket = clientSocket;
 		this.serverMessageHandler = new ServerMessageHandler();
 		this.clientMessageHandler = new ClientMessageHandler();
 		this.in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
 		this.out = new PrintWriter(clientSocket.getOutputStream(), true);
-			
+		this.server = server;
+		this.playerReferenceNumber = playerNum;
 	}
 
 	@Override
@@ -42,6 +49,17 @@ public class ClientThread extends Thread {
 					case DIS:
 						break;
 					case PLR:
+						break;
+					case INI:
+						// update player info with name and color from client
+						InfoMessage clientInfo = (InfoMessage) message;
+						server.getPlayer(playerReferenceNumber).setName(clientInfo.getInfo().getName());
+						server.getPlayer(playerReferenceNumber).setColor(clientInfo.getInfo().getColor());
+						
+						// return InfoMessage with updated player info and duration to client
+						PlayerInfo player = server.getPlayer(playerReferenceNumber);
+						InfoMessage info = new InfoMessage(MessageType.BAI, player,(int) server.getGameInfo().getGameDuration().toSeconds());
+						out.println(serverMessageHandler.encode(info));
 						break;
 					default:
 						System.err.println("Message type: \"" + message.getType() + "\" is not a valid client message");

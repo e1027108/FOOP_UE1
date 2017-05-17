@@ -71,6 +71,8 @@ public class JoinController {
 		playerNbrComboBox.getSelectionModel().selectFirst();
 
 		colorPicker.setValue(Color.valueOf("#4d8080"));
+		// TODO: delete (just set for debugging)
+		playerNbrComboBox.getSelectionModel().select(1);
 	}
 
 	@FXML

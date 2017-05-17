@@ -30,6 +30,12 @@ public class PlayerInfo {
 		invincible = false;
 	}
 	
+	public PlayerInfo(int playerNum, String name, Color color) {
+		this.playerNumber = playerNum;
+		this.name = name;
+		this.color = color;		
+	}
+
 	public Integer getNumber() {
 		return playerNumber;
 	}
@@ -102,5 +108,8 @@ public class PlayerInfo {
 		this.invincible = invincible;
 	}
 	
+	public String toString() {
+		return "{ playerNumber: " + String.valueOf(playerNumber) + " name: " + name + " color: " + color.toString() + " }";
+	}
 
 }

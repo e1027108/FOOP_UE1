@@ -1,8 +1,11 @@
 package messagehandler;
 
 import game.Directions;
+import javafx.scene.paint.Color;
 import messagehandler.message.DirectionChangeMessage;
+import messagehandler.message.InfoMessage;
 import messagehandler.message.Message;
+import messagehandler.message.PlayerInfo;
 import messagehandler.message.Message.MessageType;
 
 /**
@@ -26,6 +29,9 @@ public class ClientMessageHandler extends MessageHandler {
 			break;
 		case DISCONNECT:
 			decoded = decodeDisconnect();
+			break;
+		case INITIALIZATION:
+			decoded = decodeInitialization(input);
 			break;
 		default:
 			//TODO this is not a message OR this is a server message
@@ -64,6 +70,30 @@ public class ClientMessageHandler extends MessageHandler {
 			}
 		}
 	}
+	
+	private Message decodeInitialization(String input) {
+		String payload = input.substring(3,input.length());
+		String info[] = payload.split("(?=[A-Z])");
+		PlayerInfo pi = new PlayerInfo();
+		int remainingTime = 0;
+		for(String s: info){
+			switch(s.charAt(0)){
+			case 'N': //name
+				pi.setName(s.substring(1));
+				break;
+			case 'C': //color
+				pi.setColor(Color.web(s.substring(1),1));
+				break;
+			case 'T':
+				remainingTime = Integer.parseInt(s.substring(1));
+				break;
+			default:
+				throw new IllegalArgumentException("Invalid information code: " + s.charAt(0));
+			}
+		}
+		
+		return new InfoMessage(MessageType.INI,pi,remainingTime);
+	}
 
 	@Override
 	public String encode(Message input) {
@@ -79,6 +109,8 @@ public class ClientMessageHandler extends MessageHandler {
 		case DIS:
 			encoded = encodeDisconnect();
 			break;
+		case INI:
+			encoded = encodeInitialization((InfoMessage) input);
 		default:
 			break;
 		}
@@ -96,6 +128,10 @@ public class ClientMessageHandler extends MessageHandler {
 
 	private String encodeDirectionChange(DirectionChangeMessage input) {
 		return DIRECTION_CHANGE + input.getDirection();
-	}	
+	}
+	
+	private String encodeInitialization(InfoMessage input) {
+		return INITIALIZATION + "N" + input.getInfo().getName() + "C" + input.getInfo().getColor();
+	}
 
 }

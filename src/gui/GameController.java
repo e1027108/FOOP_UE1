@@ -43,6 +43,7 @@ import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import javafx.util.Pair;
+import messagehandler.message.PlayerInfo;
 import server.Server;
 
 public class GameController {
@@ -124,7 +125,6 @@ public class GameController {
 		if (info == null) {
 			engine.addError("Error: could not find game information, please disconnect!");
 		} else {
-			setPlayerStyle(1, info.getName(), info.getColor());
 			if (host = info.isHost()) {
 				try {
 					server = Server.getServer(1234, info.getPlayers());
@@ -141,21 +141,12 @@ public class GameController {
 					e.printStackTrace();
 				}
 			}
+			//setPlayerStyle(1, info.getName(), info.getColor());
 		}
 
 		engine.addMessage("Welcome to Snake, " + info.getName() + "!");
 		engine.addMessage("Control your snake with the WASD keys.");
 		engine.addMessage("The longest snake at the end, wins!");
-
-		// TODO get duration from server
-		if (host) {
-			timeLbl.setText(((int) info.getGameDuration().toSeconds()) + "s");
-		} else {
-			Duration duration = client.getGameDuration();
-			timeLbl.setText((int) duration.toSeconds() + "s");
-		}
-
-		assignAIColors();
 
 		gridPane.setStyle("-fx-background-color: #FFFFFF;");
 
@@ -164,6 +155,25 @@ public class GameController {
 		// TODO if AI only do not contact/host any server
 
 		// TODO initialize with info from network/joincontroller
+		
+		// TODO get duration from server
+		if (host) {
+			assignAIColors();
+			timeLbl.setText(((int) info.getGameDuration().toSeconds()) + "s");
+			// TODO: save game info on server
+			server.setGameInfo(info);
+			setPlayerStyle(1, info.getName(), info.getColor());
+			
+		} else {
+			
+			client.init(info.getName(), info.getColor());
+			Duration duration = client.getGameDuration();
+			setPlayerStyle(client.getPlayerNumber(), info.getName(), info.getColor());
+			client.printState();
+			timeLbl.setText((int) duration.toSeconds() + "s");
+		}
+
+		
 
 		// TODO place ready button in your own pane, create ready indicators for
 		// all players
@@ -176,6 +186,10 @@ public class GameController {
 
 	private void setPlayerStyle(int player, String name, Color color) {
 		//Integer.toHexString(color.hashCode())
+		if (host = info.isHost()) {
+			PlayerInfo playerInfo = new PlayerInfo(player,name.toLowerCase(),color);
+			server.addPlayer(playerInfo);
+		}
 
 		playerNames[player - 1] = name;
 

@@ -79,14 +79,14 @@ public class ServerMessageHandler extends MessageHandler{
 	private InfoMessage decodePlayerInfo(MessageType type, String input) {
 		String payload = input.substring(3,input.length());
 		//split the strings into substrings starting with upper case letter
-		String info[] = payload.split("(?>=[A-Z])");
+		String info[] = payload.split("(?=[A-Z])");
 		PlayerInfo pi = new PlayerInfo();
 		int remainingTime = 0;
 
 		for(String s: info){
 			switch(s.charAt(0)){
 			case 'P': //playerNumber
-				pi.setNumber(Integer.parseInt(s.substring(1)));
+				pi.setNumber(Integer.parseInt(s.substring(1,2)));
 				break;
 			case 'N': //name
 				pi.setName(s.substring(1));
@@ -198,12 +198,12 @@ public class ServerMessageHandler extends MessageHandler{
 		MessageType type = input.getType();
 		PlayerInfo info = input.getInfo();
 
-		if(type == MessageType.BAI){
+		/*if(type == MessageType.BAI){
 			encoded += BASE_INFO;
 		}
 		else if(type == MessageType.UPD){
 			encoded += UPDATE;
-		}
+		}*/
 
 		//TODO code constants?
 		if(info.getNumber() != null){
@@ -235,6 +235,8 @@ public class ServerMessageHandler extends MessageHandler{
 		}
 		
 		encoded += "T" + input.getRemainingTime();
+		
+		System.out.println(encoded);
 
 		return encoded;
 	}

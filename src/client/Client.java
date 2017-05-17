@@ -6,11 +6,14 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 
+import javafx.scene.paint.Color;
 import javafx.util.Duration;
 import messagehandler.ClientMessageHandler;
 import messagehandler.ServerMessageHandler;
+import messagehandler.message.InfoMessage;
 import messagehandler.message.Message;
 import messagehandler.message.Message.MessageType;
+import messagehandler.message.PlayerInfo;
 
 public class Client {
 
@@ -22,6 +25,9 @@ public class Client {
 	private static Socket sock;
 	private static BufferedReader in;
 	private static PrintWriter out;
+	
+	private PlayerInfo state;
+	private int remainingTime;
 
 	private Client(String host) {
 		Client.host = host;
@@ -49,12 +55,40 @@ public class Client {
 		in = new BufferedReader(new InputStreamReader(sock.getInputStream()));
 		out = new PrintWriter(sock.getOutputStream(), true);
 		System.out.println("Client: setup done");
-		out.println(clientMessageHandler.encode(new Message(MessageType.PLR)));
 	}
+	
+	public void init(String name, Color color) {
+		// send color and name information to server
+		state = new PlayerInfo();
+		state.setName(name);
+		state.setColor(color);
+		out.println(clientMessageHandler.encode(new InfoMessage(MessageType.INI, state, 0)));
+		InfoMessage info;
+		try {
+			info = (InfoMessage) serverMessageHandler.decode(in.readLine());
+			state = info.getInfo();
+			remainingTime = info.getRemainingTime();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+	}
+	
 	
 	public Duration getGameDuration() {
 		Duration ret = null;
-		// TODO get duration from server
+		ret = Duration.valueOf(String.valueOf(remainingTime) + "s");	
 		return ret;
 	}
+	
+	public int getPlayerNumber() {
+		return state.getNumber();
+	}
+	
+	public void printState() {
+		System.out.println(state.toString());
+	}
+	
+	
 }
