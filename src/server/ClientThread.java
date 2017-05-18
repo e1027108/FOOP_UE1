@@ -8,6 +8,7 @@ import java.net.Socket;
 import java.net.SocketException;
 
 import messagehandler.ClientMessageHandler;
+import messagehandler.MessageHandler;
 import messagehandler.ServerMessageHandler;
 import messagehandler.message.InfoMessage;
 import messagehandler.message.Message;
@@ -42,14 +43,14 @@ public class ClientThread extends Thread {
 				String messageString = in.readLine();
 				if (messageString != null) {
 					Message message = clientMessageHandler.decode(messageString);
-					switch (message.getType()) {
-					case DIC:
+					switch (messageString.substring(0,3)) {
+					case MessageHandler.DIRECTION_CHANGE:
 						break;
-					case DIS:
+					case MessageHandler.DISCONNECT:
 						break;
-					case PLR:
+					case MessageHandler.PLAYER_READY:
 						break;
-					case INI:
+					case MessageHandler.INITIALIZATION:
 						InfoMessage clientInfo = (InfoMessage) message;
 						server.addPlayer(new PlayerInfo(playerReferenceNumber, clientInfo.getInfos().get(0).getName(),
 								clientInfo.getInfos().get(0).getColor()));

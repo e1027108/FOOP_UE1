@@ -5,23 +5,23 @@ import messagehandler.message.Message;
 public abstract class MessageHandler {
 	
 	//general server messages
-	protected static final String UPDATE = "UPD";
-	protected static final String BASE_INFO = "BAI";
+	public static final String UPDATE = "UPD";
+	public static final String BASE_INFO = "BAI";
 	
 	//game status server messages
-	protected static final String GAME_START = "STR";
-	protected static final String GAME_END = "END";
+	public static final String GAME_START = "STR";
+	public static final String GAME_END = "END";
 	
 	//player specific server messages
-	protected static final String TEXT_MESSAGE = "TXT";
-	protected static final String YOU_LOSE = "SAD";
-	protected static final String PLAYER_LEFT = "PLL";
+	public static final String TEXT_MESSAGE = "TXT";
+	public static final String YOU_LOSE = "SAD";
+	public static final String PLAYER_LEFT = "PLL";
 
 	//client messages
-	protected static final String PLAYER_READY = "PLR";
-	protected static final String DIRECTION_CHANGE = "DIC";
-	protected static final String DISCONNECT = "DIS";
-	protected static final String INITIALIZATION = "INI";
+	public static final String PLAYER_READY = "PLR";
+	public static final String DIRECTION_CHANGE = "DIC";
+	public static final String DISCONNECT = "DIS";
+	public static final String INITIALIZATION = "INI";
 
 	protected static final int POINT_CODE_LENGTH = 4;
 	

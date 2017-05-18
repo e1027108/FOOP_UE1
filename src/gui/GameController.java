@@ -233,7 +233,7 @@ public class GameController {
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	private void onStartServer() {
-		// TODO AI auffÃ¼llen
+		// TODO AI auffüllen
 		server.interruptAcceptThread();
 		game = new Game(info.getPlayers(), info.getName(), GRID_SIZE);
 		game.run();
@@ -320,7 +320,6 @@ public class GameController {
 			public void handle(Event event) {
 				timeLbl.setText(client.getRemainingTime() + "s");
 				for (PlayerInfo pi : client.getPlayerList()) {
-					System.out.println("Number: " + pi.getName() + "Name: " + pi.getName() + "Color: " + pi.getColor());
 					setPlayerStyle(pi.getNumber(), pi.getName(), pi.getColor());
 				}
 				if (client.isGameActive()) {

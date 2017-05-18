@@ -33,10 +33,6 @@ public class ReadThread extends Thread {
 					InfoMessage im = (InfoMessage)message;
 					client.setRemainingTime(im.getRemainingTime());
 					List<PlayerInfo> infos = (im.getInfos());
-					System.out.println("HALLO hahahahahah");
-					for (PlayerInfo pi : infos) {
-						System.out.println("Server info: " + pi.getName() + ", " + pi.getColor());
-					}
 					client.setPlayerList(infos);
 					break;
 				case SAD:

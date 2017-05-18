@@ -82,13 +82,12 @@ public class Server {
 
 	/**
 	 * TODO!! -------------------------------------------------
-	 * 			ClientThread list eintrÃ¤ge werden nicht entfernt, 
+	 * 			ClientThread list einträge werden nicht entfernt, 
 	 * 			auch wenn der client mit ALT+F4 geschlossen wird und
 	 * 			das socket ding nicht mehr reagieren kann.
 	 * 		---------------------------------------------------
 	 */
 	public void updateAll() {
-
 		List<PlayerInfo> container = new ArrayList<PlayerInfo>();
 		container.addAll(playerList.values());
 

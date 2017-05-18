@@ -135,7 +135,7 @@ public class ClientMessageHandler extends MessageHandler {
 	}
 	
 	private String encodeInitialization(InfoMessage input) {
-		return INITIALIZATION + "N" + input.getInfos().get(0).getName() + "C" + input.getInfos().get(0).getColor();
+		return INITIALIZATION + "N" + input.getInfos().get(0).getName() + "C" + String.valueOf(input.getInfos().get(0).getColor()).substring(2,8);
 	}
 
 }
