@@ -92,7 +92,6 @@ public class ServerMessageHandler extends MessageHandler {
 			for(String s: info){
 				switch(s.charAt(0)){
 				case 'P': //playerNumber
-					System.out.println(s);
 					playerInf.setNumber(Integer.parseInt(s.substring(1,2)));
 					break;
 				case 'N': //name
@@ -126,8 +125,7 @@ public class ServerMessageHandler extends MessageHandler {
 					throw new IllegalArgumentException("Invalid information code: " + s.charAt(0));
 				}
 			}
-			if (p.charAt(0) == 'T') {
-				System.out.println("bliblibliirgendwas" + playerInf.getName() + ", " + playerInf.getNumber());
+			if (p.charAt(0) != 'T') {
 				pis.add(playerInf);
 			}
 		}
