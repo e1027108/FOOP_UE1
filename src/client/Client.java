@@ -8,10 +8,12 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
 
+import game.Directions;
 import javafx.scene.paint.Color;
 import javafx.util.Duration;
 import messagehandler.ClientMessageHandler;
 import messagehandler.ServerMessageHandler;
+import messagehandler.message.DirectionChangeMessage;
 import messagehandler.message.InfoMessage;
 import messagehandler.message.Message.MessageType;
 import messagehandler.message.PlayerInfo;
@@ -59,6 +61,7 @@ public class Client {
 		sock = new Socket(host, PORT);
 		in = new BufferedReader(new InputStreamReader(sock.getInputStream()));
 		out = new PrintWriter(sock.getOutputStream(), true);
+		// TODO: check connection
 		System.out.println("Client: setup done");
 	}
 	
@@ -123,5 +126,9 @@ public class Client {
 
 	public void setState(PlayerInfo state) {
 		this.state = state;
+	}
+
+	public void sendDirection(Directions s) {
+		out.println(clientMessageHandler.encode(new DirectionChangeMessage(MessageType.DIC,s)));		
 	}
 }

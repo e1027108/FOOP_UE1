@@ -224,83 +224,11 @@ public class GameController {
 		life.setStyle(lifeBarStyle);
 	}
 
-	@SuppressWarnings({ "unchecked", "rawtypes" })
 	private void onStartServer() {
 		// TODO AI auffuellen
 		server.interruptAcceptThread();
-		game = new Game(info.getPlayers(), info.getName(), GRID_SIZE);
-		game.run();
-		
-		server.startGame();
-
-		initGrid();
-
-		Duration d = MOVE_DURATION;
-		timeline = new Timeline();
-		timeline.setCycleCount((int) (info.getGameDuration().toMillis()/d.toMillis()));
-		//timeline.setCycleCount(Timeline.INDEFINITE);
-		timeline.setAutoReverse(false);
-
-		KeyFrame loopFrame = new KeyFrame(d, new EventHandler() {
-			private int count = 0;
-
-			@Override
-			public void handle(Event event) {
-				timeLbl.setText(getRemainingTime() + "s");
-				game.loop();
-				if (game.getSnakes().size() == 0) {
-					timeline.stop();
-					return;
-				}
-				
-				server.updatePlayerList(game.getSnakes());
-				server.updateAll();
-			}
-
-			private int getRemainingTime(){
-				count++;
-				return (int) (info.getGameDuration().toSeconds() - count/10);
-			}
-		});
-		timeline.getKeyFrames().add(loopFrame);
-
-		timeline.setOnFinished(new EventHandler () {
-			@Override
-			public void handle(Event event) {
-				timeline.stop();
-				evaluateGame(game);
-				return;
-			}
-		});
-
-		timeline.play();
-
-		if (!info.isAi()) {
-			gamePane.setOnKeyPressed(new EventHandler<KeyEvent>() {
-
-				@Override
-				public void handle(KeyEvent event) {
-					if (game.getSnakes().size() == 0) {
-						timeline.stop();
-						return;
-					}
-					if (event.getCode() == KeyCode.W) {
-						game.getSnake(info.getName()).changeDirection(Directions.N);
-					}
-					if (event.getCode() == KeyCode.S) {
-						game.getSnake(info.getName()).changeDirection(Directions.S);
-					}
-					if (event.getCode() == KeyCode.D) {
-						game.getSnake(info.getName()).changeDirection(Directions.E);
-					}
-					if (event.getCode() == KeyCode.A) {
-						game.getSnake(info.getName()).changeDirection(Directions.W);
-					}
-				}
-
-			});
-		}
-
+		server.startGame(GRID_SIZE);		
+		game = server.getGame();
 	}
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
@@ -348,16 +276,16 @@ public class GameController {
 							return;
 						}
 						if (event.getCode() == KeyCode.W) {
-							game.getSnake(info.getName()).changeDirection(Directions.N);
+							client.sendDirection(Directions.N);
 						}
 						if (event.getCode() == KeyCode.S) {
-							game.getSnake(info.getName()).changeDirection(Directions.S);
+							client.sendDirection(Directions.S);
 						}
 						if (event.getCode() == KeyCode.D) {
-							game.getSnake(info.getName()).changeDirection(Directions.E);
+							client.sendDirection(Directions.E);
 						}
 						if (event.getCode() == KeyCode.A) {
-							game.getSnake(info.getName()).changeDirection(Directions.W);
+							client.sendDirection(Directions.W);
 						}
 					}
 				}
@@ -415,51 +343,8 @@ public class GameController {
 	}
 
 	/**
-	 * THIS method is responsible for visualizing the game grid. the
-	 * {@link GameGrid}.draw() method handles the setting of the IDs.
+	 * THIS method is responsible for visualizing the game grid.
 	 */
-	private void update() {
-
-		Rectangle r;
-
-		this.game.getArtifactHandler().checkDespawn();
-
-		// set/remove artifacts
-		for (Artifact a : game.getGrid().getArtifacts()) {
-			Point pos = a.getPlacement();
-			r = (Rectangle) gridPane.getChildren().get((pos.getX() * GRID_SIZE) + pos.getY());
-			ImagePattern icon;
-			try {
-				if (a.isActive()) {
-					icon = new ImagePattern(new Image(new FileInputStream(a.getImage())));
-					r.setFill(icon);
-				} else {
-					r.setFill(emptyCellColor);
-				}
-			} catch (FileNotFoundException e) {
-				e.printStackTrace();
-			}
-		}
-
-		for (Snake s : game.getSnakes()) {
-			Point[] body = s.getBody();
-			for (Point p : body) {
-				r = (Rectangle) gridPane.getChildren().get((p.getX() * GRID_SIZE) + p.getY());
-				r.setFill(colors[s.getGridID() - 1]);
-			}
-
-			for (Point p : s.getDeadParts()){
-				if(p.getX() >= 0 && p.getX() < GRID_SIZE && p.getY() >= 0 && p.getY() < GRID_SIZE) {
-					r = (Rectangle) gridPane.getChildren().get((p.getX() * GRID_SIZE) + p.getY());
-					r.setFill(emptyCellColor);
-				}
-			}
-			s.clearDeadParts();
-		}
-
-		updateLifeBars();
-	}
-
 	private void updateClient() {
 		initGrid();
 

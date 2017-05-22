@@ -10,6 +10,7 @@ import java.net.SocketException;
 import messagehandler.ClientMessageHandler;
 import messagehandler.MessageHandler;
 import messagehandler.ServerMessageHandler;
+import messagehandler.message.DirectionChangeMessage;
 import messagehandler.message.InfoMessage;
 import messagehandler.message.Message;
 import messagehandler.message.PlayerInfo;
@@ -45,6 +46,9 @@ public class ClientThread extends Thread {
 					Message message = clientMessageHandler.decode(messageString);
 					switch (messageString.substring(0,3)) {
 					case MessageHandler.DIRECTION_CHANGE:
+						DirectionChangeMessage dirchange = (DirectionChangeMessage) message;
+						server.getGame().getSnakeByGridID(playerReferenceNumber).changeDirection(dirchange.getDirection());
+						server.updateAll();
 						break;
 					case MessageHandler.DISCONNECT:
 						break;

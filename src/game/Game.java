@@ -15,8 +15,11 @@ import artifacts.logic.ArtifactPlacementStrategy;
 import artifacts.logic.ArtifactsPlacementStrategyNaiveImpl;
 import game.CollisionTarget.CollisionTypes;
 import game.ai.SnakeAI;
+import javafx.scene.paint.Color;
+import messagehandler.message.PlayerInfo;
+import server.Server;
 
-public class Game implements CollisionListener {
+public class Game implements CollisionListener, Runnable{
 
 	private GameGrid grid;
 	private int numPlayers;
@@ -28,10 +31,12 @@ public class Game implements CollisionListener {
 	
 	private ArtifactPlacementStrategy placementStrategy;
 	private ArtifactCoordinateGenerator coordinateGenerator;
+	
+	private Server server;
 
 	// TODO: change error message --> just temporary
-	public Game(int num, String name, int gridSize) {
-		firstPlayer = name;
+	public Game(int num, int gridSize, Server server) {
+		firstPlayer = server.getPlayer(1).getName();
 		if (num > 0 && num < 5) {
 			numPlayers = num;
 			grid = new GameGrid(gridSize);
@@ -51,6 +56,8 @@ public class Game implements CollisionListener {
 		
 		this.coordinateGenerator = new ArtifactCoordinateGeneratorImpl(grid);		
 		this.placementStrategy = new ArtifactsPlacementStrategyNaiveImpl(coordinateGenerator, grid, this);
+		
+		this.server = server;
 	}
 
 	public void run() {
@@ -59,26 +66,41 @@ public class Game implements CollisionListener {
 		// create players
 		snakes = new ArrayList<Snake>();
 
-		// init humanPlayer?
+		// inits human players and fills remaining slots with AIs
 		if (firstPlayer != null) {
-			player = new SnakeImpl(firstPlayer, 1, Directions.N);
+			for(PlayerInfo p : server.getAllPlayers().values()) {
+				player = new SnakeImpl(p.getName(), p.getNumber(), Directions.N);
+				snakes.add(player);
+			}
+			int i = server.getAllPlayers().size() + 1;
+			while (i <= server.getGameInfo().getPlayers()) {
+				player = new SnakeAI("ai_" + i, i, Directions.N, this);
+				// TODO: get assigned AI Color here
+				server.addAIPlayer("ai_" + i, i, Color.BLACK);
+				snakes.add(player);
+				i++;				
+			}
 		} else {
-			player = new SnakeAI("AI 0", 1, Directions.N, this);
+			
+			// init AIs for now
+			List<Directions> directions = new ArrayList<Directions>();
+			directions.add(Directions.N);
+			directions.add(Directions.S);
+			directions.add(Directions.E);
+			directions.add(Directions.W);
+			for (int i = 1; i <= numPlayers; i++) {
+				player = new SnakeAI("ai_" + i, i, directions.get(i - 1), this);
+				// TODO: get assigned AI Color here
+				server.addAIPlayer("ai_" + i, i, Color.BLACK);
+				snakes.add(player);
+			}
 		}
-		snakes.add(player);
-
-		// init AIs for now
-		List<Directions> directions = new ArrayList<Directions>();
-		directions.add(Directions.N);
-		directions.add(Directions.S);
-		directions.add(Directions.E);
-		directions.add(Directions.W);
-		for (int i = 2; i <= numPlayers; i++) {
-			player = new SnakeAI("AI_" + i, i, directions.get(i - 1), this);
-			snakes.add(player);
-		}
+		
 
 		// initialize snake positions
+		for(Snake s : snakes) {
+			System.out.println(s.getGridID() + " " + s.getName());
+		}
 		grid.initPositions(snakes);
 
 		/*
@@ -91,10 +113,23 @@ public class Game implements CollisionListener {
 		artifactChild.start();
 
 		// game loop
-		loop();
+		while (true) {
+			step();
+			if (getSnakes().size() == 0) {
+				break;
+			}			
+			server.updatePlayerList(getSnakes());
+			server.updateAll();
+			try {
+				Thread.sleep(100);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
 	}
 
-	public void loop() {
+	public void step() {
 		Iterator<Snake> snakeIterator = snakes.iterator();
 		while (snakeIterator.hasNext()) {
 			Snake s = snakeIterator.next();

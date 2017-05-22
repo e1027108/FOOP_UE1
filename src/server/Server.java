@@ -7,8 +7,10 @@ import java.util.HashMap;
 import java.util.List;
 
 import dto.GameDto;
+import game.Game;
 import game.Point;
 import game.Snake;
+import javafx.scene.paint.Color;
 import messagehandler.ServerMessageHandler;
 import messagehandler.message.InfoMessage;
 import messagehandler.message.Message;
@@ -24,6 +26,7 @@ public class Server {
 	private static ServerMessageHandler serverMessageHandler;
 	private static GameDto info;
 	private static HashMap<Integer, PlayerInfo> playerList;
+	private static Game game;
 
 	private Server(int port, int players) throws IOException {
 		serverMessageHandler = new ServerMessageHandler();
@@ -71,6 +74,14 @@ public class Server {
 		playerList.put(player.getNumber(), player);
 	}
 	
+	public void addAIPlayer(String name, int id, Color color) {
+		PlayerInfo p = new PlayerInfo();
+		p.setName(name);
+		p.setNumber(id);
+		p.setColor(color);
+		addPlayer(p);
+	}
+	
 	public PlayerInfo getPlayer(int playerNum) {
 		return playerList.get(playerNum);
 	}
@@ -114,11 +125,18 @@ public class Server {
 		}
 	}
 	
-	public void startGame() {
+	public void startGame(int gridsize) {
 		String msg = serverMessageHandler.encode(new Message(MessageType.STR));
-		System.out.println("STR Message: " + msg);
 		for (ClientThread ct : clientThreads) {
 			ct.getOut().println(msg);
 		}
+		
+		game = new Game(info.getPlayers(), gridsize, this);
+		Thread t = new Thread(game);
+		t.start();
+	}
+	
+	public Game getGame() {
+		return game;
 	}
 }
