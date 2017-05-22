@@ -65,7 +65,7 @@ public class Client {
 	public void init(String name, Color color) throws IOException {
 		// send color and name information to server
 		state = new PlayerInfo();
-		state.setName(name);
+		state.setName(name.toLowerCase());
 		state.setColor(color);
 		ArrayList<PlayerInfo> container = new ArrayList<PlayerInfo>();
 		container.add(state);
