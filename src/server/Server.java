@@ -7,8 +7,11 @@ import java.util.HashMap;
 import java.util.List;
 
 import dto.GameDto;
+import game.Point;
+import game.Snake;
 import messagehandler.ServerMessageHandler;
 import messagehandler.message.InfoMessage;
+import messagehandler.message.Message;
 import messagehandler.message.Message.MessageType;
 import messagehandler.message.PlayerInfo;
 
@@ -82,7 +85,7 @@ public class Server {
 
 	/**
 	 * TODO!! -------------------------------------------------
-	 * 			ClientThread list einträge werden nicht entfernt, 
+	 * 			ClientThread list eintraege werden nicht entfernt, 
 	 * 			auch wenn der client mit ALT+F4 geschlossen wird und
 	 * 			das socket ding nicht mehr reagieren kann.
 	 * 		---------------------------------------------------
@@ -96,6 +99,24 @@ public class Server {
 		
 		String msg = serverMessageHandler.encode(info);
 		System.out.println("UPD Message: " + msg);
+		for (ClientThread ct : clientThreads) {
+			ct.getOut().println(msg);
+		}
+	}
+	
+	
+	public void updatePlayerList(ArrayList<Snake> snakes) {
+		for(Snake s : snakes) {
+			// TODO: update all fields
+			playerList.get(s.getGridID()).setHealth(s.getHealth());
+			playerList.get(s.getGridID()).setMaxHealth(s.getMaxHealth());
+			playerList.get(s.getGridID()).setBody((ArrayList<Point>)s.getBodyList());
+		}
+	}
+	
+	public void startGame() {
+		String msg = serverMessageHandler.encode(new Message(MessageType.STR));
+		System.out.println("STR Message: " + msg);
 		for (ClientThread ct : clientThreads) {
 			ct.getOut().println(msg);
 		}

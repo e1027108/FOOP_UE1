@@ -132,16 +132,14 @@ public class GameController {
 					System.out.println("server IOException:");
 					e.printStackTrace();
 				}
-			} else {
-				try {
-					System.out.println("IP ADDRESS: " + info.getIp().toString().substring(1));
-					client = Client.getClient(info.getIp().toString().substring(1));
-				} catch (IOException e) {
-					System.out.println("client IOException:");
-					e.printStackTrace();
-				}
 			}
-			//setPlayerStyle(1, info.getName(), info.getColor());
+			try {
+				System.out.println("IP ADDRESS: " + info.getIp().toString().split("/")[1]);
+				client = Client.getClient(info.getIp().toString().split("/")[1]);
+			} catch (IOException e) {
+				System.out.println("client IOException:");
+				e.printStackTrace();
+			}
 		}
 
 		engine.addMessage("Welcome to Snake, " + info.getName() + "!");
@@ -151,6 +149,8 @@ public class GameController {
 		gridPane.setStyle("-fx-background-color: #FFFFFF;");
 
 		tileSize = (int) Math.floor((gridPane.getPrefHeight() - (GRID_SIZE - 1)) / GRID_SIZE);
+		
+		
 
 		// TODO if AI only do not contact/host any server
 
@@ -160,24 +160,22 @@ public class GameController {
 		if (host) {
 			timeLbl.setText(((int) info.getGameDuration().toSeconds()) + "s");
 			server.setGameInfo(info);
-			setPlayerStyle(1, info.getName(), info.getColor());
-		} else {
-			
-			try {
-				client.init(info.getName(), info.getColor());
-			} catch (IOException e) {
-				engine.addError("Client initialisation problem!");
-				return;
-			}
-			
-			// Duration duration = client.getGameDuration();
-			// setPlayerStyle(client.getPlayerNumber(), info.getName(),
-			// info.getColor());
-			// client.printState();
-			// timeLbl.setText((int) duration.toSeconds() + "s");
-
-			onStartClient();
+		} 
+		try {
+			client.init(info.getName(), info.getColor());
+		} catch (IOException e) {
+			engine.addError("Client initialization problem!");
+			return;
 		}
+
+		// Duration duration = client.getGameDuration();
+		// setPlayerStyle(client.getPlayerNumber(), info.getName(),
+		// info.getColor());
+		// client.printState();
+		// timeLbl.setText((int) duration.toSeconds() + "s");
+
+		onStartClient();
+		
 
 		
 
@@ -191,11 +189,6 @@ public class GameController {
 	// TODO add start button for host, additional information (health ...)
 
 	private void setPlayerStyle(int player, String name, Color color) {
-		//Integer.toHexString(color.hashCode())
-		if (host = info.isHost()) {
-			PlayerInfo playerInfo = new PlayerInfo(player,name.toLowerCase(),color);
-			server.addPlayer(playerInfo);
-		}
 
 		playerNames[player - 1] = name;
 
@@ -233,10 +226,12 @@ public class GameController {
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	private void onStartServer() {
-		// TODO AI auffüllen
+		// TODO AI auffuellen
 		server.interruptAcceptThread();
 		game = new Game(info.getPlayers(), info.getName(), GRID_SIZE);
 		game.run();
+		
+		server.startGame();
 
 		initGrid();
 
@@ -257,7 +252,9 @@ public class GameController {
 					timeline.stop();
 					return;
 				}
-				update();
+				
+				server.updatePlayerList(game.getSnakes());
+				server.updateAll();
 			}
 
 			private int getRemainingTime(){
@@ -345,21 +342,23 @@ public class GameController {
 
 				@Override
 				public void handle(KeyEvent event) {
-					if (game.getSnakes().size() == 0) {
-						timeline.stop();
-						return;
-					}
-					if (event.getCode() == KeyCode.W) {
-						game.getSnake(info.getName()).changeDirection(Directions.N);
-					}
-					if (event.getCode() == KeyCode.S) {
-						game.getSnake(info.getName()).changeDirection(Directions.S);
-					}
-					if (event.getCode() == KeyCode.D) {
-						game.getSnake(info.getName()).changeDirection(Directions.E);
-					}
-					if (event.getCode() == KeyCode.A) {
-						game.getSnake(info.getName()).changeDirection(Directions.W);
+					if(client.isGameActive()){
+						if (client.getPlayerList().size() == 0) {
+							timeline.stop();
+							return;
+						}
+						if (event.getCode() == KeyCode.W) {
+							game.getSnake(info.getName()).changeDirection(Directions.N);
+						}
+						if (event.getCode() == KeyCode.S) {
+							game.getSnake(info.getName()).changeDirection(Directions.S);
+						}
+						if (event.getCode() == KeyCode.D) {
+							game.getSnake(info.getName()).changeDirection(Directions.E);
+						}
+						if (event.getCode() == KeyCode.A) {
+							game.getSnake(info.getName()).changeDirection(Directions.W);
+						}
 					}
 				}
 
@@ -466,9 +465,11 @@ public class GameController {
 
 		Rectangle r;
 
+		
+		/* TODO ----------------
 		this.game.getArtifactHandler().checkDespawn();
 
-		// TODO ----------------
+		
 		for (Artifact a : game.getGrid().getArtifacts()) {
 			Point pos = a.getPlacement();
 			r = (Rectangle) gridPane.getChildren().get((pos.getX() * GRID_SIZE) + pos.getY());
@@ -483,11 +484,12 @@ public class GameController {
 			} catch (FileNotFoundException e) {
 				e.printStackTrace();
 			}
-		} // ---------------------TODO--
+		} ---------------------TODO--
+		*/
 
 		for (PlayerInfo s : client.getPlayerList()) {
 			// life bars
-			ProgressBar life = playerLifeBars[s.getNumber()];
+			ProgressBar life = playerLifeBars[s.getNumber()-1];
 			life.setProgress((double) s.getHealth() / s.getMaxHealth());
 			// snakes
 			ArrayList<Point> body = s.getBody();

@@ -35,6 +35,7 @@ public class AcceptThread extends Thread {
 
 	private int calculateNum() {
 		ArrayList<Integer> free = new ArrayList<Integer>();
+		free.add(1);
 		free.add(2);
 		free.add(3);
 		free.add(4);
