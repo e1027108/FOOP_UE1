@@ -17,10 +17,10 @@ public class AcceptThread extends Thread {
 
 	@Override
 	public void run() {
-		int listSize = server.getClientThreads().size();
 		while (true) {
 			try {
-				if(listSize < players -1) {
+				int listSize = server.getClientThreads().size();
+				if(listSize < players) {
 					Socket clientSocket = server.getServerSocket().accept();
 					int playerNum = calculateNum();
 					ClientThread clientThread = new ClientThread(clientSocket, server, playerNum);
