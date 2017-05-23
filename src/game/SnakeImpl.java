@@ -4,8 +4,10 @@ import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Random;
 
 import artifacts.ArtifactConstants;
+import gui.GameController;
 
 /**
  * This class implements the {@link Snake} interface and holds the start/default
@@ -350,16 +352,44 @@ public class SnakeImpl implements Snake {
 	}
 
 	@Override
-	public void resetPosition(Point pos) {
+	public void resetPosition(Point pos, int gridSize) {
 		for(Point p : position) {
 			deadParts.add(p);
 		}
 		position.clear();
 		position.add(pos);
-		direction = Directions.N;
+		direction = getRandomDirection(pos, gridSize);
 		respawn = true;
 	}
 	
+	private Directions getRandomDirection(Point pos, int gridSize) {
+		ArrayList<Directions> permitted = new ArrayList<Directions>();
+		
+		if(pos.getX() >= 3){
+			permitted.add(Directions.N);
+		}
+		if(pos.getX() <= gridSize-3){
+			permitted.add(Directions.S);
+		}
+			
+		if(pos.getY() >= 3){
+			permitted.add(Directions.W);
+		}
+		if(pos.getY() <= gridSize-3){
+			permitted.add(Directions.E);
+		}
+		
+		double rint = new Random().nextDouble();
+		
+		for(int i = 1; i<permitted.size(); i++){
+			if(rint <= ((double) i/permitted.size())){
+				return permitted.get(i-1);
+			}
+		}
+
+		return Directions.N;
+	}
+
 	@Override
 	public ArrayList<Point> getDeadParts() {
 		return this.deadParts;		

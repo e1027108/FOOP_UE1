@@ -79,7 +79,7 @@ public class GameController {
 	// percentage on the color scale that we want to be off, at least (needs to be at most 1/6 (=0.166..), otw can't/ find 3 other colors)
 	private final static double RANGE_VALUE = .12;
 	private final static Duration MOVE_DURATION = Duration.millis(100);
-	private static final int GRID_SIZE = 39;
+	public static final int GRID_SIZE = 39;
 	private static enum imgType { B, R, I };
 
 	private Game game;

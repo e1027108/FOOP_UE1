@@ -270,7 +270,7 @@ public class Game implements CollisionListener, Runnable{
 	
 	private void respawnSnake(SnakeImpl s) {
 		Point respawnPlace = placementStrategy.getRespawnPlace();
-		s.resetPosition(respawnPlace);
+		s.resetPosition(respawnPlace, grid.getSize());
 	}
 	
 }

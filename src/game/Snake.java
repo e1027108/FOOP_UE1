@@ -16,7 +16,7 @@ public interface Snake {
 
 	void initPosition(int x, int y);
 
-	void resetPosition(Point point);
+	void resetPosition(Point point, int gridSize);
 
 	boolean isAlive();
 
