@@ -236,8 +236,6 @@ public class ServerMessageHandler extends MessageHandler {
 
 		encoded += "T" + input.getRemainingTime();
 
-		System.out.println(encoded);
-
 		return encoded;
 	}
 

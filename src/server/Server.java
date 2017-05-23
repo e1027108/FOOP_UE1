@@ -109,7 +109,6 @@ public class Server {
 				(int) server.getGameInfo().getGameDuration().toSeconds());
 		
 		String msg = serverMessageHandler.encode(info);
-		System.out.println("UPD Message: " + msg);
 		for (ClientThread ct : clientThreads) {
 			ct.getOut().println(msg);
 		}
@@ -125,15 +124,15 @@ public class Server {
 		}
 	}
 	
-	public void startGame(int gridsize) {
+	public void startGame(int gridsize) {		
+		game = new Game(info.getPlayers(), gridsize, this);
+		Thread t = new Thread(game);
+		t.start();
+		
 		String msg = serverMessageHandler.encode(new Message(MessageType.STR));
 		for (ClientThread ct : clientThreads) {
 			ct.getOut().println(msg);
 		}
-		
-		game = new Game(info.getPlayers(), gridsize, this);
-		Thread t = new Thread(game);
-		t.start();
 	}
 	
 	public Game getGame() {
