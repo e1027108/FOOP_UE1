@@ -76,8 +76,6 @@ public class GameController {
 	private ImageView block1img, block2img, block3img, block4img, rev1img, rev2img, rev3img, rev4img, inv1img, inv2img, inv3img, inv4img;
 
 	private GameDto info;
-	// percentage on the color scale that we want to be off, at least (needs to be at most 1/6 (=0.166..), otw can't/ find 3 other colors)
-	private final static double RANGE_VALUE = .12;
 	private final static Duration MOVE_DURATION = Duration.millis(100);
 	public static final int GRID_SIZE = 39;
 	private static enum imgType { B, R, I };
@@ -439,83 +437,6 @@ public class GameController {
 		stage.setScene(scene);
 		stage.setTitle("Create or join a game of Snake!");
 		stage.show();
-	}
-
-	private void assignAIColors() {
-		// TODO
-		int relevantPlayerNumber = info.getPlayers();
-
-		if (relevantPlayerNumber == 0) {
-			relevantPlayerNumber = 4;
-		}
-
-		Color[] reserved = new Color[relevantPlayerNumber];
-
-		reserved[0] = info.getColor();
-
-		for (int i = 0; i < reserved.length; i++) {
-			if (reserved[i] == null) {
-				reserved[i] = findGoodColor(reserved);
-			}
-
-			if (i != 0) {
-				setPlayerStyle(i + 1, "AI_" + (i + 1), reserved[i]);
-			}
-
-			colors = reserved;
-
-		}
-	}
-
-	private Color findGoodColor(Color[] reserved) {
-		ArrayList<Pair<Double, Double>> redIntervals = new ArrayList<Pair<Double, Double>>();
-		ArrayList<Pair<Double, Double>> greenIntervals = new ArrayList<Pair<Double, Double>>();
-		ArrayList<Pair<Double, Double>> blueIntervals = new ArrayList<Pair<Double, Double>>();
-
-		for (Color c : reserved) {
-			if (c != null) {
-				redIntervals.add(buildInterval(c.getRed()));
-				greenIntervals.add(buildInterval(c.getGreen()));
-				blueIntervals.add(buildInterval(c.getBlue()));
-			}
-		}
-
-		return new Color(findValidColorValue(redIntervals), findValidColorValue(blueIntervals),
-				findValidColorValue(greenIntervals), 1);
-	}
-
-	private double findValidColorValue(ArrayList<Pair<Double, Double>> intervals) {
-		Random r = new Random();
-		double value = 0;
-		boolean valid = false;
-
-		while (!valid) {
-			value = r.nextDouble();
-			for (Pair<Double, Double> p : intervals) {
-				if (value < p.getKey() || value > p.getValue()) {
-					valid = true;
-				} else {
-					valid = false;
-					break;
-				}
-			}
-		}
-
-		return value;
-	}
-
-	private Pair<Double, Double> buildInterval(Double value) {
-		double posrange = RANGE_VALUE;
-		double negrange = RANGE_VALUE;
-
-		if (value - negrange <= 0) {
-			negrange = value;
-		}
-		if (value + posrange >= 1) {
-			posrange = 1 - value;
-		}
-
-		return new Pair<Double, Double>(value - negrange, value + posrange);
 	}
 
 	private void updateLifeBars() {

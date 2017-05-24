@@ -1,8 +1,12 @@
 package game;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Random;
+import java.util.Map.Entry;
 
 import artifacts.Artifact;
 import artifacts.ArtifactConstants;
@@ -16,6 +20,7 @@ import artifacts.logic.ArtifactsPlacementStrategyNaiveImpl;
 import game.CollisionTarget.CollisionTypes;
 import game.ai.SnakeAI;
 import javafx.scene.paint.Color;
+import javafx.util.Pair;
 import messagehandler.message.PlayerInfo;
 import server.Server;
 
@@ -33,6 +38,9 @@ public class Game implements CollisionListener, Runnable{
 	private ArtifactCoordinateGenerator coordinateGenerator;
 	
 	private Server server;
+	
+	// percentage on the color scale that we want to be off, at least (needs to be at most 1/6 (=0.166..), otw can't/ find 3 other colors)
+	private final static double RANGE_VALUE = .12;
 
 	// TODO: change error message --> just temporary
 	public Game(int num, int gridSize, Server server) {
@@ -75,8 +83,8 @@ public class Game implements CollisionListener, Runnable{
 			int i = server.getAllPlayers().size() + 1;
 			while (i <= server.getGameInfo().getPlayers()) {
 				player = new SnakeAI("ai_" + i, i, Directions.N, this);
-				// TODO: get assigned AI Color here
-				server.addAIPlayer("ai_" + i, i, Color.BLACK);
+				Color AIcolor = assignAIColor(server.getAllPlayers().values());
+				server.addAIPlayer(SnakeAI.AI_PREFIX + i, i, AIcolor);
 				snakes.add(player);
 				i++;				
 			}
@@ -90,12 +98,11 @@ public class Game implements CollisionListener, Runnable{
 			directions.add(Directions.W);
 			for (int i = 1; i <= numPlayers; i++) {
 				player = new SnakeAI("ai_" + i, i, directions.get(i - 1), this);
-				// TODO: get assigned AI Color here
-				server.addAIPlayer("ai_" + i, i, Color.BLACK);
+				Color AIcolor = assignAIColor(server.getAllPlayers().values());
+				server.addAIPlayer(SnakeAI.AI_PREFIX + i, i, AIcolor);
 				snakes.add(player);
 			}
 		}
-		
 
 		// initialize snake positions
 		for(Snake s : snakes) {
@@ -129,6 +136,67 @@ public class Game implements CollisionListener, Runnable{
 		}
 	}
 
+	private Color assignAIColor(Collection<PlayerInfo> players) {
+		ArrayList<Color> reserved = new ArrayList<Color>();
+		
+		for(PlayerInfo p : players){
+			reserved.add(p.getColor());
+		}
+
+		return findGoodColor(reserved);
+	}
+	
+	private Color findGoodColor(ArrayList<Color> reserved) {
+		ArrayList<Pair<Double, Double>> redIntervals = new ArrayList<Pair<Double, Double>>();
+		ArrayList<Pair<Double, Double>> greenIntervals = new ArrayList<Pair<Double, Double>>();
+		ArrayList<Pair<Double, Double>> blueIntervals = new ArrayList<Pair<Double, Double>>();
+
+		for (Color c : reserved) {
+			if (c != null) {
+				redIntervals.add(buildInterval(c.getRed()));
+				greenIntervals.add(buildInterval(c.getGreen()));
+				blueIntervals.add(buildInterval(c.getBlue()));
+			}
+		}
+
+		return new Color(findValidColorValue(redIntervals), findValidColorValue(blueIntervals),
+				findValidColorValue(greenIntervals), 1);
+	}
+	
+	private double findValidColorValue(ArrayList<Pair<Double, Double>> intervals) {
+		Random r = new Random();
+		double value = 0;
+		boolean valid = false;
+
+		while (!valid) {
+			value = r.nextDouble();
+			for (Pair<Double, Double> p : intervals) {
+				if (value < p.getKey() || value > p.getValue()) {
+					valid = true;
+				} else {
+					valid = false;
+					break;
+				}
+			}
+		}
+
+		return value;
+	}
+
+	private Pair<Double, Double> buildInterval(Double value) {
+		double posrange = RANGE_VALUE;
+		double negrange = RANGE_VALUE;
+
+		if (value - negrange <= 0) {
+			negrange = value;
+		}
+		if (value + posrange >= 1) {
+			posrange = 1 - value;
+		}
+
+		return new Pair<Double, Double>(value - negrange, value + posrange);
+	}
+	
 	public void step() {
 		Iterator<Snake> snakeIterator = snakes.iterator();
 		while (snakeIterator.hasNext()) {

@@ -27,7 +27,8 @@ public class SnakeAI extends SnakeImpl {
 	private static final double P_OTHER = 0.1;
 	private static final double P_OTHER_SECONDARY = 0.4;
 	private static final int DISTANCE = 6;
-
+	public static final String AI_PREFIX = "ai_";
+	
 	public SnakeAI(String name, int gridID, Directions dir, Game game) {
 		super(name, gridID, dir);
 

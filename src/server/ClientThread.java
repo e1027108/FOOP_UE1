@@ -65,7 +65,7 @@ public class ClientThread extends Thread {
 						break;
 					}
 
-					System.out.println("ClientThread - received message: " + clientMessageHandler.encode(message));
+					//System.out.println("ClientThread - received message: " + clientMessageHandler.encode(message));
 				}
 			} catch (SocketException se){
 				server.getAllPlayers().remove(playerReferenceNumber);
