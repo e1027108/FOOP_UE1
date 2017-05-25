@@ -96,7 +96,7 @@ public class ClientMessageHandler extends MessageHandler {
 			}
 		}
 		
-		return new InfoMessage(MessageType.INI,infoContainer,remainingTime);
+		return new InfoMessage(MessageType.INI,infoContainer,null,remainingTime);
 	}
 
 	@Override

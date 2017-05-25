@@ -3,15 +3,18 @@ package server;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 
+import artifacts.Artifact;
 import dto.GameDto;
 import game.Game;
 import game.Point;
 import game.Snake;
 import javafx.scene.paint.Color;
 import messagehandler.ServerMessageHandler;
+import messagehandler.message.ArtifactInfo;
 import messagehandler.message.InfoMessage;
 import messagehandler.message.Message;
 import messagehandler.message.Message.MessageType;
@@ -58,22 +61,22 @@ public class Server {
 	public ServerSocket getServerSocket() {
 		return serverSocket;
 	}
-	
+
 	public void setGameInfo(GameDto gameInfo) {
 		info = gameInfo;
 	}
-	
+
 	public GameDto getGameInfo() {
 		return info;
 	}
-	
+
 	public void addPlayer(PlayerInfo player) {
 		if(playerList == null) {
 			playerList = new HashMap<Integer,PlayerInfo>();
 		}
 		playerList.put(player.getNumber(), player);
 	}
-	
+
 	public void addAIPlayer(String name, int id, Color color) {
 		PlayerInfo p = new PlayerInfo();
 		p.setName(name);
@@ -81,15 +84,15 @@ public class Server {
 		p.setColor(color);
 		addPlayer(p);
 	}
-	
+
 	public PlayerInfo getPlayer(int playerNum) {
 		return playerList.get(playerNum);
 	}
-	
+
 	public HashMap<Integer,PlayerInfo> getAllPlayers() {
 		return playerList;
 	}
-	
+
 	public void interruptAcceptThread() {
 		this.acceptThread.interrupt();
 	}
@@ -102,19 +105,36 @@ public class Server {
 	 * 		---------------------------------------------------
 	 */
 	public void updateAll() {
-		List<PlayerInfo> container = new ArrayList<PlayerInfo>();
-		container.addAll(playerList.values());
+		List<PlayerInfo> playerContainer = new ArrayList<PlayerInfo>();
+		playerContainer.addAll(playerList.values());
+		List<ArtifactInfo> artifactContainer = new ArrayList<ArtifactInfo>();
 
-		InfoMessage info = new InfoMessage(MessageType.UPD, container,
+		if(game != null){
+			artifactContainer.addAll(convertArtifactsToInfo(game.getGrid().getArtifacts()));
+		}
+
+		InfoMessage info = new InfoMessage(MessageType.UPD, playerContainer, artifactContainer,
 				(int) server.getGameInfo().getGameDuration().toSeconds());
-		
+
 		String msg = serverMessageHandler.encode(info);
 		for (ClientThread ct : clientThreads) {
 			ct.getOut().println(msg);
 		}
 	}
-	
-	
+
+
+	private List<ArtifactInfo> convertArtifactsToInfo(List<Artifact> artifacts) {
+		ArrayList<ArtifactInfo> ais = new ArrayList<ArtifactInfo>();
+
+		for(Artifact a: artifacts){
+			if(a.isActive()){
+				ais.add(new ArtifactInfo(a.getArtifactsMapping(), a.getPlacement()));
+			}
+		}
+
+		return ais;
+	}
+
 	public void updatePlayerList(ArrayList<Snake> snakes) {
 		for(Snake s : snakes) {
 			// TODO: update all fields
@@ -123,18 +143,18 @@ public class Server {
 			playerList.get(s.getGridID()).setBody((ArrayList<Point>)s.getBodyList());
 		}
 	}
-	
+
 	public void startGame(int gridsize) {		
 		game = new Game(info.getPlayers(), gridsize, this);
 		Thread t = new Thread(game);
 		t.start();
-		
+
 		String msg = serverMessageHandler.encode(new Message(MessageType.STR));
 		for (ClientThread ct : clientThreads) {
 			ct.getOut().println(msg);
 		}
 	}
-	
+
 	public Game getGame() {
 		return game;
 	}

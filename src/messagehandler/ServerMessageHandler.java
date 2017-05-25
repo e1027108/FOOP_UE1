@@ -3,8 +3,11 @@ package messagehandler;
 import java.util.ArrayList;
 import java.util.List;
 
+import artifacts.Artifacts;
 import game.Point;
 import javafx.scene.paint.Color;
+import javafx.util.Pair;
+import messagehandler.message.ArtifactInfo;
 import messagehandler.message.InfoMessage;
 import messagehandler.message.Message;
 import messagehandler.message.Message.MessageType;
@@ -21,7 +24,7 @@ public class ServerMessageHandler extends MessageHandler {
 
 		switch(head){
 		case UPDATE:
-			decoded = decodePlayerInfo(MessageType.UPD, input);
+			decoded = decodeInformation(MessageType.UPD, input);
 			break;
 		case GAME_START:
 			decoded = decodeGameStart();
@@ -75,62 +78,107 @@ public class ServerMessageHandler extends MessageHandler {
 	}
 
 	/**
-	 * TODO: irgendwie broken, alles == null!
+	 * TODO: test with artifacts
 	 */
-	private InfoMessage decodePlayerInfo(MessageType type, String input) {
+	private InfoMessage decodeInformation(MessageType type, String input) {
 		String payload = input.substring(3,input.length());
 		ArrayList<PlayerInfo> pis = new ArrayList<PlayerInfo>();
+		ArrayList<ArtifactInfo> ais = new ArrayList<ArtifactInfo>();
 		int remainingTime = 0;
 
-		//split string into player's information and time left (at end of message)
-		String players[] = payload.split("(?=[PT])");
+		//split string into player's information, artifact positions and time left (at end of message)
+		String data[] = payload.split("(?=[PTA])");
 
-		for(String p: players){
-			//split the strings into substrings starting with upper case letter
-			String info[] = p.split("(?=[A-Z])");
-			PlayerInfo playerInf = new PlayerInfo();
-			for(String s: info){
-				switch(s.charAt(0)){
-				case 'P': //playerNumber
-					playerInf.setNumber(Integer.parseInt(s.substring(1,2)));
-					break;
-				case 'N': //name
-					playerInf.setName(s.substring(1));
-					break;
-				case 'C': //color
-					playerInf.setColor(Color.web(s.substring(1),1));
-					break;
-				case 'M': //max health
-					playerInf.setMaxHealth(Integer.parseInt(s.substring(1)));
-					break;
-				case 'H': //current health
-					playerInf.setHealth(Integer.parseInt(s.substring(1)));
-					break;
-				case 'B': //body positions
-					playerInf.setBody(computePosition(s.substring(1)));
-					break;
-				case 'L': //bLocked
-					playerInf.setBlocked(true);
-					break;
-				case 'I': //invincible
-					playerInf.setInvincible(true);
-					break;
-				case 'R': //reverse control
-					playerInf.setReversed(true);
-					break;
-				case 'T':
-					remainingTime = Integer.parseInt(s.substring(1));
-					break;
-				default:
-					throw new IllegalArgumentException("Invalid information code: " + s.charAt(0));
+		for(String datapoint: data){
+			//players
+			if(datapoint.charAt(0) == 'P'){
+				//split the strings into substrings starting with upper case letter
+				String info[] = datapoint.split("(?=[A-Z])");
+				PlayerInfo playerInf = new PlayerInfo();
+				for(String s: info){
+					switch(s.charAt(0)){
+					case 'P': //playerNumber
+						playerInf.setNumber(Integer.parseInt(s.substring(1,2)));
+						break;
+					case 'N': //name
+						playerInf.setName(s.substring(1));
+						break;
+					case 'C': //color
+						playerInf.setColor(Color.web(s.substring(1),1));
+						break;
+					case 'M': //max health
+						playerInf.setMaxHealth(Integer.parseInt(s.substring(1)));
+						break;
+					case 'H': //current health
+						playerInf.setHealth(Integer.parseInt(s.substring(1)));
+						break;
+					case 'B': //body positions
+						playerInf.setBody(computePosition(s.substring(1)));
+						break;
+					case 'L': //bLocked
+						playerInf.setBlocked(true);
+						break;
+					case 'I': //invincible
+						playerInf.setInvincible(true);
+						break;
+					case 'R': //reverse control
+						playerInf.setReversed(true);
+						break;
+					default:
+						throw new IllegalArgumentException("Invalid information code: " + s.charAt(0));
+					}
 				}
-			}
-			if (p.charAt(0) != 'T') {
 				pis.add(playerInf);
+			}
+			else if (datapoint.charAt(0) == 'T') {
+				remainingTime = Integer.parseInt(datapoint.substring(1));
+			}
+			else if (datapoint.charAt(0) == 'A') {
+				ArtifactInfo artifact = new ArtifactInfo();
+				String info[] = datapoint.split("(?=[A-Z])");
+				for(String s: info){
+					switch(s.charAt(0)){
+					case 'A':
+						artifact.setType(parseArtifactType(s.substring(1,3)));
+						break;
+					case 'X': //position, like an x on a pirate's map
+						artifact.setPosition(computePosition(s.substring(1)).get(0)); //re-use of method, should only ever find one point
+						break;
+					default:
+						throw new IllegalArgumentException("Invalid information code: " + s.charAt(0));
+					}
+				}
+				ais.add(artifact);
 			}
 		}
 
-		return new InfoMessage(type,pis,remainingTime);
+		return new InfoMessage(type,pis,ais,remainingTime);
+	}
+
+	//codes are lower case, because upper case stands for deliminators
+	private Artifacts parseArtifactType(String code) {
+		switch(code){
+		case "hi":
+			return Artifacts.HEALTH_INCREASE;
+		case "hd":
+			return Artifacts.HEALTH_DECREASE;
+		case "si":
+			return Artifacts.SIZE_INCREASE;
+		case "sd":
+			return Artifacts.SIZE_DECREASE;
+		case "pi":
+			return Artifacts.SPEED_INCREASE;
+		case "pd":
+			return Artifacts.SPEED_DECREASE;
+		case "bc":
+			return Artifacts.BLOCK_CONTROL;
+		case "rc":
+			return Artifacts.REVERSE_CONTROL;
+		case "in":
+			return Artifacts.INVULNERABILITY;
+		default:
+			throw new IllegalArgumentException("Illegal artifact code: " + code);
+		}
 	}
 
 	private ArrayList<Point> computePosition(String coded) {
@@ -156,7 +204,7 @@ public class ServerMessageHandler extends MessageHandler {
 
 		switch(input.getType()){
 		case UPD:
-			encoded = UPDATE + encodePlayerInfo((InfoMessage) input);
+			encoded = UPDATE + encodeInformation((InfoMessage) input);
 			break;
 		case STR:
 			encoded = encodeGameStart();
@@ -200,7 +248,8 @@ public class ServerMessageHandler extends MessageHandler {
 		return GAME_START;
 	}
 
-	private String encodePlayerInfo(InfoMessage input) {
+	//TODO test with artifacts
+	private String encodeInformation(InfoMessage input) {
 		String encoded = "";
 		List<PlayerInfo> infos = input.getInfos();
 
@@ -234,8 +283,47 @@ public class ServerMessageHandler extends MessageHandler {
 			}
 		}
 
+		for(ArtifactInfo i: input.getArtifacts()){
+			encoded += "A";
+			
+			switch(i.getType()){
+			case HEALTH_INCREASE:
+				encoded += "hi";
+				break;
+			case HEALTH_DECREASE:
+				encoded += "hd";
+				break;
+			case SIZE_INCREASE:
+				encoded += "si";
+				break;
+			case SIZE_DECREASE:
+				encoded += "sd";
+				break;
+			case SPEED_INCREASE:
+				encoded += "pi";
+				break;
+			case SPEED_DECREASE:
+				encoded += "pd";
+				break;
+			case BLOCK_CONTROL:
+				encoded += "bc";
+				break;
+			case INVULNERABILITY:
+				encoded += "in";
+				break;
+			case REVERSE_CONTROL:
+				encoded += "rc";
+				break;
+			default:
+				throw new IllegalArgumentException("Invalid artifact type: " + i.getType());
+			}
+			
+			encoded += "X" + encodePoint(i.getPosition());
+			
+		}
+		
 		encoded += "T" + input.getRemainingTime();
-
+		
 		return encoded;
 	}
 
@@ -245,10 +333,14 @@ public class ServerMessageHandler extends MessageHandler {
 		//assertion x,y never over 99, never negative ( (0,37) currently standard?)
 		for(Point p: body){
 			//fills string with leading zeros if necessary
-			bodyCode += String.format("%02d",p.getX()) + String.format("%02d",p.getY());
+			bodyCode += encodePoint(p);
 		}
 
 		return bodyCode;
+	}
+	
+	private String encodePoint(Point point){
+		return String.format("%02d",point.getX()) + String.format("%02d",point.getY());
 	}
 
 }

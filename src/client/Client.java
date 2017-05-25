@@ -13,6 +13,7 @@ import javafx.scene.paint.Color;
 import javafx.util.Duration;
 import messagehandler.ClientMessageHandler;
 import messagehandler.ServerMessageHandler;
+import messagehandler.message.ArtifactInfo;
 import messagehandler.message.DirectionChangeMessage;
 import messagehandler.message.InfoMessage;
 import messagehandler.message.Message.MessageType;
@@ -30,6 +31,7 @@ public class Client {
 	private static PrintWriter out;
 	private static ReadThread readThread;
 	private static List<PlayerInfo> playerList;
+	private static List<ArtifactInfo> artifactList;
 	private static boolean gameActive;
 	
 	private PlayerInfo state;
@@ -72,7 +74,7 @@ public class Client {
 		state.setColor(color);
 		ArrayList<PlayerInfo> container = new ArrayList<PlayerInfo>();
 		container.add(state);
-		out.println(clientMessageHandler.encode(new InfoMessage(MessageType.INI, container, 0)));
+		out.println(clientMessageHandler.encode(new InfoMessage(MessageType.INI, container, null, 0)));
 		readThread = new ReadThread(this, sock);
 		readThread.setDaemon(true);
 		readThread.start();
@@ -130,5 +132,13 @@ public class Client {
 
 	public void sendDirection(Directions s) {
 		out.println(clientMessageHandler.encode(new DirectionChangeMessage(MessageType.DIC,s)));		
+	}
+
+	public void setArtifactList(List<ArtifactInfo> artifacts) {
+		Client.artifactList = artifacts;
+	}
+	
+	public List<ArtifactInfo> getArtifactList(){
+		return artifactList;
 	}
 }

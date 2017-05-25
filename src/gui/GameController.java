@@ -43,6 +43,7 @@ import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import javafx.util.Pair;
+import messagehandler.message.ArtifactInfo;
 import messagehandler.message.PlayerInfo;
 import server.Server;
 
@@ -147,13 +148,13 @@ public class GameController {
 		gridPane.setStyle("-fx-background-color: #FFFFFF;");
 
 		tileSize = (int) Math.floor((gridPane.getPrefHeight() - (GRID_SIZE - 1)) / GRID_SIZE);
-		
-		
+
+
 
 		// TODO if AI only do not contact/host any server
 
 		// TODO initialize with info from network/joincontroller
-		
+
 		// TODO get duration from server
 		if (host) {
 			timeLbl.setText(((int) info.getGameDuration().toSeconds()) + "s");
@@ -173,9 +174,9 @@ public class GameController {
 		// timeLbl.setText((int) duration.toSeconds() + "s");
 
 		onStartClient();
-		
 
-		
+
+
 
 		// TODO place ready button in your own pane, create ready indicators for
 		// all players
@@ -348,11 +349,11 @@ public class GameController {
 
 		Rectangle r;
 
-		
+
 		/* TODO ----------------
 		this.game.getArtifactHandler().checkDespawn();
 
-		
+
 		for (Artifact a : game.getGrid().getArtifacts()) {
 			Point pos = a.getPlacement();
 			r = (Rectangle) gridPane.getChildren().get((pos.getX() * GRID_SIZE) + pos.getY());
@@ -368,7 +369,7 @@ public class GameController {
 				e.printStackTrace();
 			}
 		} ---------------------TODO--
-		*/
+		 */
 
 		for (PlayerInfo s : client.getPlayerList()) {
 			// life bars
@@ -379,6 +380,17 @@ public class GameController {
 			for (Point p : body) {
 				r = (Rectangle) gridPane.getChildren().get((p.getX() * GRID_SIZE) + p.getY());
 				r.setFill(s.getColor());
+			}
+		}
+		for (ArtifactInfo a : client.getArtifactList()){
+			Point pos = a.getPosition();
+			r = (Rectangle) gridPane.getChildren().get((pos.getX() * GRID_SIZE) + pos.getY());
+			ImagePattern icon;
+			try {
+				icon = new ImagePattern(new Image(new FileInputStream(a.getImage())));
+				r.setFill(icon);
+			} catch (FileNotFoundException e) {
+				e.printStackTrace();
 			}
 		}
 	}

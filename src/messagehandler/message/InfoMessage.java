@@ -1,16 +1,23 @@
 package messagehandler.message;
 
+import java.util.ArrayList;
 import java.util.List;
+
+import artifacts.Artifacts;
+import game.Point;
+import javafx.util.Pair;
 
 public class InfoMessage extends Message {
 
 	private List<PlayerInfo> infos;
+	private List<ArtifactInfo> artifacts;
 	private int remainingTime;
 
-	public InfoMessage(MessageType type, List<PlayerInfo> infos, int remainingTime) {
+	public InfoMessage(MessageType type, List<PlayerInfo> infos, List<ArtifactInfo> artifacts, int remainingTime) {
 		super(type);
 
-		this.infos = (infos);
+		this.infos = infos;
+		this.artifacts = artifacts;
 		this.setRemainingTime(remainingTime);
 	}
 
@@ -24,6 +31,14 @@ public class InfoMessage extends Message {
 
 	public void setRemainingTime(int remainingTime) {
 		this.remainingTime = remainingTime;
+	}
+
+	public List<ArtifactInfo> getArtifacts() {
+		return artifacts;
+	}
+
+	public void setArtifacts(List<ArtifactInfo> artifacts) {
+		this.artifacts = artifacts;
 	}
 
 }

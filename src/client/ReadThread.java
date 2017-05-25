@@ -28,12 +28,13 @@ public class ReadThread extends Thread {
 			try {
 				String msg = client.getIn().readLine();
 				Message message = serverMessageHandler.decode(msg);
+				//System.out.println(msg);
 				switch (message.getType()) {
 				case UPD:
 					InfoMessage im = (InfoMessage)message;
 					client.setRemainingTime(im.getRemainingTime());
-					List<PlayerInfo> infos = (im.getInfos());
-					client.setPlayerList(infos);
+					client.setPlayerList(im.getInfos());
+					client.setArtifactList(im.getArtifacts());
 					break;
 				case SAD:
 					break;
