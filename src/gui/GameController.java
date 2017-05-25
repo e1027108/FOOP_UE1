@@ -155,7 +155,7 @@ public class GameController {
 		if (host) {
 			timeLbl.setText(((int) info.getGameDuration().toSeconds()) + "s");
 			server.setGameInfo(info);
-			startBtn.setDisable(true);
+			//startBtn.setDisable(true);
 			readyBtn.setVisible(false);
 		}
 		else{
