@@ -20,6 +20,7 @@ import artifacts.logic.ArtifactsPlacementStrategyNaiveImpl;
 import game.CollisionTarget.CollisionTypes;
 import game.ai.SnakeAI;
 import javafx.scene.paint.Color;
+import javafx.util.Duration;
 import javafx.util.Pair;
 import messagehandler.message.PlayerInfo;
 import server.Server;
@@ -39,11 +40,13 @@ public class Game implements CollisionListener, Runnable{
 	
 	private Server server;
 	
+	private Duration duration;
+	
 	// percentage on the color scale that we want to be off, at least (needs to be at most 1/6 (=0.166..), otw can't/ find 3 other colors)
 	private final static double RANGE_VALUE = .12;
 
 	// TODO: change error message --> just temporary
-	public Game(int num, int gridSize, Server server) {
+	public Game(int num, int gridSize, Duration duration, Server server) {
 		firstPlayer = server.getPlayer(1).getName();
 		if (num > 0 && num < 5) {
 			numPlayers = num;
@@ -65,6 +68,7 @@ public class Game implements CollisionListener, Runnable{
 		this.coordinateGenerator = new ArtifactCoordinateGeneratorImpl(grid);		
 		this.placementStrategy = new ArtifactsPlacementStrategyNaiveImpl(coordinateGenerator, grid, this);
 		
+		this.duration = duration;
 		this.server = server;
 	}
 
@@ -118,20 +122,35 @@ public class Game implements CollisionListener, Runnable{
 		children.add(artifactChild);
 		artifactChild.setDaemon(true);
 		artifactChild.start();
+		
+		long time = (long) this.duration.toMillis();
+		long last = System.currentTimeMillis();
 
 		// game loop
 		while (true) {
-			step();
-			if (getSnakes().size() == 0) {
+			if(time > 0) {
+				step();
+				if (getSnakes().size() == 0) {
+					break;
+				}			
+				server.updatePlayerList(getSnakes());
+				server.updateAll();
+				try {
+					Thread.sleep(100);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				long now = System.currentTimeMillis();
+				long diff = now - last;
+				last = now;
+				time = time - diff;
+				this.duration = new Duration(time);
+			}
+			else {
+				System.out.println("End of Game");
+				server.endGame();
 				break;
-			}			
-			server.updatePlayerList(getSnakes());
-			server.updateAll();
-			try {
-				Thread.sleep(100);
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
 			}
 		}
 	}
@@ -339,6 +358,14 @@ public class Game implements CollisionListener, Runnable{
 	private void respawnSnake(SnakeImpl s) {
 		Point respawnPlace = placementStrategy.getRespawnPlace();
 		s.resetPosition(respawnPlace, grid.getSize());
+	}
+
+	public Duration getDuration() {
+		return duration;
+	}
+
+	public void setDuration(Duration duration) {
+		this.duration = duration;
 	}
 	
 }

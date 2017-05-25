@@ -325,6 +325,8 @@ public class GameController {
 		initGrid();
 
 		Rectangle r;
+		
+		timeLbl.setText(((int) client.getGameDuration().toSeconds()) + "s");
 
 		for (PlayerInfo s : client.getPlayerList()) {
 			// life bars

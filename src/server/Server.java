@@ -108,13 +108,15 @@ public class Server {
 		List<PlayerInfo> playerContainer = new ArrayList<PlayerInfo>();
 		playerContainer.addAll(playerList.values());
 		List<ArtifactInfo> artifactContainer = new ArrayList<ArtifactInfo>();
+		int remainingTime = (int) info.getGameDuration().toSeconds();
 
 		if(game != null){
 			artifactContainer.addAll(convertArtifactsToInfo(game.getGrid().getArtifacts()));
+			remainingTime = (int) game.getDuration().toSeconds();
 		}
-
+		
 		InfoMessage info = new InfoMessage(MessageType.UPD, playerContainer, artifactContainer,
-				(int) server.getGameInfo().getGameDuration().toSeconds());
+				remainingTime);
 
 		String msg = serverMessageHandler.encode(info);
 		for (ClientThread ct : clientThreads) {
@@ -145,7 +147,7 @@ public class Server {
 	}
 
 	public void startGame(int gridsize) {		
-		game = new Game(info.getPlayers(), gridsize, this);
+		game = new Game(info.getPlayers(), gridsize, info.getGameDuration(), this);
 		Thread t = new Thread(game);
 		t.start();
 
@@ -157,5 +159,12 @@ public class Server {
 
 	public Game getGame() {
 		return game;
+	}
+
+	public void endGame() {
+		String msg = serverMessageHandler.encode(new Message(MessageType.END));
+		for (ClientThread ct : clientThreads) {
+			ct.getOut().println(msg);
+		}		
 	}
 }
