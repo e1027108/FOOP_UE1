@@ -22,7 +22,6 @@ import messagehandler.message.PlayerInfo;
 public class Client {
 
 	private static ClientMessageHandler clientMessageHandler;
-	private static ServerMessageHandler serverMessageHandler;
 	private static String host;
 	private static final int PORT = 1234;
 	private static Client client;
@@ -41,7 +40,6 @@ public class Client {
 		Client.host = host;
 		gameActive = false;
 		clientMessageHandler = new ClientMessageHandler();
-		serverMessageHandler = new ServerMessageHandler();
 	}
 	
 	public static Client getClient(String host) throws IOException {

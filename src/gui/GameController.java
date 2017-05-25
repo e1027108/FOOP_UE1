@@ -5,16 +5,13 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Random;
 import java.util.ResourceBundle;
 
-import artifacts.Artifact;
 import client.Client;
 import dto.DataTransferrer;
 import dto.GameDto;
 import game.Directions;
 import game.Game;
-import game.GameGrid;
 import game.Point;
 import game.Snake;
 import javafx.animation.KeyFrame;
@@ -42,7 +39,6 @@ import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 import javafx.util.Duration;
-import javafx.util.Pair;
 import messagehandler.message.ArtifactInfo;
 import messagehandler.message.PlayerInfo;
 import server.Server;
@@ -65,7 +61,7 @@ public class GameController {
 	private Label player1Lbl, player2Lbl, player3Lbl, player4Lbl, timeLbl;
 
 	@FXML
-	private Button disconnectBtn, readyBtn;
+	private Button disconnectBtn, readyBtn, startBtn;
 
 	@FXML
 	private ProgressBar player1LifeBar, player2LifeBar, player3LifeBar, player4LifeBar;
@@ -93,17 +89,19 @@ public class GameController {
 
 	private int tileSize;
 
-	private Color[] colors;
-
 	private MessageEngine engine;
 	private Thread msgThread;
 
 	private String[] playerNames;
 	private ProgressBar[] playerLifeBars;
+	private Label[] playerLabels;
+	private AnchorPane[] playerPanes;
 
 	private ImageView[] playerInvulnerable;
 	private ImageView[] playerBlocked;
 	private ImageView[] playerReversed;
+	
+	private AnchorPane myPane;
 
 	@FXML
 	public void initialize() {
@@ -120,6 +118,11 @@ public class GameController {
 		playerInvulnerable = new ImageView[] { inv1img, inv2img, inv3img, inv4img };
 		playerBlocked = new ImageView[] { block1img, block2img, block3img, block4img };
 		playerReversed = new ImageView[] { rev1img, rev2img, rev3img, rev4img };
+
+		playerLabels = new Label[] { player1Lbl, player2Lbl, player3Lbl, player4Lbl };
+		playerPanes = new AnchorPane[] { player1Pane, player2Pane, player3Pane, player4Pane };
+
+		readyBtn = new Button("ready!");
 
 		if (info == null) {
 			engine.addError("Error: could not find game information, please disconnect!");
@@ -149,17 +152,16 @@ public class GameController {
 
 		tileSize = (int) Math.floor((gridPane.getPrefHeight() - (GRID_SIZE - 1)) / GRID_SIZE);
 
-
-
-		// TODO if AI only do not contact/host any server
-
-		// TODO initialize with info from network/joincontroller
-
-		// TODO get duration from server
 		if (host) {
 			timeLbl.setText(((int) info.getGameDuration().toSeconds()) + "s");
 			server.setGameInfo(info);
-		} 
+			startBtn.setDisable(true);
+			readyBtn.setVisible(false);
+		}
+		else{
+			startBtn.setVisible(false);
+		}
+
 		try {
 			client.init(info.getName(), info.getColor());
 		} catch (IOException e) {
@@ -167,28 +169,21 @@ public class GameController {
 			return;
 		}
 
-		// Duration duration = client.getGameDuration();
-		// setPlayerStyle(client.getPlayerNumber(), info.getName(),
-		// info.getColor());
-		// client.printState();
-		// timeLbl.setText((int) duration.toSeconds() + "s");
-
 		onStartClient();
-
-
-
-
-		// TODO place ready button in your own pane, create ready indicators for
-		// all players
-
-		// TODO if host create a start game button (right of disconnect button?
-		// disabled until all are ready, function for re-disabling necessary)
+		
+		/* TODO want to know who i am
+		if(myPane == null){
+			myPane = playerPanes[client.getPlayerNumber()-1];
+		}
+		if(!myPane.getChildren().contains(readyBtn) && client.getPlayerNumber() != 1){
+			myPane.getChildren().add(readyBtn);
+			readyBtn.setVisible(true);
+		}*/
 	}
 
-	// TODO add start button for host, additional information (health ...)
+	// TODO add additional player information icons in panes (health ...)
 
 	private void setPlayerStyle(int player, String name, Color color) {
-
 		playerNames[player - 1] = name;
 
 		String hexcode = String.valueOf(color);
@@ -197,28 +192,10 @@ public class GameController {
 		String style = "-fx-background-color: #" + hexcode + ";";
 		String lifeBarStyle = "-fx-accent: lawngreen;";
 
-		ProgressBar life = null;
+		ProgressBar life = playerLifeBars[player-1];
 
-		if (player == 1) {
-			player1Lbl.setText(name);
-			player1Pane.setStyle(style);
-			life = player1LifeBar;
-		} else if (player == 2) {
-			player2Lbl.setText(name);
-			player2Pane.setStyle(style);
-			life = player2LifeBar;
-		} else if (player == 3) {
-			player3Lbl.setText(name);
-			player3Pane.setStyle(style);
-			life = player3LifeBar;
-		} else if (player == 4) {
-			player4Lbl.setText(name);
-			player4Pane.setStyle(style);
-			life = player4LifeBar;
-		} else {
-			// TODO some error
-		}
-
+		playerLabels[player-1].setText(name);
+		playerPanes[player-1].setStyle(style);
 		life.setProgress(1.0);
 		life.setStyle(lifeBarStyle);
 	}
@@ -349,28 +326,6 @@ public class GameController {
 
 		Rectangle r;
 
-
-		/* TODO ----------------
-		this.game.getArtifactHandler().checkDespawn();
-
-
-		for (Artifact a : game.getGrid().getArtifacts()) {
-			Point pos = a.getPlacement();
-			r = (Rectangle) gridPane.getChildren().get((pos.getX() * GRID_SIZE) + pos.getY());
-			ImagePattern icon;
-			try {
-				if (a.isActive()) {
-					icon = new ImagePattern(new Image(new FileInputStream(a.getImage())));
-					r.setFill(icon);
-				} else {
-					r.setFill(emptyCellColor);
-				}
-			} catch (FileNotFoundException e) {
-				e.printStackTrace();
-			}
-		} ---------------------TODO--
-		 */
-
 		for (PlayerInfo s : client.getPlayerList()) {
 			// life bars
 			ProgressBar life = playerLifeBars[s.getNumber()-1];
@@ -416,10 +371,6 @@ public class GameController {
 
 	@FXML
 	private void onDisconnectClick() {
-		// TODO send info to other clients (host/other difference)
-		// TODO clean up server/client
-
-		// reset artifacts list to empty and close artifact handler thread
 		if (game != null) {
 			game.closeChildren();
 			engine.interrupt();
@@ -431,7 +382,7 @@ public class GameController {
 	}
 
 	@FXML
-	private void onReadyClick() {
+	private void onStartClick() {
 		// TODO change text in button, send ready info (--> green checkmark or something)
 		onStartServer();
 	}
@@ -451,16 +402,9 @@ public class GameController {
 		stage.show();
 	}
 
-	private void updateLifeBars() {
-		for (int i = 0; i < playerNames.length; i++) {
-			if (playerNames[i] != null) {
-				Snake s = game.getSnake(playerNames[i]);
-				ProgressBar life = playerLifeBars[i];
-				if (s != null) {
-					life.setProgress((double) s.getHealth() / s.getMaxHealth());
-				}
-			}
-		}
+	@FXML
+	private void onReadyClick(){
+		//TODO implement
 	}
 
 	//give b=block, r=reverse, i=invisible as effect
@@ -485,7 +429,6 @@ public class GameController {
 				}
 			}
 			catch (FileNotFoundException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
