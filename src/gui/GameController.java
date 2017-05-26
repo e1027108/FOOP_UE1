@@ -219,7 +219,7 @@ public class GameController {
 					}
 				}
 				
-				if(myPane == null && client.getPlayerNumber() != 1){
+				if(myPane == null && !host){
 					setUpReadyButton(client.getPlayerNumber());
 				}
 				
@@ -381,15 +381,20 @@ public class GameController {
 	}
 
 	@FXML
-	private void onDisconnectClick() {
-		if (game != null) {
+	private void onDisconnectClick() throws IOException {
+		if (game != null && host) {
 			game.closeChildren();
-			engine.interrupt();
-			msgThread.interrupt();
 			this.game.getGrid().shutdown();
-			timeline.stop();
 		}
+		engine.interrupt();
+		msgThread.interrupt();
+		timeline.stop();
 		showJoin();
+		client.disconnect();
+		client = null;
+		myPane.getChildren().remove(readyBtn);
+		myPane = null;
+		//TODO enough cleanup?
 	}
 
 	@FXML
@@ -415,7 +420,9 @@ public class GameController {
 
 	@FXML
 	private void onReadyClick(){
-		//TODO implement
+		client.sendReady();
+		//for now we send ready one time, no backsies!
+		readyBtn.setDisable(true);
 	}
 
 	//give b=block, r=reverse, i=invisible as effect

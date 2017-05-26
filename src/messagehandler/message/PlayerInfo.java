@@ -20,6 +20,8 @@ public class PlayerInfo {
 	private boolean blocked; //just to display info icon
 	private boolean reversed; //just to display info icon
 	private boolean invincible; //color effect?
+	//TODO encode readyness!!
+	private boolean ready;
 	
 	//TODO check for missing information
 	

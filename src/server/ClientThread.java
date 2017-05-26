@@ -15,6 +15,7 @@ import messagehandler.message.DirectionChangeMessage;
 import messagehandler.message.InfoMessage;
 import messagehandler.message.Message;
 import messagehandler.message.PlayerInfo;
+import messagehandler.message.PlayerLeftMessage;
 import messagehandler.message.Message.MessageType;
 
 public class ClientThread extends Thread {
@@ -53,8 +54,13 @@ public class ClientThread extends Thread {
 						server.updateAll();
 						break;
 					case MessageHandler.DISCONNECT:
+						server.getAllPlayers().remove(playerReferenceNumber);
+						System.out.println("Removed player " + playerReferenceNumber);
+						this.interrupt();
+						server.updateAll();
 						break;
 					case MessageHandler.PLAYER_READY:
+						//TODO save who is ready to know when a game can be started!
 						break;
 					case MessageHandler.INITIALIZATION:
 						InfoMessage clientInfo = (InfoMessage) message;

@@ -16,8 +16,10 @@ import messagehandler.ServerMessageHandler;
 import messagehandler.message.ArtifactInfo;
 import messagehandler.message.DirectionChangeMessage;
 import messagehandler.message.InfoMessage;
+import messagehandler.message.Message;
 import messagehandler.message.Message.MessageType;
 import messagehandler.message.PlayerInfo;
+import messagehandler.message.PlayerLeftMessage;
 
 public class Client {
 
@@ -138,5 +140,14 @@ public class Client {
 	
 	public List<ArtifactInfo> getArtifactList(){
 		return artifactList;
+	}
+
+	public void sendReady() {
+		out.println(clientMessageHandler.encode(new Message(MessageType.PLR)));
+	}
+	
+	public void disconnect() throws IOException {
+		readThread.interrupt();
+		out.println(clientMessageHandler.encode(new Message(MessageType.DIS)));
 	}
 }
