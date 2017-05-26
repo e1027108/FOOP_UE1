@@ -20,6 +20,7 @@ import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Parent;
@@ -170,15 +171,6 @@ public class GameController {
 		}
 
 		onStartClient();
-		
-		/* TODO want to know who i am
-		if(myPane == null){
-			myPane = playerPanes[client.getPlayerNumber()-1];
-		}
-		if(!myPane.getChildren().contains(readyBtn) && client.getPlayerNumber() != 1){
-			myPane.getChildren().add(readyBtn);
-			readyBtn.setVisible(true);
-		}*/
 	}
 
 	// TODO add additional player information icons in panes (health ...)
@@ -220,9 +212,17 @@ public class GameController {
 			@Override
 			public void handle(Event event) {
 				timeLbl.setText(client.getRemainingTime() + "s");
-				for (PlayerInfo pi : client.getPlayerList()) {
-					setPlayerStyle(pi.getNumber(), pi.getName(), pi.getColor());
+				
+				if(client.getPlayerList() != null){
+					for (PlayerInfo pi : client.getPlayerList()) {
+						setPlayerStyle(pi.getNumber(), pi.getName(), pi.getColor());
+					}
 				}
+				
+				if(myPane == null && client.getPlayerNumber() != 1){
+					setUpReadyButton(client.getPlayerNumber());
+				}
+				
 				if (client.isGameActive()) {
 					updateClient();
 				}
@@ -269,6 +269,15 @@ public class GameController {
 			});
 		}
 
+	}
+	
+	protected void setUpReadyButton(int number) {
+		myPane = playerPanes[number-1];
+		myPane.getChildren().add(readyBtn);
+		readyBtn.setVisible(true);
+		//margins: TOP 25px, RIGHT 28px
+		AnchorPane.setTopAnchor(readyBtn, 25.);
+		AnchorPane.setRightAnchor(readyBtn, 28.);	
 	}
 
 	protected void evaluateGame(Game game) {

@@ -3,7 +3,7 @@ package messagehandler.message;
 public class Message {
 	
 	public static enum MessageType {
-		UPD, STR, END, TXT, SAD, PLL, PLR, DIC, DIS, INI
+		UPD, STR, END, TXT, SAD, PLL, PLR, DIC, DIS, INI, ACK
 	}
 
 	private MessageType type;

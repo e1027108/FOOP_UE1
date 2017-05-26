@@ -10,10 +10,12 @@ import java.net.SocketException;
 import messagehandler.ClientMessageHandler;
 import messagehandler.MessageHandler;
 import messagehandler.ServerMessageHandler;
+import messagehandler.message.AckMessage;
 import messagehandler.message.DirectionChangeMessage;
 import messagehandler.message.InfoMessage;
 import messagehandler.message.Message;
 import messagehandler.message.PlayerInfo;
+import messagehandler.message.Message.MessageType;
 
 public class ClientThread extends Thread {
 
@@ -56,8 +58,9 @@ public class ClientThread extends Thread {
 						break;
 					case MessageHandler.INITIALIZATION:
 						InfoMessage clientInfo = (InfoMessage) message;
-						server.addPlayer(new PlayerInfo(playerReferenceNumber, clientInfo.getInfos().get(0).getName(),
-								clientInfo.getInfos().get(0).getColor()));
+						PlayerInfo toAdd = new PlayerInfo(playerReferenceNumber, clientInfo.getInfos().get(0).getName(),
+								clientInfo.getInfos().get(0).getColor());
+						server.addPlayer(toAdd);
 						server.updateAll();
 						break;
 					default:
@@ -90,5 +93,10 @@ public class ClientThread extends Thread {
 
 	public int getPlayerReferenceNumber() {
 		return playerReferenceNumber;
+	}
+
+	public void inform(int playerNum) {
+		System.out.println("Sent: " + playerNum);
+		out.println(serverMessageHandler.encode(new AckMessage(MessageType.ACK,playerNum)));
 	}
 }

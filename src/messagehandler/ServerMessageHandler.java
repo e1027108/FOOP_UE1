@@ -7,6 +7,7 @@ import artifacts.Artifacts;
 import game.Point;
 import javafx.scene.paint.Color;
 import javafx.util.Pair;
+import messagehandler.message.AckMessage;
 import messagehandler.message.ArtifactInfo;
 import messagehandler.message.InfoMessage;
 import messagehandler.message.Message;
@@ -41,11 +42,19 @@ public class ServerMessageHandler extends MessageHandler {
 		case PLAYER_LEFT:
 			decoded = decodePlayerLeft(input);
 			break;
+		case ACKNOWLEDGED:
+			decoded = decodeAcknowledgement(input);
+			break;
 		default:
 			throw new IllegalArgumentException("Invalid message type code: " + head);
 		}
 
 		return decoded;
+	}
+
+	private Message decodeAcknowledgement(String input) {
+		int number = Integer.parseInt(input.substring(3));
+		return new AckMessage(MessageType.ACK, number);
 	}
 
 	private PlayerLeftMessage decodePlayerLeft(String input) {
@@ -77,9 +86,6 @@ public class ServerMessageHandler extends MessageHandler {
 		return new Message(MessageType.STR);
 	}
 
-	/**
-	 * TODO: test with artifacts
-	 */
 	private InfoMessage decodeInformation(MessageType type, String input) {
 		String payload = input.substring(3,input.length());
 		ArrayList<PlayerInfo> pis = new ArrayList<PlayerInfo>();
@@ -221,6 +227,9 @@ public class ServerMessageHandler extends MessageHandler {
 		case PLL:
 			encoded = encodePlayerLeft((PlayerLeftMessage) input);
 			break;
+		case ACK:
+			encoded = ACKNOWLEDGED + ((AckMessage) input).getNumber();
+			break;
 		default:
 			throw new IllegalArgumentException("Invalid message type: " + input.getType());
 		}
@@ -248,7 +257,6 @@ public class ServerMessageHandler extends MessageHandler {
 		return GAME_START;
 	}
 
-	//TODO test with artifacts
 	private String encodeInformation(InfoMessage input) {
 		String encoded = "";
 		List<PlayerInfo> infos = input.getInfos();

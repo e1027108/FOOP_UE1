@@ -5,6 +5,7 @@ import java.net.Socket;
 import java.util.List;
 
 import messagehandler.ServerMessageHandler;
+import messagehandler.message.AckMessage;
 import messagehandler.message.InfoMessage;
 import messagehandler.message.Message;
 import messagehandler.message.PlayerInfo;
@@ -47,6 +48,10 @@ public class ReadThread extends Thread {
 				case TXT:
 					break;
 				case PLL:
+					break;
+				case ACK:
+					client.getState().setNumber(((AckMessage) message).getNumber());
+					System.out.println("Player number: " + client.getState().getNumber());
 					break;
 				default:
 					break;

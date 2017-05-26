@@ -16,6 +16,7 @@ public abstract class MessageHandler {
 	public static final String TEXT_MESSAGE = "TXT";
 	public static final String YOU_LOSE = "SAD";
 	public static final String PLAYER_LEFT = "PLL";
+	public static final String ACKNOWLEDGED = "ACK";
 
 	//client messages
 	public static final String PLAYER_READY = "PLR";
