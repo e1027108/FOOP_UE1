@@ -150,4 +150,16 @@ public class Client {
 		readThread.interrupt();
 		out.println(clientMessageHandler.encode(new Message(MessageType.DIS)));
 	}
+
+	public void removePlayer(int playerNumber) {
+		PlayerInfo toRemove = null;
+		
+		for(PlayerInfo p: playerList){
+			if(p.getNumber() == playerNumber){
+				toRemove = p;
+			}
+		}
+	
+		playerList.remove(toRemove);
+	}
 }

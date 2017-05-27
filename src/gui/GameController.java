@@ -20,7 +20,6 @@ import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Parent;
@@ -34,6 +33,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.Background;
 import javafx.scene.layout.TilePane;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.ImagePattern;
@@ -90,7 +90,7 @@ public class GameController {
 
 	private int tileSize;
 
-	private MessageEngine engine;
+	public static MessageEngine engine;
 	private Thread msgThread;
 
 	private String[] playerNames;
@@ -193,7 +193,6 @@ public class GameController {
 	}
 
 	private void onStartServer() {
-		// TODO AI auffuellen
 		server.interruptAcceptThread();
 		server.startGame(GRID_SIZE);		
 		game = server.getGame();
@@ -209,14 +208,26 @@ public class GameController {
 		timeline.setAutoReverse(false);
 
 		KeyFrame loopFrame = new KeyFrame(d, new EventHandler() {
+			private ArrayList<PlayerInfo> lastList;
+			
 			@Override
 			public void handle(Event event) {
 				timeLbl.setText(client.getRemainingTime() + "s");
 				
 				if(client.getPlayerList() != null){
-					for (PlayerInfo pi : client.getPlayerList()) {
+					ArrayList<PlayerInfo> list = (ArrayList<PlayerInfo>) client.getPlayerList();
+					
+					for (PlayerInfo pi : list) {
 						setPlayerStyle(pi.getNumber(), pi.getName(), pi.getColor());
 					}
+					
+					if(lastList != null && !lastList.isEmpty() && lastList.size() > list.size()) {
+						lastList.removeAll(list);
+						resetPlayerPanes(lastList.get(0).getNumber()-1);
+					}
+					
+					lastList = new ArrayList<PlayerInfo>();
+					lastList.addAll(list);
 				}
 				
 				if(myPane == null && !host){
@@ -226,6 +237,15 @@ public class GameController {
 				if (client.isGameActive()) {
 					updateClient();
 				}
+			}
+
+			private void resetPlayerPanes(int paneNumber) {
+				playerLifeBars[paneNumber].setProgress(0);
+				playerLabels[paneNumber].setText("player left!");
+				playerPanes[paneNumber].setBackground(Background.EMPTY); //TODO test if can be coloured again on reconnect
+				playerInvulnerable[paneNumber].setImage(null);
+				playerBlocked[paneNumber].setImage(null);
+				playerReversed[paneNumber].setImage(null);
 			}
 		});
 		timeline.getKeyFrames().add(loopFrame);

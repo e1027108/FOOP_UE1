@@ -4,11 +4,14 @@ import java.io.IOException;
 import java.net.Socket;
 import java.util.List;
 
+import gui.GameController;
 import messagehandler.ServerMessageHandler;
 import messagehandler.message.AckMessage;
 import messagehandler.message.InfoMessage;
 import messagehandler.message.Message;
 import messagehandler.message.PlayerInfo;
+import messagehandler.message.PlayerLeftMessage;
+import messagehandler.message.TextMessage;
 
 public class ReadThread extends Thread {
 
@@ -38,6 +41,7 @@ public class ReadThread extends Thread {
 					client.setArtifactList(im.getArtifacts());
 					break;
 				case SAD:
+					GameController.engine.addMessage("You lost!");
 					break;
 				case STR:
 					client.setGameActive(true);
@@ -46,8 +50,11 @@ public class ReadThread extends Thread {
 					client.setGameActive(false);
 					break;
 				case TXT:
+					GameController.engine.addMessage(((TextMessage) message).getMessage());
 					break;
 				case PLL:
+					client.removePlayer(((PlayerLeftMessage) message).getPlayerNumber()); //This doesn't activate the timeline :(
+					GameController.engine.addMessage("Player " + ((PlayerLeftMessage) message).getPlayerNumber() + " left the game!");
 					break;
 				case ACK:
 					client.getState().setNumber(((AckMessage) message).getNumber());

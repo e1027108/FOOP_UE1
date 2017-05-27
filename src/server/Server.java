@@ -19,6 +19,7 @@ import messagehandler.message.InfoMessage;
 import messagehandler.message.Message;
 import messagehandler.message.Message.MessageType;
 import messagehandler.message.PlayerInfo;
+import messagehandler.message.PlayerLeftMessage;
 
 public class Server {
 
@@ -140,9 +141,14 @@ public class Server {
 	public void updatePlayerList(ArrayList<Snake> snakes) {
 		for(Snake s : snakes) {
 			// TODO: update all fields
+			try{
 			playerList.get(s.getGridID()).setHealth(s.getHealth());
 			playerList.get(s.getGridID()).setMaxHealth(s.getMaxHealth());
 			playerList.get(s.getGridID()).setBody((ArrayList<Point>)s.getBodyList());
+			}
+			catch(NullPointerException e){
+				//someone left, do nothing
+			}
 		}
 	}
 
@@ -166,5 +172,13 @@ public class Server {
 		for (ClientThread ct : clientThreads) {
 			ct.getOut().println(msg);
 		}		
+	}
+
+	public void informPlayerLeft(int playerReferenceNumber) {
+		String msg = serverMessageHandler.encode(new PlayerLeftMessage(MessageType.PLL, playerReferenceNumber));
+		for (ClientThread ct : clientThreads) {
+			ct.getOut().println(msg);
+		}
+		System.out.println("Removed player: " + playerReferenceNumber);
 	}
 }

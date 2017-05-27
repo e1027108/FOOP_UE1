@@ -55,9 +55,8 @@ public class ClientThread extends Thread {
 						break;
 					case MessageHandler.DISCONNECT:
 						server.getAllPlayers().remove(playerReferenceNumber);
-						System.out.println("Removed player " + playerReferenceNumber);
 						this.interrupt();
-						server.updateAll();
+						server.informPlayerLeft(playerReferenceNumber);
 						break;
 					case MessageHandler.PLAYER_READY:
 						//TODO save who is ready to know when a game can be started!
