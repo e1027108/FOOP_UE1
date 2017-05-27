@@ -22,6 +22,7 @@ public class PlayerInfo {
 	private boolean invincible; //color effect?
 	//TODO encode readyness!!
 	private boolean ready;
+	private boolean alive;
 	
 	//TODO check for missing information
 	
@@ -30,6 +31,7 @@ public class PlayerInfo {
 		blocked = false;
 		reversed = false;
 		invincible = false;
+		alive = true;
 	}
 	
 	public PlayerInfo(int playerNum, String name, Color color) {
@@ -117,6 +119,14 @@ public class PlayerInfo {
 		else{
 			return "player info incomplete!";
 		}
+	}
+
+	public boolean isAlive() {
+		return alive;
+	}
+	
+	public void setAlive(boolean a) {
+		alive = a;
 	}
 
 }

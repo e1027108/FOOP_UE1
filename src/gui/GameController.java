@@ -209,6 +209,7 @@ public class GameController {
 
 		KeyFrame loopFrame = new KeyFrame(d, new EventHandler() {
 			private ArrayList<PlayerInfo> lastList;
+			private boolean started = false;
 			
 			@Override
 			public void handle(Event event) {
@@ -236,6 +237,13 @@ public class GameController {
 				
 				if (client.isGameActive()) {
 					updateClient();
+					started = true;
+				}
+				else {
+					if (started) {
+						evaluateGame();
+						timeline.stop();
+					}
 				}
 			}
 
@@ -253,8 +261,8 @@ public class GameController {
 		timeline.setOnFinished(new EventHandler() {
 			@Override
 			public void handle(Event event) {
+				evaluateGame();
 				timeline.stop();
-				evaluateGame(game);
 				return;
 			}
 		});
@@ -266,22 +274,24 @@ public class GameController {
 
 				@Override
 				public void handle(KeyEvent event) {
-					if(client.isGameActive()){
-						if (client.getPlayerList().size() == 0) {
-							timeline.stop();
-							return;
-						}
-						if (event.getCode() == KeyCode.W) {
-							client.sendDirection(Directions.N);
-						}
-						if (event.getCode() == KeyCode.S) {
-							client.sendDirection(Directions.S);
-						}
-						if (event.getCode() == KeyCode.D) {
-							client.sendDirection(Directions.E);
-						}
-						if (event.getCode() == KeyCode.A) {
-							client.sendDirection(Directions.W);
+					if(!client.isDead()) {
+						if(client.isGameActive()){
+							if (client.getPlayerList().size() == 0) {
+								timeline.stop();
+								return;
+							}
+							if (event.getCode() == KeyCode.W) {
+								client.sendDirection(Directions.N);
+							}
+							if (event.getCode() == KeyCode.S) {
+								client.sendDirection(Directions.S);
+							}
+							if (event.getCode() == KeyCode.D) {
+								client.sendDirection(Directions.E);
+							}
+							if (event.getCode() == KeyCode.A) {
+								client.sendDirection(Directions.W);
+							}
 						}
 					}
 				}
@@ -300,12 +310,12 @@ public class GameController {
 		AnchorPane.setRightAnchor(readyBtn, 28.);	
 	}
 
-	protected void evaluateGame(Game game) {
+	protected void evaluateGame() {
 		String endMessage = "";
-		ArrayList<Snake> winners = new ArrayList<Snake>();
+		ArrayList<PlayerInfo> winners = new ArrayList<PlayerInfo>();
 
 		//collect all snakes with max size
-		for(Snake s: game.getSnakes()){
+		for(PlayerInfo s: client.getPlayerList()){
 			if(winners.isEmpty()){
 				if(s.isAlive()){
 					winners.add(s);
@@ -313,11 +323,11 @@ public class GameController {
 			}
 			else{
 				if(s.isAlive()){
-					if(s.getSize() > winners.get(0).getSize()){
+					if(s.getBody().size() > winners.get(0).getBody().size()){
 						winners.clear();
 						winners.add(s);
 					}
-					else if(s.getSize() == winners.get(0).getSize()){
+					else if(s.getBody().size() == winners.get(0).getBody().size()){
 						winners.add(s);
 					}
 				}
@@ -332,7 +342,7 @@ public class GameController {
 		}
 		else{
 			//collect multiple winner's names in comma-seperated list
-			for(Snake w: winners){
+			for(PlayerInfo w: winners){
 				endMessage += w.getName() + ", ";
 			}
 
@@ -358,14 +368,16 @@ public class GameController {
 		timeLbl.setText(((int) client.getGameDuration().toSeconds()) + "s");
 
 		for (PlayerInfo s : client.getPlayerList()) {
-			// life bars
-			ProgressBar life = playerLifeBars[s.getNumber()-1];
-			life.setProgress((double) s.getHealth() / s.getMaxHealth());
-			// snakes
-			ArrayList<Point> body = s.getBody();
-			for (Point p : body) {
-				r = (Rectangle) gridPane.getChildren().get((p.getX() * GRID_SIZE) + p.getY());
-				r.setFill(s.getColor());
+			if(s != null && s.isAlive()) {
+				// life bars
+				ProgressBar life = playerLifeBars[s.getNumber()-1];
+				life.setProgress((double) s.getHealth() / s.getMaxHealth());
+				// snakes
+				ArrayList<Point> body = s.getBody();
+				for (Point p : body) {
+					r = (Rectangle) gridPane.getChildren().get((p.getX() * GRID_SIZE) + p.getY());
+					r.setFill(s.getColor());
+				}
 			}
 		}
 		for (ArtifactInfo a : client.getArtifactList()){

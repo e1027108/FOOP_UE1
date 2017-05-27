@@ -6,6 +6,9 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
+
+import com.sun.org.apache.bcel.internal.generic.INSTANCEOF;
+
 import java.util.Map.Entry;
 
 import artifacts.Artifact;
@@ -128,11 +131,8 @@ public class Game implements CollisionListener, Runnable{
 
 		// game loop
 		while (true) {
-			if(time > 0) {
-				step();
-				if (getSnakes().size() == 0) {
-					break;
-				}			
+			if(time > 0 && getSnakes().size() > 1) {
+				step();		
 				server.updatePlayerList(getSnakes());
 				server.updateAll();
 				try {
@@ -149,6 +149,7 @@ public class Game implements CollisionListener, Runnable{
 			}
 			else {
 				System.out.println("End of Game");
+				artifactChild.interrupt();
 				server.endGame();
 				break;
 			}
@@ -235,6 +236,10 @@ public class Game implements CollisionListener, Runnable{
 	public void removeDeadSnakes() {
 		for (int i = 0; i < snakes.size(); i++) {
 			if (!snakes.get(i).isAlive()) {
+				// TODO: is there another way to identify a snake as ai?
+				if(!snakes.get(i).getName().contains("ai_")) {
+					server.sendLooseMessage(i);
+				}
 				snakes.remove(i);
 			}
 		}

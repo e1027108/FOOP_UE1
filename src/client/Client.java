@@ -34,6 +34,7 @@ public class Client {
 	private static List<PlayerInfo> playerList;
 	private static List<ArtifactInfo> artifactList;
 	private static boolean gameActive;
+	private static boolean dead;
 	
 	private PlayerInfo state;
 	private int remainingTime;
@@ -41,6 +42,7 @@ public class Client {
 	private Client(String host) {
 		Client.host = host;
 		gameActive = false;
+		dead = false;
 		clientMessageHandler = new ClientMessageHandler();
 	}
 	
@@ -161,5 +163,13 @@ public class Client {
 		}
 	
 		playerList.remove(toRemove);
+	}
+
+	public void setDead() {
+		Client.dead = true;		
+	}
+	
+	public boolean isDead() {
+		return dead;
 	}
 }

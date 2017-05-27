@@ -42,6 +42,7 @@ public class ReadThread extends Thread {
 					break;
 				case SAD:
 					GameController.engine.addMessage("You lost!");
+					client.setDead();
 					break;
 				case STR:
 					client.setGameActive(true);
