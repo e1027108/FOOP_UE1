@@ -145,6 +145,9 @@ public class Server {
 			playerList.get(s.getGridID()).setHealth(s.getHealth());
 			playerList.get(s.getGridID()).setMaxHealth(s.getMaxHealth());
 			playerList.get(s.getGridID()).setBody((ArrayList<Point>)s.getBodyList());
+			playerList.get(s.getGridID()).setBlocked(s.hasBlockControl());
+			playerList.get(s.getGridID()).setInvincible(s.isInvulnerable());
+			playerList.get(s.getGridID()).setReversed(s.hasReverseControl());
 			}
 			catch(NullPointerException e){
 				//someone left, do nothing

@@ -369,6 +369,9 @@ public class GameController {
 
 		for (PlayerInfo s : client.getPlayerList()) {
 			if(s != null && s.isAlive()) {
+				setPlayerStatus(s.getNumber(), imgType.B, s.isBlocked());
+				setPlayerStatus(s.getNumber(), imgType.I, s.isInvincible());
+				setPlayerStatus(s.getNumber(), imgType.R, s.isReversed());
 				// life bars
 				ProgressBar life = playerLifeBars[s.getNumber()-1];
 				life.setProgress((double) s.getHealth() / s.getMaxHealth());
