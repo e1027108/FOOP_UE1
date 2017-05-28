@@ -78,7 +78,7 @@ public class GameController {
 	private final static String CHECKMARK = "img/speed_decrease.png";
 	private final static Duration MOVE_DURATION = Duration.millis(100);
 	public static final int GRID_SIZE = 39;
-	private static enum imgType { B, R, I };
+	private static enum imgType { B, R, I, C};
 
 	private Game game;
 
@@ -132,7 +132,8 @@ public class GameController {
 			@Override
 			public void handle(ActionEvent event) {
 				client.sendReady();
-				readyBtn.setDisable(true);
+				readyBtn.setVisible(false);
+				setPlayerStatus(client.getPlayerNumber()-1, imgType.C, true);
 			}
 		});
 
@@ -464,7 +465,7 @@ public class GameController {
 		stage.show();
 	}
 
-	//give b=block, r=reverse, i=invisible as effect
+	//give b=block, r=reverse, i=invisible, c=ready as effect
 	private void setPlayerStatus(int player, imgType effect, boolean on){
 		Image toSet = null;
 
@@ -479,6 +480,9 @@ public class GameController {
 					break;
 				case R:
 					toSet =  new Image(new FileInputStream("img/reverse_control.png"));
+					break;
+				case C:
+					toSet = new Image(new FileInputStream("img/check.png"));
 					break;
 				default:
 					//nothing
@@ -502,6 +506,9 @@ public class GameController {
 		}
 		if(effect == imgType.R){
 			return playerReversed;
+		}
+		if(effect == imgType.C){
+			return playerReady;
 		}
 		return null;
 	}
