@@ -2,14 +2,12 @@ package client;
 
 import java.io.IOException;
 import java.net.Socket;
-import java.util.List;
 
 import gui.GameController;
 import messagehandler.ServerMessageHandler;
 import messagehandler.message.AckMessage;
 import messagehandler.message.InfoMessage;
 import messagehandler.message.Message;
-import messagehandler.message.PlayerInfo;
 import messagehandler.message.PlayerLeftMessage;
 import messagehandler.message.TextMessage;
 

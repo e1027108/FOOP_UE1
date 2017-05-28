@@ -109,6 +109,9 @@ public class ServerMessageHandler extends MessageHandler {
 					case 'N': //name
 						playerInf.setName(s.substring(1));
 						break;
+					case 'G': //we are a go == we are good == we are ready
+						playerInf.setReady(true);
+						break;
 					case 'C': //color
 						playerInf.setColor(Color.web(s.substring(1),1));
 						break;
@@ -246,7 +249,7 @@ public class ServerMessageHandler extends MessageHandler {
 	}
 
 	private String encodeTextMessage(TextMessage input) {
-		return input.getMessage();
+		return TEXT_MESSAGE + input.getMessage();
 	}
 
 	private String encodeGameEnd() {
@@ -267,6 +270,9 @@ public class ServerMessageHandler extends MessageHandler {
 			}
 			if(i.getName() != null){
 				encoded += "N" + i.getName();
+			}
+			if(i.isReady()){
+				encoded += "G";
 			}
 			if(i.getColor() != null){
 				encoded += "C" + String.valueOf(i.getColor()).substring(2,8);

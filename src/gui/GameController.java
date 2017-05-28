@@ -16,6 +16,7 @@ import game.Point;
 import game.Snake;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
+import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -124,6 +125,13 @@ public class GameController {
 		playerPanes = new AnchorPane[] { player1Pane, player2Pane, player3Pane, player4Pane };
 
 		readyBtn = new Button("ready!");
+		readyBtn.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent event) {
+				client.sendReady();
+				readyBtn.setDisable(true);
+			}
+		});
 
 		if (info == null) {
 			engine.addError("Error: could not find game information, please disconnect!");
@@ -451,13 +459,6 @@ public class GameController {
 		stage.setScene(scene);
 		stage.setTitle("Create or join a game of Snake!");
 		stage.show();
-	}
-
-	@FXML
-	private void onReadyClick(){
-		client.sendReady();
-		//for now we send ready one time, no backsies!
-		readyBtn.setDisable(true);
 	}
 
 	//give b=block, r=reverse, i=invisible as effect

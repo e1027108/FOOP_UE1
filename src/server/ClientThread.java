@@ -54,12 +54,14 @@ public class ClientThread extends Thread {
 						server.updateAll();
 						break;
 					case MessageHandler.DISCONNECT:
-						server.getAllPlayers().remove(playerReferenceNumber);
+						server.getAllPlayers().remove(server.getPlayer(playerReferenceNumber));
 						this.interrupt();
 						server.informPlayerLeft(playerReferenceNumber);
 						break;
 					case MessageHandler.PLAYER_READY:
-						//TODO save who is ready to know when a game can be started!
+						server.getPlayer(playerReferenceNumber).setReady(true);
+						server.updateAll();
+						server.sendText("Player " + playerReferenceNumber + " is ready.");
 						break;
 					case MessageHandler.INITIALIZATION:
 						InfoMessage clientInfo = (InfoMessage) message;

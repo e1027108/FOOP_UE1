@@ -20,6 +20,7 @@ import messagehandler.message.Message;
 import messagehandler.message.Message.MessageType;
 import messagehandler.message.PlayerInfo;
 import messagehandler.message.PlayerLeftMessage;
+import messagehandler.message.TextMessage;
 
 public class Server {
 
@@ -190,5 +191,12 @@ public class Server {
 		clientThreads.get(num).getOut().println(msg);
 		playerList.get(num+1).setAlive(false);
 		
+	}
+
+	public void sendText(String string) {
+		String msg = serverMessageHandler.encode(new TextMessage(MessageType.TXT,string));
+		for (ClientThread ct : clientThreads) {
+			ct.getOut().println(msg);
+		}		
 	}
 }

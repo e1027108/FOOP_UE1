@@ -1,11 +1,6 @@
 package messagehandler.message;
 
-import java.util.ArrayList;
 import java.util.List;
-
-import artifacts.Artifacts;
-import game.Point;
-import javafx.util.Pair;
 
 public class InfoMessage extends Message {
 

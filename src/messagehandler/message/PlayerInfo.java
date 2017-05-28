@@ -20,7 +20,6 @@ public class PlayerInfo {
 	private boolean blocked; //just to display info icon
 	private boolean reversed; //just to display info icon
 	private boolean invincible; //color effect?
-	//TODO encode readyness!!
 	private boolean ready;
 	private boolean alive;
 	
@@ -32,6 +31,7 @@ public class PlayerInfo {
 		reversed = false;
 		invincible = false;
 		alive = true;
+		ready = false;
 	}
 	
 	public PlayerInfo(int playerNum, String name, Color color) {
@@ -127,6 +127,14 @@ public class PlayerInfo {
 	
 	public void setAlive(boolean a) {
 		alive = a;
+	}
+
+	public boolean isReady() {
+		return ready;
+	}
+
+	public void setReady(boolean ready) {
+		this.ready = ready;
 	}
 
 }
