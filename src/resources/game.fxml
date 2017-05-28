@@ -16,7 +16,7 @@
         <Separator layoutX="2.0" layoutY="0.0" prefWidth="258.0" />
         <AnchorPane fx:id="player1Pane" layoutX="0.0" layoutY="0.0" prefHeight="100.0" prefWidth="258.0">
           <children>
-          	<Button fx:id="startBtn" layoutX="173.0" layoutY="25.0" mnemonicParsing="false" onAction="#onStartClick" text="start!" />
+            <Button fx:id="startBtn" layoutX="173.0" layoutY="25.0" mnemonicParsing="false" onAction="#onStartClick" text="start!" />
             <Label fx:id="player1Lbl" layoutX="28.0" layoutY="28.0" style="-fx-background-color: rgba(255,255,255,0.7);" text="Player 1" />
             <ProgressBar fx:id="player1LifeBar" layoutX="30.0" layoutY="66.0" prefWidth="200.0" progress="0.0" />
             <ImageView fx:id="inv1img" fitHeight="25.0" fitWidth="25.0" layoutX="145.0" layoutY="24.0" pickOnBounds="true" preserveRatio="true" />
@@ -32,6 +32,7 @@
             <ImageView fx:id="inv2img" fitHeight="25.0" fitWidth="25.0" layoutX="146.0" layoutY="24.0" pickOnBounds="true" preserveRatio="true" />
             <ImageView fx:id="rev2img" fitHeight="25.0" fitWidth="25.0" layoutX="118.0" layoutY="24.0" pickOnBounds="true" preserveRatio="true" />
             <ImageView fx:id="block2img" fitHeight="25.0" fitWidth="25.0" layoutX="89.0" layoutY="24.0" pickOnBounds="true" preserveRatio="true" />
+            <ImageView id="inv2img" fx:id="ready2img" fitHeight="25.0" fitWidth="25.0" layoutX="174.0" layoutY="24.0" pickOnBounds="true" preserveRatio="true" />
           </children>
         </AnchorPane>
         <Separator layoutX="0.0" layoutY="200.0" prefWidth="258.0" />
@@ -42,6 +43,7 @@
             <ImageView fx:id="inv3img" fitHeight="25.0" fitWidth="25.0" layoutX="146.0" layoutY="24.0" pickOnBounds="true" preserveRatio="true" />
             <ImageView fx:id="rev3img" fitHeight="25.0" fitWidth="25.0" layoutX="118.0" layoutY="24.0" pickOnBounds="true" preserveRatio="true" />
             <ImageView fx:id="block3img" fitHeight="25.0" fitWidth="25.0" layoutX="89.0" layoutY="24.0" pickOnBounds="true" preserveRatio="true" />
+            <ImageView id="inv2img" fx:id="ready3img" fitHeight="25.0" fitWidth="25.0" layoutX="174.0" layoutY="24.0" pickOnBounds="true" preserveRatio="true" />
           </children>
         </AnchorPane>
         <Separator layoutX="0.0" layoutY="300.0" prefWidth="258.0" />
@@ -52,6 +54,7 @@
             <ImageView fx:id="inv4img" fitHeight="25.0" fitWidth="25.0" layoutX="145.0" layoutY="24.0" pickOnBounds="true" preserveRatio="true" />
             <ImageView fx:id="rev4img" fitHeight="25.0" fitWidth="25.0" layoutX="117.0" layoutY="24.0" pickOnBounds="true" preserveRatio="true" />
             <ImageView fx:id="block4img" fitHeight="25.0" fitWidth="25.0" layoutX="88.0" layoutY="24.0" pickOnBounds="true" preserveRatio="true" />
+            <ImageView id="inv2img" fx:id="ready4img" fitHeight="25.0" fitWidth="25.0" layoutX="174.0" layoutY="24.0" pickOnBounds="true" preserveRatio="true" />
           </children>
         </AnchorPane>
         <Separator layoutX="0.0" layoutY="400.0" prefWidth="258.0" />

@@ -72,9 +72,10 @@ public class GameController {
 	private TextArea msgArea;
 
 	@FXML
-	private ImageView block1img, block2img, block3img, block4img, rev1img, rev2img, rev3img, rev4img, inv1img, inv2img, inv3img, inv4img;
+	private ImageView block1img, block2img, block3img, block4img, rev1img, rev2img, rev3img, rev4img, inv1img, inv2img, inv3img, inv4img, ready2img, ready3img, ready4img;
 
 	private GameDto info;
+	private final static String CHECKMARK = "img/speed_decrease.png";
 	private final static Duration MOVE_DURATION = Duration.millis(100);
 	public static final int GRID_SIZE = 39;
 	private static enum imgType { B, R, I };
@@ -102,6 +103,7 @@ public class GameController {
 	private ImageView[] playerInvulnerable;
 	private ImageView[] playerBlocked;
 	private ImageView[] playerReversed;
+	private ImageView[] playerReady;
 	
 	private AnchorPane myPane;
 
@@ -120,6 +122,7 @@ public class GameController {
 		playerInvulnerable = new ImageView[] { inv1img, inv2img, inv3img, inv4img };
 		playerBlocked = new ImageView[] { block1img, block2img, block3img, block4img };
 		playerReversed = new ImageView[] { rev1img, rev2img, rev3img, rev4img };
+		playerReady = new ImageView[] { ready2img, ready3img, ready4img };
 
 		playerLabels = new Label[] { player1Lbl, player2Lbl, player3Lbl, player4Lbl };
 		playerPanes = new AnchorPane[] { player1Pane, player2Pane, player3Pane, player4Pane };

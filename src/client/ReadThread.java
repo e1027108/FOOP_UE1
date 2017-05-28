@@ -21,7 +21,7 @@ public class ReadThread extends Thread {
 		super();
 		this.serverMessageHandler = new ServerMessageHandler();
 		this.client = client;
-		this.sock = sock;
+		this.sock = sock; //TODO socket never used, maybe this is unnecessary?
 	}
 
 	@Override
