@@ -75,7 +75,6 @@ public class GameController {
 	private ImageView block1img, block2img, block3img, block4img, rev1img, rev2img, rev3img, rev4img, inv1img, inv2img, inv3img, inv4img, ready2img, ready3img, ready4img;
 
 	private GameDto info;
-	private final static String CHECKMARK = "img/speed_decrease.png";
 	private final static Duration MOVE_DURATION = Duration.millis(100);
 	public static final int GRID_SIZE = 39;
 	private static enum imgType { B, R, I, C};
@@ -134,6 +133,7 @@ public class GameController {
 				client.sendReady();
 				readyBtn.setVisible(false);
 				setPlayerStatus(client.getPlayerNumber()-1, imgType.C, true);
+				gridPane.requestFocus();
 			}
 		});
 
