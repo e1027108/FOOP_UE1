@@ -149,6 +149,7 @@ public class Server {
 			playerList.get(s.getGridID()).setBlocked(s.hasBlockControl());
 			playerList.get(s.getGridID()).setInvincible(s.isInvulnerable());
 			playerList.get(s.getGridID()).setReversed(s.hasReverseControl());
+			playerList.get(s.getGridID()).setReady(false);
 			}
 			catch(NullPointerException e){
 				//someone left, do nothing
@@ -198,5 +199,14 @@ public class Server {
 		for (ClientThread ct : clientThreads) {
 			ct.getOut().println(msg);
 		}		
+	}
+
+	public boolean allReady() {
+		for(PlayerInfo pi : playerList.values()) {
+			if(!pi.isReady()) {
+				return false;
+			}
+		}
+		return true;
 	}
 }

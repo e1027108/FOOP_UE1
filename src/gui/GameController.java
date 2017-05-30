@@ -168,7 +168,6 @@ public class GameController {
 		if (host) {
 			timeLbl.setText(((int) info.getGameDuration().toSeconds()) + "s");
 			server.setGameInfo(info);
-			//startBtn.setDisable(true);
 			readyBtn.setVisible(false);
 		}
 		else{
@@ -180,6 +179,10 @@ public class GameController {
 		} catch (IOException e) {
 			engine.addError("Client initialization problem!");
 			return;
+		}
+		
+		if (host) {
+			client.sendReady();
 		}
 
 		onStartClient();
@@ -232,6 +235,9 @@ public class GameController {
 					
 					for (PlayerInfo pi : list) {
 						setPlayerStyle(pi.getNumber(), pi.getName(), pi.getColor());
+						if(pi.getNumber() > 1) {
+							setPlayerStatus(pi.getNumber()-1, imgType.C, pi.isReady());
+						}
 					}
 					
 					if(lastList != null && !lastList.isEmpty() && lastList.size() > list.size()) {
@@ -252,6 +258,14 @@ public class GameController {
 					started = true;
 				}
 				else {
+					if (host) {
+						if (server.allReady()) {
+							startBtn.setDisable(false);
+						}
+						else {
+							startBtn.setDisable(true);
+						}
+					}
 					if (started) {
 						evaluateGame();
 						timeline.stop();
