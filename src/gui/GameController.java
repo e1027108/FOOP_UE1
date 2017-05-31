@@ -445,8 +445,8 @@ public class GameController {
 		if (game != null && host) {
 			game.closeChildren();
 			this.game.getGrid().shutdown();
-			// TODO disconnect an alle teilnehmer schicken
 		}
+		client.setGameActive(false);
 		engine.interrupt();
 		msgThread.interrupt();
 		timeline.stop();
