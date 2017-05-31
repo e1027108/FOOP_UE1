@@ -88,9 +88,15 @@ public class JoinController {
 
 	private void loadGame(boolean host){
 		GameDto info = null; //TODO handle null
-
+		
 		try {
 			info = getGameInfo(host);
+			
+			if(!checkColorLightness(info.getColor())){
+				errorLbl.setText("Please choose a darker color!");
+				return;
+			}
+			
 			DataTransferrer dt = new DataTransferrer();
 			dt.setInfo(info);
 		} catch (UnknownHostException e) {
@@ -125,6 +131,17 @@ public class JoinController {
 		stage.setScene(scene);
 		stage.setTitle("Snake! Eliminate your foes!");
 		stage.show();
+	}
+
+	/**
+	 * checks whether a color is too light to be distinguishable from background
+	 * @param color
+	 */
+	private boolean checkColorLightness(Color color) {
+		if(color.getBlue() >= .9 && color.getRed() >= .9 && color.getGreen() >= .9){
+			return false;
+		}
+		return true;
 	}
 
 	private GameDto getGameInfo(boolean host) throws UnknownHostException {

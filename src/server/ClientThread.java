@@ -61,7 +61,9 @@ public class ClientThread extends Thread {
 					case MessageHandler.PLAYER_READY:
 						server.getPlayer(playerReferenceNumber).setReady(true);
 						server.updateAll();
-						server.sendText("Player " + playerReferenceNumber + " is ready.");
+						if(playerReferenceNumber != 1){
+							server.sendText("Player " + playerReferenceNumber + " is ready.");
+						}
 						break;
 					case MessageHandler.INITIALIZATION:
 						InfoMessage clientInfo = (InfoMessage) message;
