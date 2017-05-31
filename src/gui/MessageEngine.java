@@ -15,7 +15,7 @@ public class MessageEngine implements Runnable{
 	
 	private static final String RED = "-fx-text-fill: red;";
 	private static final String BLACK = "-fx-text-fill: black;";
-	private static final long WAIT_TIME = 100;
+	private static final long WAIT_TIME = 150;
 	
 	public MessageEngine(TextArea msgArea) {
 		this.area = msgArea;
@@ -46,7 +46,7 @@ public class MessageEngine implements Runnable{
 		messageQueue.push(new Pair<String,Boolean>(err,true));
 	}
 
-	public void addMessage(String msg){
+	public synchronized void addMessage(String msg){
 		messageQueue.push(new Pair<String,Boolean>(msg,false));
 	}
 
@@ -60,17 +60,17 @@ public class MessageEngine implements Runnable{
 		area.setText(msg + "\n");
 	}
 	
-	private void printMessage(String msg) {
+	private synchronized void printMessage(String msg) {
 		if(previous != null && previous.getValue()){ //value is boolean (error y/n)
 			area.clear();
 		}
 		
-		area.setStyle(BLACK);
 		area.setScrollTop(Double.MAX_VALUE); // scrolls down
 		area.appendText(msg + "\n");
+		System.out.println(area.getText().length());
 	}
 
-	private void printNext(){
+	private synchronized void printNext(){
 		Pair<String,Boolean> next;
 
 		if(!messageQueue.isEmpty()){

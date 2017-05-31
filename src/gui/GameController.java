@@ -156,9 +156,9 @@ public class GameController {
 			}
 		}
 
-		engine.addMessage("Welcome to Snake, " + info.getName() + "!");
 		engine.addMessage("Control your snake with the WASD keys.");
 		engine.addMessage("The longest snake at the end, wins!");
+		engine.addMessage("Welcome to Snake, " + info.getName() + "!");
 
 		gridPane.setStyle("-fx-background-color: #FFFFFF;");
 
