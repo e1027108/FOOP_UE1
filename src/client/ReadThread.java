@@ -2,6 +2,7 @@ package client;
 
 import java.io.IOException;
 import java.net.Socket;
+import java.net.SocketException;
 
 import gui.GameController;
 import messagehandler.ServerMessageHandler;
@@ -61,7 +62,7 @@ public class ReadThread extends Thread {
 					break;
 				}
 			} catch (IOException e) {
-				e.printStackTrace();
+				break;
 			}
 		}
 	}

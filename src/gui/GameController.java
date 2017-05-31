@@ -454,9 +454,11 @@ public class GameController {
 		timeline.stop();
 		client.disconnect();
 		client = null;
-		myPane.getChildren().remove(readyBtn);
-		myPane = null;
-		showJoin();
+		if(myPane != null && readyBtn != null){
+			myPane.getChildren().remove(readyBtn);
+			myPane = null;
+		}
+		((Stage)disconnectBtn.getScene().getWindow()).close();
 		//TODO enough cleanup?
 	}
 
