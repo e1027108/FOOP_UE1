@@ -14,14 +14,12 @@ import messagehandler.message.TextMessage;
 public class ReadThread extends Thread {
 
 	private Client client;
-	private Socket sock;
 	private ServerMessageHandler serverMessageHandler;
 
 	public ReadThread(Client client, Socket sock) {
 		super();
 		this.serverMessageHandler = new ServerMessageHandler();
 		this.client = client;
-		this.sock = sock; //TODO socket never used, maybe this is unnecessary?
 	}
 
 	@Override

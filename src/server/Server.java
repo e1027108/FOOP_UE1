@@ -190,7 +190,12 @@ public class Server {
 		String msg = serverMessageHandler.encode(new Message(MessageType.END));
 		for (ClientThread ct : clientThreads) {
 			ct.getOut().println(msg);
-		}		
+		}
+		try {
+			serverSocket.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 
 	public void informPlayerLeft(int playerReferenceNumber) {

@@ -148,8 +148,10 @@ public class Client {
 	
 	public void disconnect() throws IOException {
 		out.println(clientMessageHandler.encode(new Message(MessageType.DIS)));
-		readThread.interrupt();
+		in.close();
+		out.close();
 		sock.close();
+		readThread.interrupt();
 	}
 
 	public void removePlayer(int playerNumber) {

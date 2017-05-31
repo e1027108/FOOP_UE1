@@ -442,6 +442,9 @@ public class GameController {
 
 	@FXML
 	private void onDisconnectClick() throws IOException {
+		if (host) {
+			server.endGame();
+		}
 		if (game != null && host) {
 			game.closeChildren();
 			this.game.getGrid().shutdown();
@@ -450,11 +453,11 @@ public class GameController {
 		engine.interrupt();
 		msgThread.interrupt();
 		timeline.stop();
-		showJoin();
 		client.disconnect();
 		client = null;
 		myPane.getChildren().remove(readyBtn);
 		myPane = null;
+		showJoin();
 		//TODO enough cleanup?
 	}
 
