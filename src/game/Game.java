@@ -234,13 +234,14 @@ public class Game implements CollisionListener, Runnable{
 	}
 
 	public void removeDeadSnakes() {
-		for (int i = 0; i < snakes.size(); i++) {
-			if (!snakes.get(i).isAlive()) {
-				// TODO: is there another way to identify a snake as ai?
-				if(!snakes.get(i).getName().contains("ai_")) {
-					server.sendLooseMessage(i);
+		Iterator<Snake> snakeIterator = snakes.iterator();
+		while (snakeIterator.hasNext()) {
+			Snake s = snakeIterator.next();
+			if (!s.isAlive()) {
+				if(!(s instanceof SnakeAI)) {
+					server.sendLooseMessage(s.getGridID());
 				}
-				snakes.remove(i);
+				snakeIterator.remove();
 			}
 		}
 	}
