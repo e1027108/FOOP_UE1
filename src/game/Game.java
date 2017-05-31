@@ -80,16 +80,24 @@ public class Game implements CollisionListener, Runnable{
 
 		// create players
 		snakes = new ArrayList<Snake>();
+		
+		List<Directions> directions = new ArrayList<Directions>();
+		directions.add(Directions.N);
+		directions.add(Directions.S);
+		directions.add(Directions.E);
+		directions.add(Directions.W);
 
 		// inits human players and fills remaining slots with AIs
 		if (firstPlayer != null) {
+			int i = 0;
 			for(PlayerInfo p : server.getAllPlayers().values()) {
-				player = new SnakeImpl(p.getName(), p.getNumber(), Directions.N);
+				player = new SnakeImpl(p.getName(), p.getNumber(), directions.get(i));
 				snakes.add(player);
+				i++;
 			}
-			int i = server.getAllPlayers().size() + 1;
+			i = server.getAllPlayers().size() + 1;
 			while (i <= server.getGameInfo().getPlayers()) {
-				player = new SnakeAI("ai_" + i, i, Directions.N, this);
+				player = new SnakeAI("ai_" + i, i, directions.get(i - 1), this);
 				Color AIcolor = assignAIColor(server.getAllPlayers().values());
 				server.addAIPlayer(SnakeAI.AI_PREFIX + i, i, AIcolor);
 				snakes.add(player);
@@ -98,11 +106,6 @@ public class Game implements CollisionListener, Runnable{
 		} else {
 			
 			// init AIs for now
-			List<Directions> directions = new ArrayList<Directions>();
-			directions.add(Directions.N);
-			directions.add(Directions.S);
-			directions.add(Directions.E);
-			directions.add(Directions.W);
 			for (int i = 1; i <= numPlayers; i++) {
 				player = new SnakeAI("ai_" + i, i, directions.get(i - 1), this);
 				Color AIcolor = assignAIColor(server.getAllPlayers().values());

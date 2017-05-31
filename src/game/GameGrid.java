@@ -43,19 +43,19 @@ public class GameGrid extends CollisionTarget {
 
 	public void initPositions(ArrayList<Snake> snakes) {
 		for (Snake s : snakes) {
-			int x = Math.floorDiv(size, 2);
+			int x = Math.floorDiv(size, 4);
 			int y = Math.floorDiv(size, 4);
 			switch (s.getDirection()) {
-			case N:
+			case E:
 				s.initPosition(x, y);
 				break;
-			case E:
+			case S:
 				s.initPosition(x, size - y);
 				break;
-			case S:
+			case W:
 				s.initPosition(size - x, size - y);
 				break;
-			case W:
+			case N:
 				s.initPosition(size - x, y);
 				break;
 			default:
