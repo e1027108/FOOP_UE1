@@ -13,7 +13,6 @@ import dto.GameDto;
 import game.Directions;
 import game.Game;
 import game.Point;
-import game.Snake;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.event.ActionEvent;
@@ -446,6 +445,7 @@ public class GameController {
 		if (game != null && host) {
 			game.closeChildren();
 			this.game.getGrid().shutdown();
+			// TODO disconnect an alle teilnehmer schicken
 		}
 		engine.interrupt();
 		msgThread.interrupt();

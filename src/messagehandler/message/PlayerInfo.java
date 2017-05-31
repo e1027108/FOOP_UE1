@@ -8,7 +8,7 @@ import javafx.scene.paint.Color;
 public class PlayerInfo {
 
 	//info for initializing
-	private Integer playerNumber; //0-3
+	private Integer playerNumber;
 	private String name;
 	private Color color;
 	
@@ -112,6 +112,7 @@ public class PlayerInfo {
 		this.invincible = invincible;
 	}
 	
+	@Override
 	public String toString() {
 		if(playerNumber != null && name != null && color != null){
 			return "{ playerNumber: " + String.valueOf(playerNumber) + " name: " + name + " color: " + color.toString() + " }";

@@ -14,9 +14,8 @@ import messagehandler.message.AckMessage;
 import messagehandler.message.DirectionChangeMessage;
 import messagehandler.message.InfoMessage;
 import messagehandler.message.Message;
-import messagehandler.message.PlayerInfo;
-import messagehandler.message.PlayerLeftMessage;
 import messagehandler.message.Message.MessageType;
+import messagehandler.message.PlayerInfo;
 
 public class ClientThread extends Thread {
 
@@ -55,6 +54,7 @@ public class ClientThread extends Thread {
 						break;
 					case MessageHandler.DISCONNECT:
 						server.getAllPlayers().remove(server.getPlayer(playerReferenceNumber));
+						server.getGame().getSnakes().remove(playerReferenceNumber - 1);
 						this.interrupt();
 						server.informPlayerLeft(playerReferenceNumber);
 						break;
