@@ -67,7 +67,6 @@ public class MessageEngine implements Runnable{
 		
 		area.setScrollTop(Double.MAX_VALUE); // scrolls down
 		area.appendText(msg + "\n");
-		System.out.println(area.getText().length());
 	}
 
 	private synchronized void printNext(){
