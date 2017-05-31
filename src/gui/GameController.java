@@ -102,7 +102,7 @@ public class GameController {
 	private ImageView[] playerBlocked;
 	private ImageView[] playerReversed;
 	private ImageView[] playerReady;
-	
+
 	private AnchorPane myPane;
 
 	@FXML
@@ -179,7 +179,7 @@ public class GameController {
 			engine.addError("Client initialization problem!");
 			return;
 		}
-		
+
 		if (host) {
 			client.sendReady();
 		}
@@ -202,7 +202,7 @@ public class GameController {
 
 		playerLabels[player-1].setText(name);
 		playerPanes[player-1].setStyle(style);
-		life.setProgress(1.0);
+		//life.setProgress(1.0);
 		life.setStyle(lifeBarStyle);
 	}
 
@@ -224,34 +224,34 @@ public class GameController {
 		KeyFrame loopFrame = new KeyFrame(d, new EventHandler() {
 			private ArrayList<PlayerInfo> lastList;
 			private boolean started = false;
-			
+
 			@Override
 			public void handle(Event event) {
 				timeLbl.setText(client.getRemainingTime() + "s");
-				
+
 				if(client.getPlayerList() != null){
 					ArrayList<PlayerInfo> list = (ArrayList<PlayerInfo>) client.getPlayerList();
-					
+
 					for (PlayerInfo pi : list) {
 						setPlayerStyle(pi.getNumber(), pi.getName(), pi.getColor());
 						if(pi.getNumber() > 1) {
 							setPlayerStatus(pi.getNumber()-1, imgType.C, pi.isReady());
 						}
 					}
-					
+
 					if(lastList != null && !lastList.isEmpty() && lastList.size() > list.size()) {
 						lastList.removeAll(list);
 						resetPlayerPanes(lastList.get(0).getNumber()-1);
 					}
-					
+
 					lastList = new ArrayList<PlayerInfo>();
 					lastList.addAll(list);
 				}
-				
+
 				if(myPane == null && !host){
 					setUpReadyButton(client.getPlayerNumber());
 				}
-				
+
 				if (client.isGameActive()) {
 					updateClient();
 					started = true;
@@ -325,7 +325,7 @@ public class GameController {
 		}
 
 	}
-	
+
 	protected void setUpReadyButton(int number) {
 		myPane = playerPanes[number-1];
 		myPane.getChildren().add(readyBtn);
@@ -389,7 +389,7 @@ public class GameController {
 		initGrid();
 
 		Rectangle r;
-		
+
 		timeLbl.setText(((int) client.getGameDuration().toSeconds()) + "s");
 
 		for (PlayerInfo s : client.getPlayerList()) {
