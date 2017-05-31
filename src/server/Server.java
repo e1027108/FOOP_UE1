@@ -32,6 +32,7 @@ public class Server {
 	private static HashMap<Integer, PlayerInfo> playerList;
 	private static Game game;
 	private static boolean started;
+	private static Thread gameThread;
 
 	private Server(int port, int players) throws IOException {
 		started = false;
@@ -41,6 +42,7 @@ public class Server {
 		acceptThread = new AcceptThread(this, players);
 		acceptThread.setDaemon(true);
 		acceptThread.start();
+		gameThread = null;
 	}
 
 	public static Server getServer(int port, int players) throws IOException {
@@ -172,8 +174,8 @@ public class Server {
 					e.printStackTrace();
 				}
 			}
-			Thread t = new Thread(game);
-			t.start();
+			gameThread = new Thread(game);
+			gameThread.start();
 
 			String msg = serverMessageHandler.encode(new Message(MessageType.STR));
 			for (ClientThread ct : clientThreads) {
@@ -207,9 +209,13 @@ public class Server {
 	}
 
 	public void sendLoseMessage(int num) {
-		String msg = serverMessageHandler.encode(new Message(MessageType.SAD));
-		clientThreads.get(num-1).getOut().println(msg);
-		playerList.get(num).setAlive(false);
+		try {
+			String msg = serverMessageHandler.encode(new Message(MessageType.SAD));
+			clientThreads.get(num-1).getOut().println(msg);
+			playerList.get(num).setAlive(false);
+		} catch (IndexOutOfBoundsException e) {
+			System.out.println("clientThread cannot access Server anymore");
+		} 
 		
 	}
 
@@ -227,5 +233,9 @@ public class Server {
 			}
 		}
 		return true;
+	}
+	
+	public Thread getGameThread() {
+		return gameThread;
 	}
 }

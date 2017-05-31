@@ -446,7 +446,8 @@ public class GameController {
 		}
 		if (game != null && host) {
 			game.closeChildren();
-			this.game.getGrid().shutdown();
+			game.getGrid().shutdown();
+			server.getGameThread().interrupt();
 		}
 		client.setGameActive(false);
 		engine.interrupt();
