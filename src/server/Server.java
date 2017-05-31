@@ -189,8 +189,8 @@ public class Server {
 
 	public void sendLooseMessage(int num) {
 		String msg = serverMessageHandler.encode(new Message(MessageType.SAD));
-		clientThreads.get(num).getOut().println(msg);
-		playerList.get(num+1).setAlive(false);
+		clientThreads.get(num-1).getOut().println(msg);
+		playerList.get(num).setAlive(false);
 		
 	}
 
