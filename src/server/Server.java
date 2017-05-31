@@ -3,7 +3,6 @@ package server;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 
@@ -32,8 +31,10 @@ public class Server {
 	private static GameDto info;
 	private static HashMap<Integer, PlayerInfo> playerList;
 	private static Game game;
+	private static boolean started;
 
 	private Server(int port, int players) throws IOException {
+		started = false;
 		serverMessageHandler = new ServerMessageHandler();
 		serverSocket = new ServerSocket(port);
 		clientThreads = new ArrayList<ClientThread>();
@@ -157,14 +158,27 @@ public class Server {
 		}
 	}
 
-	public void startGame(int gridsize) {		
-		game = new Game(info.getPlayers(), gridsize, info.getGameDuration(), this);
-		Thread t = new Thread(game);
-		t.start();
+	public void startGame(int gridsize) {
+		if (started) {
+			// do nothing, only 1 game at a time
+		} else {
+			started = true;
+			game = new Game(info.getPlayers(), gridsize, info.getGameDuration(), this);
+			for (int i = 0; i < 3; i++) {
+				try {
+					sendText(String.valueOf(i));
+					Thread.sleep(1000);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+			}
+			Thread t = new Thread(game);
+			t.start();
 
-		String msg = serverMessageHandler.encode(new Message(MessageType.STR));
-		for (ClientThread ct : clientThreads) {
-			ct.getOut().println(msg);
+			String msg = serverMessageHandler.encode(new Message(MessageType.STR));
+			for (ClientThread ct : clientThreads) {
+				ct.getOut().println(msg);
+			}
 		}
 	}
 
