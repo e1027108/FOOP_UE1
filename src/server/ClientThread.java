@@ -55,6 +55,7 @@ public class ClientThread extends Thread {
 					case MessageHandler.DISCONNECT:
 						server.getAllPlayers().remove(server.getPlayer(playerReferenceNumber));
 						server.getGame().getSnakes().remove(playerReferenceNumber - 1);
+						clientSocket.close();
 						this.interrupt();
 						server.informPlayerLeft(playerReferenceNumber);
 						break;

@@ -30,7 +30,6 @@ public class ReadThread extends Thread {
 			try {
 				String msg = client.getIn().readLine();
 				Message message = serverMessageHandler.decode(msg);
-				//System.out.println(msg);
 				switch (message.getType()) {
 				case UPD:
 					InfoMessage im = (InfoMessage)message;

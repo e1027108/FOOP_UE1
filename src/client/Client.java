@@ -12,14 +12,12 @@ import game.Directions;
 import javafx.scene.paint.Color;
 import javafx.util.Duration;
 import messagehandler.ClientMessageHandler;
-import messagehandler.ServerMessageHandler;
 import messagehandler.message.ArtifactInfo;
 import messagehandler.message.DirectionChangeMessage;
 import messagehandler.message.InfoMessage;
 import messagehandler.message.Message;
 import messagehandler.message.Message.MessageType;
 import messagehandler.message.PlayerInfo;
-import messagehandler.message.PlayerLeftMessage;
 
 public class Client {
 
@@ -149,8 +147,9 @@ public class Client {
 	}
 	
 	public void disconnect() throws IOException {
-		readThread.interrupt();
 		out.println(clientMessageHandler.encode(new Message(MessageType.DIS)));
+		readThread.interrupt();
+		sock.close();
 	}
 
 	public void removePlayer(int playerNumber) {
