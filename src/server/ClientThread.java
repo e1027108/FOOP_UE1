@@ -7,6 +7,7 @@ import java.io.PrintWriter;
 import java.net.Socket;
 import java.net.SocketException;
 
+import game.Snake;
 import messagehandler.ClientMessageHandler;
 import messagehandler.MessageHandler;
 import messagehandler.ServerMessageHandler;
@@ -53,8 +54,9 @@ public class ClientThread extends Thread {
 						server.updateAll();
 						break;
 					case MessageHandler.DISCONNECT:
+						Snake s = server.getGame().getSnakeByGridID(playerReferenceNumber - 1);
+						server.getGame().getSnakes().remove(s);
 						server.getAllPlayers().remove(server.getPlayer(playerReferenceNumber));
-						server.getGame().getSnakes().remove(playerReferenceNumber - 1);
 						clientSocket.close();
 						this.interrupt();
 						server.informPlayerLeft(playerReferenceNumber);

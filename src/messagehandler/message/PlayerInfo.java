@@ -22,6 +22,7 @@ public class PlayerInfo {
 	private boolean invincible; //color effect?
 	private boolean ready;
 	private boolean alive;
+	private boolean disconnect;
 	
 	//TODO check for missing information
 	
@@ -32,6 +33,7 @@ public class PlayerInfo {
 		invincible = false;
 		alive = true;
 		ready = false;
+		setDisconnect(false);
 	}
 	
 	public PlayerInfo(int playerNum, String name, Color color) {
@@ -136,6 +138,14 @@ public class PlayerInfo {
 
 	public void setReady(boolean ready) {
 		this.ready = ready;
+	}
+
+	public boolean isDisconnect() {
+		return disconnect;
+	}
+
+	public void setDisconnect(boolean disconnect) {
+		this.disconnect = disconnect;
 	}
 
 }

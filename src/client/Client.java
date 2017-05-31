@@ -154,18 +154,6 @@ public class Client {
 		readThread.interrupt();
 	}
 
-	public void removePlayer(int playerNumber) {
-		PlayerInfo toRemove = null;
-		
-		for(PlayerInfo p: playerList){
-			if(p.getNumber() == playerNumber){
-				toRemove = p;
-			}
-		}
-	
-		playerList.remove(toRemove);
-	}
-
 	public void setDead() {
 		Client.dead = true;		
 	}

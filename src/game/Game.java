@@ -242,7 +242,7 @@ public class Game implements CollisionListener, Runnable{
 			Snake s = snakeIterator.next();
 			if (!s.isAlive()) {
 				if(!(s instanceof SnakeAI)) {
-					server.sendLooseMessage(s.getGridID());
+					server.sendLoseMessage(s.getGridID());
 				}
 				snakeIterator.remove();
 			}

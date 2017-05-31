@@ -49,7 +49,8 @@ public class ReadThread extends Thread {
 					GameController.engine.addMessage(((TextMessage) message).getMessage());
 					break;
 				case PLL:
-					client.removePlayer(((PlayerLeftMessage) message).getPlayerNumber()); //This doesn't activate the timeline :(
+					System.out.println("PLL " + (((PlayerLeftMessage) message).getPlayerNumber()-1));
+					client.getPlayerList().get(((PlayerLeftMessage) message).getPlayerNumber()-1).setDisconnect(true);
 					GameController.engine.addMessage("Player " + ((PlayerLeftMessage) message).getPlayerNumber() + " left the game!");
 					break;
 				case ACK:

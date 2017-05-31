@@ -206,7 +206,7 @@ public class Server {
 		System.out.println("Removed player: " + playerReferenceNumber);
 	}
 
-	public void sendLooseMessage(int num) {
+	public void sendLoseMessage(int num) {
 		String msg = serverMessageHandler.encode(new Message(MessageType.SAD));
 		clientThreads.get(num-1).getOut().println(msg);
 		playerList.get(num).setAlive(false);

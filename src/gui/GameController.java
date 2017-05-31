@@ -5,6 +5,8 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.ResourceBundle;
 
 import client.Client;
@@ -222,30 +224,27 @@ public class GameController {
 		timeline.setAutoReverse(false);
 
 		KeyFrame loopFrame = new KeyFrame(d, new EventHandler() {
-			private ArrayList<PlayerInfo> lastList;
+			private HashMap<Integer, PlayerInfo> lastList;
 			private boolean started = false;
 
 			@Override
 			public void handle(Event event) {
 				timeLbl.setText(client.getRemainingTime() + "s");
 
-				if(client.getPlayerList() != null){
-					ArrayList<PlayerInfo> list = (ArrayList<PlayerInfo>) client.getPlayerList();
+				if(client.getPlayerList() != null) {
+					
 
-					for (PlayerInfo pi : list) {
-						setPlayerStyle(pi.getNumber(), pi.getName(), pi.getColor());
-						if(pi.getNumber() > 1) {
-							setPlayerStatus(pi.getNumber()-1, imgType.C, pi.isReady());
+					for (PlayerInfo pi : client.getPlayerList()) {
+						if(!pi.isDisconnect()) {
+							setPlayerStyle(pi.getNumber(), pi.getName(), pi.getColor());
+							if(pi.getNumber() > 1) {
+								setPlayerStatus(pi.getNumber()-1, imgType.C, pi.isReady());
+							}
 						}
+						else {
+							resetPlayerPanes(pi.getNumber()-1);							
+						}						
 					}
-
-					if(lastList != null && !lastList.isEmpty() && lastList.size() > list.size()) {
-						lastList.removeAll(list);
-						resetPlayerPanes(lastList.get(0).getNumber()-1);
-					}
-
-					lastList = new ArrayList<PlayerInfo>();
-					lastList.addAll(list);
 				}
 
 				if(myPane == null && !host){
@@ -393,7 +392,7 @@ public class GameController {
 		timeLbl.setText(((int) client.getGameDuration().toSeconds()) + "s");
 
 		for (PlayerInfo s : client.getPlayerList()) {
-			if(s != null && s.isAlive()) {
+			if(s != null && s.isAlive() && !s.isDisconnect()) {
 				setPlayerStatus(s.getNumber(), imgType.B, s.isBlocked());
 				setPlayerStatus(s.getNumber(), imgType.I, s.isInvincible());
 				setPlayerStatus(s.getNumber(), imgType.R, s.isReversed());
