@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.Random;
 
 import artifacts.ArtifactConstants;
-import gui.GameController;
 
 /**
  * This class implements the {@link Snake} interface and holds the start/default

@@ -98,17 +98,11 @@ public class Server {
 		return playerList;
 	}
 
+	@SuppressWarnings("static-access")
 	public void interruptAcceptThread() {
 		this.acceptThread.interrupt();
 	}
 
-	/**
-	 * TODO!! -------------------------------------------------
-	 * 			ClientThread list eintraege werden nicht entfernt, 
-	 * 			auch wenn der client mit ALT+F4 geschlossen wird und
-	 * 			das socket ding nicht mehr reagieren kann.
-	 * 		---------------------------------------------------
-	 */
 	public void updateAll() {
 		List<PlayerInfo> playerContainer = new ArrayList<PlayerInfo>();
 		playerContainer.addAll(playerList.values());
@@ -144,7 +138,6 @@ public class Server {
 
 	public void updatePlayerList(ArrayList<Snake> snakes) {
 		for(Snake s : snakes) {
-			// TODO: update all fields
 			try{
 			playerList.get(s.getGridID()).setHealth(s.getHealth());
 			playerList.get(s.getGridID()).setMaxHealth(s.getMaxHealth());
@@ -164,6 +157,7 @@ public class Server {
 		if (started) {
 			// do nothing, only 1 game at a time
 		} else {
+			interruptAcceptThread();
 			started = true;
 			game = new Game(info.getPlayers(), gridsize, info.getGameDuration(), this);
 			for (int i = 0; i < 3; i++) {
@@ -237,5 +231,9 @@ public class Server {
 	
 	public Thread getGameThread() {
 		return gameThread;
+	}
+	
+	public boolean isStarted() {
+		return started;
 	}
 }

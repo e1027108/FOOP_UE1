@@ -6,7 +6,6 @@ import java.util.List;
 import artifacts.Artifacts;
 import game.Point;
 import javafx.scene.paint.Color;
-import javafx.util.Pair;
 import messagehandler.message.AckMessage;
 import messagehandler.message.ArtifactInfo;
 import messagehandler.message.InfoMessage;

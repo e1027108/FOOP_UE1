@@ -2,14 +2,9 @@ package game;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
-
-import com.sun.org.apache.bcel.internal.generic.INSTANCEOF;
-
-import java.util.Map.Entry;
 
 import artifacts.Artifact;
 import artifacts.ArtifactConstants;

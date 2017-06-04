@@ -54,8 +54,10 @@ public class ClientThread extends Thread {
 						server.updateAll();
 						break;
 					case MessageHandler.DISCONNECT:
-						Snake s = server.getGame().getSnakeByGridID(playerReferenceNumber - 1);
-						server.getGame().getSnakes().remove(s);
+						if(server.isStarted()){
+							Snake s = server.getGame().getSnakeByGridID(playerReferenceNumber - 1);
+							server.getGame().getSnakes().remove(s);
+						}
 						server.getAllPlayers().remove(server.getPlayer(playerReferenceNumber));
 						clientSocket.close();
 						this.interrupt();

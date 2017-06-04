@@ -4,9 +4,6 @@ import java.io.IOException;
 import java.net.Socket;
 import java.util.ArrayList;
 
-import messagehandler.message.AckMessage;
-import messagehandler.message.Message.MessageType;
-
 public class AcceptThread extends Thread {
 
 	private int players;
@@ -32,7 +29,7 @@ public class AcceptThread extends Thread {
 					clientThread.inform(playerNum);
 				}
 			} catch (IOException e) {
-				e.printStackTrace();
+				break;
 			}
 		}
 	}

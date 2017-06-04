@@ -5,8 +5,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
+//import java.util.HashMap;
 import java.util.ResourceBundle;
 
 import client.Client;
@@ -21,11 +20,11 @@ import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
+//import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
-import javafx.scene.Node;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
+//import javafx.scene.Node;
+//import javafx.scene.Parent;
+//import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
@@ -189,8 +188,6 @@ public class GameController {
 		onStartClient();
 	}
 
-	// TODO add additional player information icons in panes (health ...)
-
 	private void setPlayerStyle(int player, String name, Color color) {
 		playerNames[player - 1] = name;
 
@@ -224,7 +221,6 @@ public class GameController {
 		timeline.setAutoReverse(false);
 
 		KeyFrame loopFrame = new KeyFrame(d, new EventHandler() {
-			private HashMap<Integer, PlayerInfo> lastList;
 			private boolean started = false;
 
 			@Override
@@ -274,7 +270,7 @@ public class GameController {
 			private void resetPlayerPanes(int paneNumber) {
 				playerLifeBars[paneNumber].setProgress(0);
 				playerLabels[paneNumber].setText("player left!");
-				playerPanes[paneNumber].setBackground(Background.EMPTY); //TODO test if can be coloured again on reconnect
+				playerPanes[paneNumber].setBackground(Background.EMPTY);
 				playerInvulnerable[paneNumber].setImage(null);
 				playerBlocked[paneNumber].setImage(null);
 				playerReversed[paneNumber].setImage(null);
@@ -460,16 +456,14 @@ public class GameController {
 			myPane = null;
 		}
 		((Stage)disconnectBtn.getScene().getWindow()).close();
-		//TODO enough cleanup?
 	}
 
 	@FXML
 	private void onStartClick() {
-		// TODO change text in button, send ready info (--> green checkmark or something)
 		onStartServer();
 	}
 
-	private void showJoin() {
+	/*private void showJoin() {
 		Parent joinPane;
 		try {
 			joinPane = FXMLLoader.load(getClass().getResource("/join.fxml"));
@@ -482,7 +476,7 @@ public class GameController {
 		stage.setScene(scene);
 		stage.setTitle("Create or join a game of Snake!");
 		stage.show();
-	}
+	}*/
 
 	//give b=block, r=reverse, i=invisible, c=ready as effect
 	private void setPlayerStatus(int player, imgType effect, boolean on){
